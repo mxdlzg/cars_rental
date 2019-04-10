@@ -1,0 +1,30 @@
+.main {
+    padding: 0 10em 0 10em;
+    background-color: #f2f3f5;
+    text-align: left;
+}
+
+.steps {
+    margin-top: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.card {
+    background-color: white;
+    margin: 1em 0em 1em 0em;
+    padding: 0em;
+    text-align: left;
+}
+
+.left {
+    width: 50%;
+    float: left;
+}
+.right {
+    width: 50%;
+    float: left;
+}
+.finished{
+    float: right;
+}

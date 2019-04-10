@@ -1,0 +1,16 @@
+.back{
+    height: 42em;
+    background: url("https://image.zuchecdn.com/newStatic/newversion/common/login_bg.jpg");
+    display: -webkit-flex; /* Safari */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.loginCard{
+    background-color: white;
+    margin-top: 4em;
+    padding: 0 2em;
+    max-width: 35em;
+    min-width: 35em;
+}

@@ -1,0 +1,65 @@
+@import '~antd/lib/style/themes/default.less';
+
+.back {
+  height: 42em;
+  background: url("https://image.zuchecdn.com/newStatic/newversion/common/login_bg.jpg");
+  display: -webkit-flex; /* Safari */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+.main {
+  text-align: center;
+  background-color: white;
+  margin-top: 4em;
+  padding: 2em 4em 0 4em;
+  max-width: 35em;
+  min-width: 35em;
+}
+
+.success,
+.warning,
+.error {
+  transition: color 0.3s;
+}
+
+.success {
+  color: @success-color;
+}
+
+.warning {
+  color: @warning-color;
+}
+
+.error {
+  color: @error-color;
+}
+
+h3 {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.getCaptcha {
+  display: block;
+  width: 100%;
+}
+
+.submit {
+  width: 50%;
+}
+
+.login {
+  float: right;
+  line-height: @btn-height-lg;
+}
+
+.progress-pass > .progress {
+  :global {
+    .ant-progress-bg {
+      background-color: @warning-color;
+    }
+  }
+}

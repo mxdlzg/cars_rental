@@ -1,0 +1,71 @@
+.main{
+    height: 200px;
+    background-color: #f2f3f5;
+    padding: 0 10em 0 10em;
+}
+
+.tabs{
+    background-color: white;
+}
+
+.map{
+    width: 100%;
+    height: 20em;
+}
+
+.card{
+    background-color: white;
+    margin: 1em 0em 1em 0em;
+    padding: 0em;
+    text-align: left;
+}
+.cardDetail{
+    padding-bottom: 2em;
+    text-align: left;
+}
+.checkGroup{
+    margin-left: 1em;
+}
+
+.carType{
+    width: 25%;
+    text-align: center;
+}
+.carIcon{
+    width: 2em;
+    height: 2em;
+}
+
+.search{
+}
+
+.searchBtn{
+    margin-left: 2em;
+    font-size: 1em;
+}
+
+.listDescription{
+    margin-left: 2em;
+}
+
+.priceLabel{
+    color: #5fc3ff;
+}
+
+.searchLocation{
+    margin-left: 1em;
+    width: 15em;
+}
+
+.inputCommon{
+    margin-left: 1em;
+}
+
+.contentLeft{
+    float: left;
+    width: 30%;
+}
+.contentRight{
+    float: right;
+    width: 70%;
+}
