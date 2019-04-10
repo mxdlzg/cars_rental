@@ -20,10 +20,9 @@ export default {
                 payload: res
             });
             let load = {username:payload.username,token:res.token};
-            // yield put({
-            //     type:"user/saveCurrentToken",
-            //     payload: load,
-            // });
+            yield put({
+                type:"user/fetchCurrent",
+            });
             if (res.status === 'ok') {
                 reloadAuthorized();
                 cacheUserToken(load);
@@ -41,9 +40,9 @@ export default {
                         redirect = null;
                     }
                 }
-                yield put(routerRedux.replace({
+                yield put(routerRedux.push({
                     pathname: redirect || '/',
-                    state: {token: res.token, username: payload.username}
+                    // state: {token: res.token, username: payload.username}
                 }));
             }
         },
@@ -51,6 +50,7 @@ export default {
             yield call(getFakeCaptcha, payload);
         },
         * logout(_, {put}) {
+            //重新定义当前状态
             yield put({
                 type: 'changeLoginStatus',
                 payload: {
@@ -58,9 +58,11 @@ export default {
                     currentAuthority: 'guest',
                 },
             });
+
+            //清理用户信息
             yield put({
-                type:"user/saveCurrentToken",
-                payload:{},
+                type:"user/saveCurrentUser",
+                payload:{status:'invalid'},
             });
             reloadAuthorized();
             cacheUserToken(undefined);

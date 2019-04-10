@@ -7,7 +7,7 @@ export default {
     state: {
         list: [],
         currentUser: {},
-        currentToken: {username:'User',token:''},
+        currentToken: {},
     },
 
     effects: {
@@ -20,11 +20,18 @@ export default {
         },
         * fetchCurrent(_, {call, put}) {
             let token = getUserToken();
-            const response = yield call(queryCurrent, token);
-            yield put({
-                type: 'saveCurrentUser',
-                payload: response,
-            });
+            if (token.username) {
+                const response = yield call(queryCurrent, token);
+                yield put({
+                    type: 'saveCurrentUser',
+                    payload: response,
+                });
+            }else {
+                yield put({
+                    type: 'saveCurrentUser',
+                    payload: {status:"invalid"},
+                });
+            }
         },
     },
 
