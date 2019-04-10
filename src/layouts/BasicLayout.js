@@ -1,5 +1,5 @@
 import React from 'react';
-import {Layout, Spin} from 'antd';
+import {Layout} from 'antd';
 import DocumentTitle from 'react-document-title';
 import {connect} from 'dva';
 import {ContainerQuery} from 'react-container-query';
@@ -52,12 +52,10 @@ class BasicLayout extends React.Component {
         const {
             dispatch,
             route: {routes, path, authority},
-            currentToken
         } = this.props;
 
         dispatch({
             type: 'user/fetchCurrent',
-            payload: {currentToken}
         });
 
         dispatch({

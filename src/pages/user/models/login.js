@@ -3,6 +3,7 @@ import {reloadAuthorized} from "@/utils/Authorized";
 import {routerRedux} from "dva/router";
 import {getPageQuery} from "@/utils/utils";
 import {setAuthority} from "@/utils/authority";
+import {cacheUserToken} from "@/utils/userInfo";
 import {stringify} from "qs";
 
 export default {
@@ -18,12 +19,14 @@ export default {
                 type: "loginHandle",
                 payload: res
             });
-            yield put({
-                type:"user/saveCurrentToken",
-                payload:{username:payload.username,token:res.token},
-            });
+            let load = {username:payload.username,token:res.token};
+            // yield put({
+            //     type:"user/saveCurrentToken",
+            //     payload: load,
+            // });
             if (res.status === 'ok') {
                 reloadAuthorized();
+                cacheUserToken(load);
                 const urlParams = new URL(window.location.href);
                 const params = getPageQuery();
                 let {redirect} = params;
@@ -60,6 +63,8 @@ export default {
                 payload:{},
             });
             reloadAuthorized();
+            cacheUserToken(undefined);
+
             // redirect
             if (window.location.pathname !== '/user/login') {
                 yield put(

@@ -28,10 +28,9 @@ class Account extends PureComponent {
 
     componentDidMount() {
         const {dispatch} = this.props;
-        // dispatch({
-        //     type: 'user/fetchCurrent',
-        //     payload:{currentToken}
-        // });
+        dispatch({
+            type: 'user/fetchCurrent',
+        });
         dispatch({
             type: 'list/fetch',
             payload: {
