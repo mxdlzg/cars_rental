@@ -67,7 +67,7 @@ export default function () {
                     actions={[<Icon type="edit"/>]}
                 >
                     <Meta
-                        avatar={<Avatar size="large" icon="clock-circle" theme="twoTone" twoToneColor="#eb2f96"/>}
+                        avatar={<Avatar size="large" icon="clock-circle" theme="twoTone" twotonecolor="#eb2f96"/>}
                         title="顺风车站"
                         description="价格便宜就是任性"
                     />

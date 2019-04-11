@@ -1,5 +1,4 @@
 import React from 'react';
-import Redirect from 'umi/redirect';
 import pathToRegexp from 'path-to-regexp';
 import {connect} from 'dva';
 import {message} from 'antd';
@@ -7,6 +6,7 @@ import Authorized from '@/utils/Authorized';
 import {getAuthority} from '@/utils/authority';
 import Exception403 from '@/pages/Exception/403';
 import {stringify} from "qs";
+import router from 'umi/router';
 
 function AuthComponent({children, location, routerData}) {
     const auth = getAuthority();
@@ -34,13 +34,14 @@ function AuthComponent({children, location, routerData}) {
                 (
                     <div>
                         {message.info("请登录账户后继续操作！")}
-                        <Redirect
-                            to={{
-                                pathname: "/user/login",
-                                search: stringify({
-                                    redirect: window.location.href,
-                                })
-                            }}/>
+                        {router.push({
+                            pathname: "/user/login",
+                            search: stringify({
+                                redirect: window.location.href,
+                            })
+                        })}
+                        {/*<Redirect*/}
+                            {/*to={}/>*/}
                     </div>
                 )
             }

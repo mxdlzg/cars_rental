@@ -63,7 +63,6 @@ export default {
             component: '../layouts/index',
             Routes:['src/pages/Authorized'],
             authority: ['user'],
-            //Routes: ['src/pages/Authorized'],
             routes: [
                 {path: '/order/OrderDetail', name: 'orderdetail', component: './order/OrderDetail'},
                 {path: '/order/OrderResult', name: 'orderresult', component: './order/OrderResult'},
