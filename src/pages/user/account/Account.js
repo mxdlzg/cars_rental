@@ -122,12 +122,13 @@ class Account extends PureComponent {
                 ),
             },
         ];
+        console.log(currentUser);
         return (
             <GridContent>
                 <Row style={{marginLeft: '10em', marginRight: '10em', marginTop: '24px'}} gutter={24}>
                     <Col lg={7}>
                         <Card bordered={false} style={{marginBottom: 24}} loading={currentUserLoading}>
-                            {currentUser && Object.keys(currentUser).length ? (
+                            {currentUser.name && Object.keys(currentUser).length ? (
                                 <div>
                                     <div className={styles.avatarHolder}>
                                         <img alt={"头像"} src={currentUser.avatar}/>
