@@ -1,5 +1,6 @@
 import path from 'path';
 //import routesConfig from './src/config/router.config';
+//import {FormattedMessage, formatMessage} from 'umi-plugin-react/locale';
 
 export default {
     treeShaking: true,
@@ -83,10 +84,10 @@ export default {
         //public
         {
             path: '/',
-            component: '../layouts/index',
+            component: '../layouts/BasicLayout',
             routes: [
                 {path: '/', component: './index'/*, authority: ['admin', 'user']*/},
-                {path: '/rental/SelfDriving', name: 'selfdriving', component: './rental/SelfDriving'},
+                {path: '/rental/SelfDriving', name: "自驾租车", component: './rental/SelfDriving'},
                 {component: '404'},
             ]
         },
