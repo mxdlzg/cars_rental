@@ -5,6 +5,7 @@ import {getPageQuery} from "@/utils/utils";
 import {setAuthority} from "@/utils/authority";
 import {cacheUserToken} from "@/utils/userInfo";
 import {stringify} from "qs";
+import {message} from 'antd';
 
 export default {
     namespace: 'login',
@@ -40,10 +41,13 @@ export default {
                         redirect = null;
                     }
                 }
+                message.success(res.message);
                 yield put(routerRedux.push({
                     pathname: redirect || '/',
                     // state: {token: res.token, username: payload.username}
                 }));
+            }else {
+                message.error(res.message);
             }
         },
         * getCaptcha({payload}, {call}) {

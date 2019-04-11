@@ -82,6 +82,7 @@ export default {
                 type,
                 token:'1',
                 currentAuthority: 'user',
+                message:'登陆成功(用户)!'
             });
             return;
         }
@@ -91,6 +92,7 @@ export default {
                 type,
                 token:'2',
                 currentAuthority: 'admin',
+                message:'登陆成功(管理)!'
             });
             return;
         }
@@ -99,6 +101,7 @@ export default {
             type,
             token:'3',
             currentAuthority: 'guest',
+            message:'登陆失败!'
         });
     },
     'POST /api/register': (req, res) => {
