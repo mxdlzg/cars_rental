@@ -8,7 +8,6 @@ import HeaderSearch from '../HeaderSearch';
 import HeaderDropdown from '../HeaderDropdown';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
-import logo from '@/assets/logo.svg';
 
 export default class GlobalHeaderRight extends PureComponent {
     getNoticeData() {

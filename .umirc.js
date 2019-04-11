@@ -61,7 +61,7 @@ export default {
         },
         {
             path: '/order',
-            component: '../layouts/index',
+            component: '../layouts/BasicLayout',
             Routes:['src/pages/Authorized'],
             authority: ['user'],
             routes: [
@@ -75,7 +75,7 @@ export default {
             path: '/pay',
             Routes:['src/pages/Authorized'],
             authority: ['user'],
-            component: '../layouts/index',
+            component: '../layouts/BasicLayout',
             routes: [
                 {path: '/pay/OrderPay', name: 'orderpay', component: './pay/OrderPay'},
                 {component: '404'},
@@ -91,6 +91,7 @@ export default {
                 {component: '404'},
             ]
         },
+        {component: '404'},
 
     ]
 

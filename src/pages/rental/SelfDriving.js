@@ -5,6 +5,7 @@ import moment from 'moment';
 import CheckTag from '@/components/CRental/CheckTag';
 import {Map} from 'react-amap';
 import cars1 from "@/assets/cars1.jpg"
+import {connect} from 'dva';
 import {
     Tabs,
     Card,
@@ -20,7 +21,7 @@ import {
     Checkbox,
     Switch, //Avatar, Menu,
     //Dropdown,
-    List
+    List, Skeleton
 } from "antd";
 
 const TabPane = Tabs.TabPane;
@@ -81,20 +82,6 @@ const paginationProps = {
     total: 50,
 };
 
-// const MoreBtn = props => (
-//     <Dropdown
-//         overlay={
-//             <Menu>
-//                 <Menu.Item key="edit">编辑</Menu.Item>
-//                 <Menu.Item key="delete">删除</Menu.Item>
-//             </Menu>
-//         }
-//     >
-//         <a>
-//             更多 <Icon type="down" />
-//         </a>
-//     </Dropdown>
-// );
 
 function callback(key) {
     console.log(key);
@@ -103,27 +90,6 @@ function callback(key) {
 function onChange(value) {
     console.log(value);
 }
-
-// function renderOption(item) {
-//     return (
-//         <Option key={item.category} text={item.category}>
-//             {item.query} 在
-//             <a
-//                 href={`https://s.taobao.com/search?q=${item.query}`}
-//                 target="_blank"
-//                 rel="noopener noreferrer"
-//             >
-//                 {item.category}
-//             </a>
-//             区块中
-//             <span className="global-search-item-count">约 {item.count} 个结果</span>
-//         </Option>
-//     );
-// }
-
-// function onSelect(value) {
-//     console.log('onSelect', value);
-// }
 
 function getRandomInt(max, min = 0) {
     return Math.floor(Math.random() * (max - min + 1)) + min; // eslint-disable-line no-mixed-operators
@@ -167,11 +133,15 @@ function disabledRangeTime(_, type) {
 }
 
 
+@connect(({rental, loading}) => ({
+    filterOptionsLoading: loading.effects['rental/fetchOptions'],
+    ...rental,
+}))
 class SelfDriving extends React.Component {
     constructor(props) {
         super(props);
         this.lastFetchId = 0;
-        this.fetchUser = debounce(this.fetchUser, 800);
+        this.searchRental = debounce(this.searchRental, 800);
         this.enterSearchLoading = this.enterSearchLoading.bind(this);
     }
 
@@ -185,29 +155,41 @@ class SelfDriving extends React.Component {
         carTypeCheckedLastIndex: 0,
     };
 
+    componentDidMount() {
+        const {dispatch} = this.props;
+        dispatch({
+            type: 'rental/fetchOptions',
+        });
+    }
+
+    componentWillMount() {
+
+    }
+
     handleSearch = (value) => {
         this.setState({
             dataSource: value ? searchResult(value) : [],
         });
     };
 
-    fetchUser = (value) => {
-        console.log('fetching user', value);
-        this.lastFetchId += 1;
-        const fetchId = this.lastFetchId;
-        this.setState({data: [], fetching: true});
-        fetch('https://randomuser.me/api/?results=5')
-            .then(response => response.json())
-            .then((body) => {
-                if (fetchId !== this.lastFetchId) { // for fetch callback order
-                    return;
-                }
-                const data = body.results.map(user => ({
-                    text: `${user.name.first} ${user.name.last}`,
-                    value: user.login.username,
-                }));
-                this.setState({data, fetching: false});
-            });
+    searchRental = (value) => {
+        //TODO::
+        // console.log('fetching user', value);
+        // this.lastFetchId += 1;
+        // const fetchId = this.lastFetchId;
+        // this.setState({data: [], fetching: true});
+        // fetch('https://randomuser.me/api/?results=5')
+        //     .then(response => response.json())
+        //     .then((body) => {
+        //         if (fetchId !== this.lastFetchId) { // for fetch callback order
+        //             return;
+        //         }
+        //         const data = body.results.map(user => ({
+        //             text: `${user.name.first} ${user.name.last}`,
+        //             value: user.login.username,
+        //         }));
+        //         this.setState({data, fetching: false});
+        //     });
     };
 
     handleChange = (value) => {
@@ -238,100 +220,111 @@ class SelfDriving extends React.Component {
     render() {
         const {carTypeChecked} = this.state;
         const {fetching, data, value} = this.state;
+        const {filterOptions} = this.props;
+
         return (
             <div className={styles.main}>
-                <div id="search_bar">
-                    <Card className={styles.card}>
-                        <div style={{width: '35em', float: 'left'}}>
-                            <div>
-                                <Icon style={{fontSize: '20px'}} type="home"/>
-                                <Cascader className={styles.inputCommon} options={options} onChange={onChange}
-                                          placeholder="出发地"/>
-                                <Select
-                                    className={styles.searchLocation}
-                                    showSearch
-                                    value={value}
-                                    placeholder="选择出发地"
-                                    notFoundContent={fetching ? <Spin size="small"/> : <Empty/>}
-                                    filterOption={false}
-                                    onSearch={this.fetchUser}
-                                    onChange={this.handleChange}
-                                >
-                                    {data.map(d => <Option key={d.value}>{d.text}</Option>)}
-                                </Select>
+                <div>
+                    <Card id="search_bar" className={styles.card}>
+                        {filterOptions
+                            ? <div>
+                                <div style={{width: '35em', float: 'left'}}>
+                                    <div>
+                                        <Icon style={{fontSize: '20px'}} type="home"/>
+                                        <Cascader className={styles.inputCommon} options={filterOptions.options} onChange={onChange}
+                                                  placeholder="出发地"/>
+                                        <Select
+                                            className={styles.searchLocation}
+                                            showSearch
+                                            value={value}
+                                            placeholder="选择出发地"
+                                            notFoundContent={fetching ? <Spin size="small"/> : <Empty/>}
+                                            filterOption={false}
+                                            onSearch={this.searchRental}
+                                            onChange={this.handleChange}
+                                        >
+                                            {data.map(d => <Option key={d.value}>{d.text}</Option>)}
+                                        </Select>
+                                    </div>
+                                    <div style={{paddingTop: '1em'}}>
+                                        <Icon type="environment" style={{fontSize: '20px'}}/>
+                                        <Cascader className={styles.inputCommon} options={filterOptions.options} onChange={onChange}
+                                                  placeholder="目的地"/>
+                                        <Select
+                                            className={styles.searchLocation}
+                                            showSearch
+                                            value={value}
+                                            placeholder="选择目的地"
+                                            notFoundContent={fetching ? <Spin size="small"/> : <Empty/>}
+                                            filterOption={false}
+                                            onSearch={this.searchRental}
+                                            onChange={this.handleChange}
+                                        >
+                                            {data.map(d => <Option key={d.value}>{d.text}</Option>)}
+                                        </Select>
+                                    </div>
+                                </div>
+                                <RangePicker
+                                    style={{float: 'left'}}
+                                    disabledDate={disabledDate}
+                                    disabledTime={disabledRangeTime}
+                                    showTime={{
+                                        hideDisabledOptions: true,
+                                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
+                                    }}
+                                    format="YYYY-MM-DD HH:mm:ss"
+                                />
+                                <Button className={styles.searchBtn} size="large" type="primary" icon="search"
+                                        loading={this.state.iconLoading} onClick={this.enterSearchLoading}>
+                                    立刻用车
+                                </Button>
                             </div>
-                            <div style={{paddingTop: '1em'}}>
-                                <Icon type="environment" style={{fontSize: '20px'}}/>
-                                <Cascader className={styles.inputCommon} options={options} onChange={onChange}
-                                          placeholder="目的地"/>
-                                <Select
-                                    className={styles.searchLocation}
-                                    showSearch
-                                    value={value}
-                                    placeholder="选择目的地"
-                                    notFoundContent={fetching ? <Spin size="small"/> : <Empty/>}
-                                    filterOption={false}
-                                    onSearch={this.fetchUser}
-                                    onChange={this.handleChange}
-                                >
-                                    {data.map(d => <Option key={d.value}>{d.text}</Option>)}
-                                </Select>
+                            : <Skeleton active paragraph={{ rows: 2 }}/>
+                        }
+                    </Card>
+                    <Card id="search_detail" className={styles.cardDetail} title="车型信息">
+                        {filterOptions
+                            ? <div>
+                                <Card.Grid className={styles.carType} onClick={() => this.cardClick(0)}>
+                                    <CNIcon style={{fontSize: '50px'}} type="icon-car"/>
+                                    <CheckTag checked={carTypeChecked[0]}>所有</CheckTag>
+                                </Card.Grid>
+                                <Card.Grid className={styles.carType} onClick={() => this.cardClick(1)}>
+                                    <CNIcon style={{fontSize: '50px'}} type="icon-suv"/>
+                                    <CheckTag checked={carTypeChecked[1]}>SUV</CheckTag>
+                                </Card.Grid>
+                                <Card.Grid className={styles.carType} onClick={() => this.cardClick(2)}>
+                                    <CNIcon style={{fontSize: '50px'}} type="icon-jiaocheqiche"/>
+                                    <CheckTag checked={carTypeChecked[2]}>轿车</CheckTag>
+                                </Card.Grid>
+                                <Card.Grid className={styles.carType} onClick={() => this.cardClick(3)}>
+                                    <CNIcon style={{fontSize: '50px'}} type="icon-icon3"/>
+                                    <CheckTag checked={carTypeChecked[3]}>卡车</CheckTag>
+                                </Card.Grid>
+                                <Divider/>
+                                <div style={{paddingLeft: '2em'}}>
+                                    车辆座位<Divider type="vertical"/>
+                                    <CheckboxGroup className={styles.checkGroup} options={optionsSeatDisabled}
+                                                   defaultValue={['Apple']} onChange={onChange}/>
+                                </div>
+                                <Divider/>
+                                <div style={{paddingLeft: '2em'}}>
+                                    价格<Divider type="vertical"/>
+                                    <CheckboxGroup className={styles.checkGroup} options={optionsPriceDisabled}
+                                                   defaultValue={['Apple']} onChange={onChange}/>
+                                </div>
+                                <Divider/>
+                                <div style={{paddingLeft: '2em'}}>
+                                    品牌<Divider type="vertical"/>
+                                    <CheckboxGroup className={styles.checkGroup} options={optionsBrandDisabled}
+                                                   defaultValue={['Apple']} onChange={onChange}/>
+                                </div>
                             </div>
-                        </div>
-                        <RangePicker
-                            style={{float: 'left'}}
-                            disabledDate={disabledDate}
-                            disabledTime={disabledRangeTime}
-                            showTime={{
-                                hideDisabledOptions: true,
-                                defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
-                            }}
-                            format="YYYY-MM-DD HH:mm:ss"
-                        />
-                        <Button className={styles.searchBtn} size="large" type="primary" icon="search"
-                                loading={this.state.iconLoading} onClick={this.enterSearchLoading}>
-                            立刻用车
-                        </Button>
+                            : <Skeleton active paragraph={{ rows: 5 }}/>
+                        }
                     </Card>
                 </div>
-                <div id="search_detail">
-                    <Card className={styles.cardDetail} title="车型信息">
-                        <Card.Grid className={styles.carType} onClick={() => this.cardClick(0)}>
-                            <CNIcon style={{fontSize: '50px'}} type="icon-car"/>
-                            <CheckTag checked={carTypeChecked[0]}>所有</CheckTag>
-                        </Card.Grid>
-                        <Card.Grid className={styles.carType} onClick={() => this.cardClick(1)}>
-                            <CNIcon style={{fontSize: '50px'}} type="icon-suv"/>
-                            <CheckTag checked={carTypeChecked[1]}>SUV</CheckTag>
-                        </Card.Grid>
-                        <Card.Grid className={styles.carType} onClick={() => this.cardClick(2)}>
-                            <CNIcon style={{fontSize: '50px'}} type="icon-jiaocheqiche"/>
-                            <CheckTag checked={carTypeChecked[2]}>轿车</CheckTag>
-                        </Card.Grid>
-                        <Card.Grid className={styles.carType} onClick={() => this.cardClick(3)}>
-                            <CNIcon style={{fontSize: '50px'}} type="icon-icon3"/>
-                            <CheckTag checked={carTypeChecked[3]}>卡车</CheckTag>
-                        </Card.Grid>
-                        <Divider/>
-                        <div style={{paddingLeft: '2em'}}>
-                            车辆座位<Divider type="vertical"/>
-                            <CheckboxGroup className={styles.checkGroup} options={optionsSeatDisabled}
-                                           defaultValue={['Apple']} onChange={onChange}/>
-                        </div>
-                        <Divider/>
-                        <div style={{paddingLeft: '2em'}}>
-                            价格<Divider type="vertical"/>
-                            <CheckboxGroup className={styles.checkGroup} options={optionsPriceDisabled}
-                                           defaultValue={['Apple']} onChange={onChange}/>
-                        </div>
-                        <Divider/>
-                        <div style={{paddingLeft: '2em'}}>
-                            品牌<Divider type="vertical"/>
-                            <CheckboxGroup className={styles.checkGroup} options={optionsBrandDisabled}
-                                           defaultValue={['Apple']} onChange={onChange}/>
-                        </div>
-                    </Card>
-                </div>
+
                 <div>
                     <div id="left_map" className={styles.contentLeft}>
                         <Card className={styles.card}>
@@ -347,7 +340,7 @@ class SelfDriving extends React.Component {
                     <div id="right_cars" className={styles.contentRight}>
                         <Card className={styles.card}>
                             <Tabs className={styles.tabs}
-                                  tabBarExtraContent={<Switch checkedChildren="高" unCheckedChildren="低"  size="normal"/>}
+                                  tabBarExtraContent={<Switch checkedChildren="高" unCheckedChildren="低" size="normal"/>}
                                   defaultActiveKey="1" onChange={callback}>
                                 <TabPane tab="短租自驾" key="1">
                                     <List
@@ -355,7 +348,7 @@ class SelfDriving extends React.Component {
                                         rowKey="id"
                                         loading={false}
                                         pagination={paginationProps}
-                                        dataSource={[1,2,3,4,5,6,7,8,9,10]}
+                                        dataSource={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                                         renderItem={item => (
                                             <List.Item
                                                 actions={[
@@ -364,7 +357,7 @@ class SelfDriving extends React.Component {
                                                     </a>
                                                 ]}
                                             >
-                                                <img alt="车型" src={cars1} style={{width:'15em',height:'10em'}}/>
+                                                <img alt="车型" src={cars1} style={{width: '15em', height: '10em'}}/>
                                                 <div className={styles.listDescription}/>
                                                 <List.Item.Meta
                                                     title={<h2>大众朗逸</h2>}
