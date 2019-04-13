@@ -1,9 +1,8 @@
-
 export default {
-    'GET /api/rental/filter-conditions':{
-        status:'ok',
-        data:{
-            options:[{
+    'GET /api/rental/filter-conditions': {
+        status: 'ok',
+        data: {
+            options: [{
                 value: '上海',
                 label: '上海',
                 children: [{
@@ -26,17 +25,23 @@ export default {
                     }],
                 }],
             }],
-            optionsSeat:[
+            optionsCar: [
+                {key:'所有',value:'所有',type:'icon-car',selected:false},
+                {key:'SUV',value:'SUV',type:'icon-suv',selected:true},
+                {key:'轿车',value:'轿车',type:'icon-jiaocheqiche',selected:false},
+                {key:'卡车',value:'卡车',type:'icon-icon3',selected:false},
+            ],
+            optionsSeat: [
                 {label: '5座以下', value: '5座以下'},
                 {label: '5座以上', value: '5座以上'},
             ],
-            optionsPrice:[
+            optionsPrice: [
                 {label: '0-150', value: '0-150'},
                 {label: '150-300', value: '150-300'},
                 {label: '300-500', value: '300-500'},
                 {label: '500+', value: '500+'},
             ],
-            optionsBrand:[
+            optionsBrand: [
                 {label: '不限', value: '不限'},
                 {label: '奥迪', value: '奥迪'},
                 {label: '宝马', value: '宝马'},

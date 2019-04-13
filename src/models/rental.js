@@ -22,6 +22,15 @@ export default {
                 ...state,
                 filterOptions:payload,
             }
+        },
+        changeOptions(state,{payload}){
+            switch (payload.type){
+                case 'car':
+                    state.filterOptions.optionsCar.forEach((item,key)=>{
+                        item.selected = payload.key === key;
+                    });
+                    break;
+            }
         }
     },
     subscriptions:{

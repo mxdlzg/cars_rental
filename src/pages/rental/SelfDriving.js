@@ -6,6 +6,7 @@ import CheckTag from '@/components/CRental/CheckTag';
 import {Map} from 'react-amap';
 import cars1 from "@/assets/cars1.jpg"
 import {connect} from 'dva';
+import TagSelect from 'ant-design-pro/lib/TagSelect';
 import {
     Tabs,
     Card,
@@ -30,29 +31,7 @@ const CheckboxGroup = Checkbox.Group;
 const {RangePicker} = DatePicker;
 const CNIcon = Icon.createFromIconfontCN({scriptUrl: '//at.alicdn.com/t/font_1117012_xghpdfopd5.js'});
 
-const options = [{
-    value: '上海',
-    label: '上海',
-    children: [{
-        value: '奉贤区',
-        label: '奉贤区',
-        children: [{
-            value: '奉贤',
-            label: '奉贤',
-        }],
-    }],
-}, {
-    value: '山东',
-    label: '山东',
-    children: [{
-        value: '济南',
-        label: '济南',
-        children: [{
-            value: '历下区',
-            label: '历下区',
-        }],
-    }],
-}];
+
 const optionsSeatDisabled = [
     {label: '5座以下', value: '5座以下'},
     {label: '5座以上', value: '5座以上'},
@@ -205,20 +184,14 @@ class SelfDriving extends React.Component {
     }
 
     cardClick(i) {
-        let ds = this.state.carTypeChecked;
-        if (ds[this.state.carTypeCheckedLastIndex]) {
-            ds[this.state.carTypeCheckedLastIndex] = false;
-        }
-        ds[i] = !ds[i];
-        this.setState({
-            carTypeChecked: ds,
-            carTypeCheckedLastIndex: i
-        });
+        this.props.dispatch({
+            type:"rental/changeOptions",
+            payload:{type:'car',key:i},
+        })
     }
 
 
     render() {
-        const {carTypeChecked} = this.state;
         const {fetching, data, value} = this.state;
         const {filterOptions} = this.props;
 
@@ -285,22 +258,16 @@ class SelfDriving extends React.Component {
                     <Card id="search_detail" className={styles.cardDetail} title="车型信息">
                         {filterOptions
                             ? <div>
-                                <Card.Grid className={styles.carType} onClick={() => this.cardClick(0)}>
-                                    <CNIcon style={{fontSize: '50px'}} type="icon-car"/>
-                                    <CheckTag checked={carTypeChecked[0]}>所有</CheckTag>
-                                </Card.Grid>
-                                <Card.Grid className={styles.carType} onClick={() => this.cardClick(1)}>
-                                    <CNIcon style={{fontSize: '50px'}} type="icon-suv"/>
-                                    <CheckTag checked={carTypeChecked[1]}>SUV</CheckTag>
-                                </Card.Grid>
-                                <Card.Grid className={styles.carType} onClick={() => this.cardClick(2)}>
-                                    <CNIcon style={{fontSize: '50px'}} type="icon-jiaocheqiche"/>
-                                    <CheckTag checked={carTypeChecked[2]}>轿车</CheckTag>
-                                </Card.Grid>
-                                <Card.Grid className={styles.carType} onClick={() => this.cardClick(3)}>
-                                    <CNIcon style={{fontSize: '50px'}} type="icon-icon3"/>
-                                    <CheckTag checked={carTypeChecked[3]}>卡车</CheckTag>
-                                </Card.Grid>
+                                {
+                                    filterOptions.optionsCar.map((item,key)=>{
+                                        return (
+                                            <Card.Grid hoverable={false} className={styles.carType} onClick={() => this.cardClick(key)}>
+                                                <CNIcon style={{fontSize: '50px'}} type={item.type}/>
+                                                <CheckTag checked={item.selected}>{item.value}</CheckTag>
+                                            </Card.Grid>
+                                        )
+                                    })
+                                }
                                 <Divider/>
                                 <div style={{paddingLeft: '2em'}}>
                                     车辆座位<Divider type="vertical"/>
