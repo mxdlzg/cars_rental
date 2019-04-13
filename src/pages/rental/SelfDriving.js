@@ -19,7 +19,6 @@ import {
     Empty,
     DatePicker,
     Divider,
-    Checkbox,
     Switch, //Avatar, Menu,
     //Dropdown,
     List, Skeleton
@@ -27,32 +26,9 @@ import {
 
 const TabPane = Tabs.TabPane;
 const Option = AutoComplete.Option;
-const CheckboxGroup = Checkbox.Group;
 const {RangePicker} = DatePicker;
 const CNIcon = Icon.createFromIconfontCN({scriptUrl: '//at.alicdn.com/t/font_1117012_xghpdfopd5.js'});
 
-
-const optionsSeatDisabled = [
-    {label: '5座以下', value: '5座以下'},
-    {label: '5座以上', value: '5座以上'},
-];
-const optionsPriceDisabled = [
-    {label: '0-150', value: '0-150'},
-    {label: '150-300', value: '150-300'},
-    {label: '300-500', value: '300-500'},
-    {label: '500+', value: '500+'},
-];
-const optionsBrandDisabled = [
-    {label: '不限', value: '不限'},
-    {label: '奥迪', value: '奥迪'},
-    {label: '宝马', value: '宝马'},
-    {label: '奔驰', value: '奔驰'},
-    {label: '本田', value: '本田'},
-    {label: '福特', value: '福特'},
-    {label: '沃尔沃', value: '沃尔沃'},
-    {label: '起亚', value: '起亚'},
-    // {label: 'Orange', value: 'Orange', disabled: false},
-];
 
 const paginationProps = {
     showSizeChanger: true,
@@ -119,7 +95,6 @@ function disabledRangeTime(_, type) {
 class SelfDriving extends React.Component {
     constructor(props) {
         super(props);
-        this.lastFetchId = 0;
         this.searchRental = debounce(this.searchRental, 800);
         this.enterSearchLoading = this.enterSearchLoading.bind(this);
     }
@@ -130,8 +105,6 @@ class SelfDriving extends React.Component {
         value: [],
         fetching: false,
         iconLoading: false,
-        carTypeChecked: [false, false, false, false],
-        carTypeCheckedLastIndex: 0,
     };
 
     componentDidMount() {
@@ -190,6 +163,9 @@ class SelfDriving extends React.Component {
         })
     }
 
+    optionsChange(value){
+        console.log(value);
+    }
 
     render() {
         const {fetching, data, value} = this.state;
@@ -269,22 +245,52 @@ class SelfDriving extends React.Component {
                                     })
                                 }
                                 <Divider/>
-                                <div style={{paddingLeft: '2em'}}>
-                                    车辆座位<Divider type="vertical"/>
-                                    <CheckboxGroup className={styles.checkGroup} options={optionsSeatDisabled}
-                                                   defaultValue={['Apple']} onChange={onChange}/>
+                                <div className={styles.optionsDiv}>
+                                    <div className={styles.tags}>
+                                        车辆座位
+                                        <Divider type="vertical"/>
+                                    </div>
+                                    <TagSelect className={styles.tags} onChange={this.optionsChange}>
+                                        {
+                                            filterOptions.optionsSeat.map((item,key)=>{
+                                                return(
+                                                    <TagSelect.Option value={item.value}>{item.label}</TagSelect.Option>
+                                                )
+                                            })
+                                        }
+                                    </TagSelect>
                                 </div>
                                 <Divider/>
-                                <div style={{paddingLeft: '2em'}}>
-                                    价格<Divider type="vertical"/>
-                                    <CheckboxGroup className={styles.checkGroup} options={optionsPriceDisabled}
-                                                   defaultValue={['Apple']} onChange={onChange}/>
+                                <div className={styles.optionsDiv}>
+                                    <div className={styles.tags}>
+                                        价格价位
+                                        <Divider type="vertical"/>
+                                    </div>
+                                    <TagSelect className={styles.tags} onChange={this.optionsChange}>
+                                        {
+                                            filterOptions.optionsPrice.map((item,key)=>{
+                                                return(
+                                                    <TagSelect.Option value={item.value}>{item.label}</TagSelect.Option>
+                                                )
+                                            })
+                                        }
+                                    </TagSelect>
                                 </div>
                                 <Divider/>
-                                <div style={{paddingLeft: '2em'}}>
-                                    品牌<Divider type="vertical"/>
-                                    <CheckboxGroup className={styles.checkGroup} options={optionsBrandDisabled}
-                                                   defaultValue={['Apple']} onChange={onChange}/>
+                                <div className={styles.optionsDiv}>
+                                    <div className={styles.tags}>
+                                        品牌
+                                        <Divider type="vertical"/>
+                                    </div>
+                                    <TagSelect className={styles.tags} onChange={this.optionsChange}>
+                                        {
+                                            filterOptions.optionsBrand.map((item,key)=>{
+                                                return(
+                                                    <TagSelect.Option value={item.value}>{item.label}</TagSelect.Option>
+                                                )
+                                            })
+                                        }
+                                    </TagSelect>
                                 </div>
                             </div>
                             : <Skeleton active paragraph={{ rows: 5 }}/>

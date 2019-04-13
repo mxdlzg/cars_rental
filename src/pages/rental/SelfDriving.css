@@ -27,6 +27,15 @@
     margin-left: 1em;
 }
 
+.optionsDiv{
+    padding-left: 2em;
+    padding-bottom: 1em;
+}
+
+.tags{
+    float: left;
+}
+
 .carType{
     width: 25%;
     text-align: center;

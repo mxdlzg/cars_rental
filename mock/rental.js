@@ -42,7 +42,6 @@ export default {
                 {label: '500+', value: '500+'},
             ],
             optionsBrand: [
-                {label: '不限', value: '不限'},
                 {label: '奥迪', value: '奥迪'},
                 {label: '宝马', value: '宝马'},
                 {label: '奔驰', value: '奔驰'},

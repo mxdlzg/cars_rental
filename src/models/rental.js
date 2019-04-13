@@ -30,6 +30,7 @@ export default {
                         item.selected = payload.key === key;
                     });
                     break;
+                default:break;
             }
         }
     },
