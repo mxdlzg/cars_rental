@@ -158,12 +158,12 @@ class SelfDriving extends React.Component {
 
     cardClick(i) {
         this.props.dispatch({
-            type:"rental/changeOptions",
-            payload:{type:'car',key:i},
+            type: "rental/changeOptions",
+            payload: {type: 'car', key: i},
         })
     }
 
-    optionsChange(value){
+    optionsChange(value) {
         console.log(value);
     }
 
@@ -180,7 +180,8 @@ class SelfDriving extends React.Component {
                                 <div style={{width: '35em', float: 'left'}}>
                                     <div>
                                         <Icon style={{fontSize: '20px'}} type="home"/>
-                                        <Cascader className={styles.inputCommon} options={filterOptions.options} onChange={onChange}
+                                        <Cascader className={styles.inputCommon} options={filterOptions.options}
+                                                  onChange={onChange}
                                                   placeholder="出发地"/>
                                         <Select
                                             className={styles.searchLocation}
@@ -197,7 +198,8 @@ class SelfDriving extends React.Component {
                                     </div>
                                     <div style={{paddingTop: '1em'}}>
                                         <Icon type="environment" style={{fontSize: '20px'}}/>
-                                        <Cascader className={styles.inputCommon} options={filterOptions.options} onChange={onChange}
+                                        <Cascader className={styles.inputCommon} options={filterOptions.options}
+                                                  onChange={onChange}
                                                   placeholder="目的地"/>
                                         <Select
                                             className={styles.searchLocation}
@@ -228,16 +230,17 @@ class SelfDriving extends React.Component {
                                     立刻用车
                                 </Button>
                             </div>
-                            : <Skeleton active paragraph={{ rows: 2 }}/>
+                            : <Skeleton active paragraph={{rows: 2}}/>
                         }
                     </Card>
                     <Card id="search_detail" className={styles.cardDetail} title="车型信息">
                         {filterOptions
                             ? <div>
                                 {
-                                    filterOptions.optionsCar.map((item,key)=>{
+                                    filterOptions.optionsCar.map((item, key) => {
                                         return (
-                                            <Card.Grid hoverable={false} className={styles.carType} onClick={() => this.cardClick(key)}>
+                                            <Card.Grid hoverable={false} className={styles.carType}
+                                                       onClick={() => this.cardClick(key)}>
                                                 <CNIcon style={{fontSize: '50px'}} type={item.type}/>
                                                 <CheckTag checked={item.selected}>{item.value}</CheckTag>
                                             </Card.Grid>
@@ -247,13 +250,15 @@ class SelfDriving extends React.Component {
                                 <Divider/>
                                 <div className={styles.optionsDiv}>
                                     <div className={styles.tags}>
-                                        车辆座位
-                                        <Divider type="vertical"/>
+                                        <strong>
+                                            车辆座位
+                                            <Divider type="vertical"/>
+                                        </strong>
                                     </div>
                                     <TagSelect className={styles.tags} onChange={this.optionsChange}>
                                         {
-                                            filterOptions.optionsSeat.map((item,key)=>{
-                                                return(
+                                            filterOptions.optionsSeat.map((item, key) => {
+                                                return (
                                                     <TagSelect.Option value={item.value}>{item.label}</TagSelect.Option>
                                                 )
                                             })
@@ -263,13 +268,15 @@ class SelfDriving extends React.Component {
                                 <Divider/>
                                 <div className={styles.optionsDiv}>
                                     <div className={styles.tags}>
-                                        价格价位
-                                        <Divider type="vertical"/>
+                                        <strong>
+                                            价位
+                                            <Divider type="vertical"/>
+                                        </strong>
                                     </div>
                                     <TagSelect className={styles.tags} onChange={this.optionsChange}>
                                         {
-                                            filterOptions.optionsPrice.map((item,key)=>{
-                                                return(
+                                            filterOptions.optionsPrice.map((item, key) => {
+                                                return (
                                                     <TagSelect.Option value={item.value}>{item.label}</TagSelect.Option>
                                                 )
                                             })
@@ -279,13 +286,15 @@ class SelfDriving extends React.Component {
                                 <Divider/>
                                 <div className={styles.optionsDiv}>
                                     <div className={styles.tags}>
-                                        品牌
-                                        <Divider type="vertical"/>
+                                        <strong>
+                                                品牌
+                                                <Divider type="vertical"/>
+                                        </strong>
                                     </div>
                                     <TagSelect className={styles.tags} onChange={this.optionsChange}>
                                         {
-                                            filterOptions.optionsBrand.map((item,key)=>{
-                                                return(
+                                            filterOptions.optionsBrand.map((item, key) => {
+                                                return (
                                                     <TagSelect.Option value={item.value}>{item.label}</TagSelect.Option>
                                                 )
                                             })
@@ -293,7 +302,7 @@ class SelfDriving extends React.Component {
                                     </TagSelect>
                                 </div>
                             </div>
-                            : <Skeleton active paragraph={{ rows: 5 }}/>
+                            : <Skeleton active paragraph={{rows: 5}}/>
                         }
                     </Card>
                 </div>
