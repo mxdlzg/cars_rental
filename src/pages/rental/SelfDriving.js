@@ -8,6 +8,7 @@ import cars1 from "@/assets/cars1.jpg"
 import {connect} from 'dva';
 import TagSelect from 'ant-design-pro/lib/TagSelect';
 import {
+    message,
     Tabs,
     Card,
     Cascader,
@@ -72,7 +73,7 @@ function disabledRangeTime(_, type) {
 
 @connect(({rental, loading}) => ({
     filterOptionsLoading: loading.effects['rental/fetchOptions'],
-    searchLoading : loading.effects['rental/searchRental'],
+    searchLoading: loading.effects['rental/searchRental'],
     ...rental,
 }))
 class SelfDriving extends React.Component {
@@ -82,6 +83,8 @@ class SelfDriving extends React.Component {
         this.enterSearchLoading = this.enterSearchLoading.bind(this);
         this.onStartCascaderChange = this.onStartCascaderChange.bind(this);
         this.onEndCascaderChange = this.onEndCascaderChange.bind(this);
+        this.onDateChange = this.onDateChange.bind(this);
+        //this.onLocationChange = this.onLocationChange.bind(this);
     }
 
     state = {
@@ -99,22 +102,28 @@ class SelfDriving extends React.Component {
     onStartCascaderChange(value) {
         const {dispatch} = this.props;
         dispatch({
-            type:'rental/fetchStores',
-            payload:{data:value,type:'start'}
+            type: 'rental/fetchStores',
+            payload: {data: value, type: 'start'}
         });
     }
+
     onEndCascaderChange(value) {
         const {dispatch} = this.props;
         dispatch({
-            type:'rental/fetchStores',
-            payload:{data:value,type:'end'}
+            type: 'rental/fetchStores',
+            payload: {data: value, type: 'end'}
         });
     }
 
     enterSearchLoading() {
-        this.props.dispatch({
-            type:'rental/searchRental',
-        })
+        const {originLocation, aimLocation, dates} = this.props;
+        if (originLocation && aimLocation && dates) {
+            this.props.dispatch({
+                type: 'rental/searchRental',
+            })
+        } else {
+            message.error("请选择起止地点、起止日期");
+        }
     }
 
     cardClick(i) {
@@ -124,12 +133,28 @@ class SelfDriving extends React.Component {
         })
     }
 
+    onLocationChange (id,value) {
+        message.success(value);
+        this.props.dispatch({
+            type:'rental/changeSearchParams',
+            payload:{id,value}
+        })
+    };
+
+    onDateChange(value) {
+        this.props.dispatch({
+            type:'rental/changeSearchParams',
+            payload:{value:[value[0].unix(),value[1].unix()]}
+        });
+        message.success(value[0].format("MMM Do YY") + "--" + value[1].format("MMM Do YY"));
+    }
+
     optionsChange(value) {
         console.log(value);
     }
 
     render() {
-        const {cascaderStartData,cascaderEndData,filterOptions,searchLoading} = this.props;
+        const {cascaderStartData, cascaderEndData, filterOptions, searchLoading} = this.props;
 
         return (
             <div className={styles.main}>
@@ -144,8 +169,10 @@ class SelfDriving extends React.Component {
                                                   onChange={this.onStartCascaderChange}
                                                   placeholder="出发地"/>
                                         <Select
+                                            id="selectStart"
                                             className={styles.searchLocation}
                                             showSearch
+                                            onSelect={this.onLocationChange.bind(this,'selectStart')}
                                             placeholder="选择出发地"
                                             notFoundContent={<Empty/>}
                                             filterOption={true}
@@ -159,8 +186,10 @@ class SelfDriving extends React.Component {
                                                   onChange={this.onEndCascaderChange}
                                                   placeholder="目的地"/>
                                         <Select
+                                            id="selectEnd"
                                             className={styles.searchLocation}
                                             showSearch
+                                            onSelect={this.onLocationChange.bind(this,'selectEnd')}
                                             placeholder="选择目的地"
                                             notFoundContent={<Empty/>}
                                             filterOption={true}
@@ -173,6 +202,7 @@ class SelfDriving extends React.Component {
                                     style={{float: 'left'}}
                                     disabledDate={disabledDate}
                                     disabledTime={disabledRangeTime}
+                                    onOk={this.onDateChange}
                                     showTime={{
                                         hideDisabledOptions: true,
                                         defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
@@ -241,8 +271,8 @@ class SelfDriving extends React.Component {
                                 <div className={styles.optionsDiv}>
                                     <div className={styles.tags}>
                                         <strong>
-                                                品牌
-                                                <Divider type="vertical"/>
+                                            品牌
+                                            <Divider type="vertical"/>
                                         </strong>
                                     </div>
                                     <TagSelect className={styles.tags} onChange={this.optionsChange}>
@@ -276,7 +306,8 @@ class SelfDriving extends React.Component {
                     <div id="right_cars" className={styles.contentRight}>
                         <Card className={styles.card}>
                             <Tabs className={styles.tabs}
-                                  tabBarExtraContent={<Switch checkedChildren="高" unCheckedChildren="低" size="default"/>}
+                                  tabBarExtraContent={<Switch checkedChildren="高" unCheckedChildren="低"
+                                                              size="default"/>}
                                   defaultActiveKey="1" onChange={callback}>
                                 <TabPane tab="短租自驾" key="1">
                                     <List

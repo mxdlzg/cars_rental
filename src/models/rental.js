@@ -8,6 +8,9 @@ export default {
         filterOptionsLoading:true,
         cascaderStartData: [],
         cascaderEndData: [],
+        originLocation:undefined,
+        aimLocation:undefined,
+        dates:undefined,
     },
     effects:{
         *fetchStores({payload},{call,put}){
@@ -17,8 +20,9 @@ export default {
                 payload:{type:payload.type,data:res.data}
             })
         },
-        *searchRental(_,{call,put}){
-            const res = yield call(queryCars);
+        *searchRental(_,{call,put,select}){
+            const payload = yield select((state)=>({start:state.rental.originLocation,end:state.rental.aimLocation,dates:state.rental.dates}));
+            const res = yield call(queryCars,payload);
             yield put({
                 type:'saveCars',
                 payload:res.data
@@ -63,6 +67,25 @@ export default {
                     });
                     break;
                 default:break;
+            }
+        },
+        changeSearchParams(state,{payload}){
+            switch (payload.id) {
+                case 'selectStart':
+                    return{
+                        ...state,
+                        originLocation : payload.value
+                    };
+                case "selectEnd":
+                    return{
+                        ...state,
+                        aimLocation : payload.value
+                    };
+                default:
+                    return{
+                        ...state,
+                        dates : payload.value
+                    };
             }
         }
     },

@@ -56,8 +56,8 @@ export default {
     'GET /api/rental/stores':{
         status: 'ok',
         data:[
-            {label: '海泉路1店', value: '海泉路1店'},
-            {label: '历下区总店', value: '历下区总店'},
+            {label: '海泉路1店', value: 'ID0010224海泉路1店'},
+            {label: '历下区总店', value: 'ID0010225历下区总店'},
         ]
     },
     'GET /api/rental/cars': (req, res) => {

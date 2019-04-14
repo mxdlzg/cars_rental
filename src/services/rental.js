@@ -9,6 +9,6 @@ export async function queryStores(params) {
     return request(`/api/rental/stores?${stringify(params)}`);
 }
 
-export async function queryCars() {
-    return request("/api/rental/cars");
+export async function queryCars(params) {
+    return request(`/api/rental/cars?${stringify(params)}`);
 }
