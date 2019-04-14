@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./SelfDriving.css"
-import debounce from 'lodash/debounce';
+// import debounce from 'lodash/debounce';
 import moment from 'moment';
 import CheckTag from '@/components/CRental/CheckTag';
 import {Map} from 'react-amap';
@@ -15,7 +15,7 @@ import {
     Icon,
     Button,
     Select,
-    Spin,
+    // Spin,
     Empty,
     DatePicker,
     Divider,
@@ -37,26 +37,8 @@ const paginationProps = {
     total: 50,
 };
 
-
 function callback(key) {
     console.log(key);
-}
-
-function onChange(value) {
-    console.log(value);
-}
-
-function getRandomInt(max, min = 0) {
-    return Math.floor(Math.random() * (max - min + 1)) + min; // eslint-disable-line no-mixed-operators
-}
-
-function searchResult(query) {
-    return (new Array(getRandomInt(5))).join('.').split('.')
-        .map((item, idx) => ({
-            query,
-            category: `${query}${idx}`,
-            count: getRandomInt(200, 100),
-        }));
 }
 
 function range(start, end) {
@@ -90,70 +72,49 @@ function disabledRangeTime(_, type) {
 
 @connect(({rental, loading}) => ({
     filterOptionsLoading: loading.effects['rental/fetchOptions'],
+    searchLoading : loading.effects['rental/searchRental'],
     ...rental,
 }))
 class SelfDriving extends React.Component {
     constructor(props) {
         super(props);
-        this.searchRental = debounce(this.searchRental, 800);
+        // this.searchRental = debounce(this.searchRental, 800);
         this.enterSearchLoading = this.enterSearchLoading.bind(this);
+        this.onStartCascaderChange = this.onStartCascaderChange.bind(this);
+        this.onEndCascaderChange = this.onEndCascaderChange.bind(this);
     }
 
     state = {
         dataSource: [],
-        data: [],
-        value: [],
-        fetching: false,
-        iconLoading: false,
     };
 
     componentDidMount() {
         const {dispatch} = this.props;
+        console.log(this.props.loading);
         dispatch({
             type: 'rental/fetchOptions',
         });
     }
 
-    componentWillMount() {
-
+    onStartCascaderChange(value) {
+        const {dispatch} = this.props;
+        dispatch({
+            type:'rental/fetchStores',
+            payload:{data:value,type:'start'}
+        });
+    }
+    onEndCascaderChange(value) {
+        const {dispatch} = this.props;
+        dispatch({
+            type:'rental/fetchStores',
+            payload:{data:value,type:'end'}
+        });
     }
 
-    handleSearch = (value) => {
-        this.setState({
-            dataSource: value ? searchResult(value) : [],
-        });
-    };
-
-    searchRental = (value) => {
-        //TODO::
-        // console.log('fetching user', value);
-        // this.lastFetchId += 1;
-        // const fetchId = this.lastFetchId;
-        // this.setState({data: [], fetching: true});
-        // fetch('https://randomuser.me/api/?results=5')
-        //     .then(response => response.json())
-        //     .then((body) => {
-        //         if (fetchId !== this.lastFetchId) { // for fetch callback order
-        //             return;
-        //         }
-        //         const data = body.results.map(user => ({
-        //             text: `${user.name.first} ${user.name.last}`,
-        //             value: user.login.username,
-        //         }));
-        //         this.setState({data, fetching: false});
-        //     });
-    };
-
-    handleChange = (value) => {
-        this.setState({
-            value,
-            data: [],
-            fetching: false,
-        });
-    };
-
     enterSearchLoading() {
-        this.setState({iconLoading: true});
+        this.props.dispatch({
+            type:'rental/searchRental',
+        })
     }
 
     cardClick(i) {
@@ -168,8 +129,7 @@ class SelfDriving extends React.Component {
     }
 
     render() {
-        const {fetching, data, value} = this.state;
-        const {filterOptions} = this.props;
+        const {cascaderStartData,cascaderEndData,filterOptions,searchLoading} = this.props;
 
         return (
             <div className={styles.main}>
@@ -181,37 +141,31 @@ class SelfDriving extends React.Component {
                                     <div>
                                         <Icon style={{fontSize: '20px'}} type="home"/>
                                         <Cascader className={styles.inputCommon} options={filterOptions.options}
-                                                  onChange={onChange}
+                                                  onChange={this.onStartCascaderChange}
                                                   placeholder="出发地"/>
                                         <Select
                                             className={styles.searchLocation}
                                             showSearch
-                                            value={value}
                                             placeholder="选择出发地"
-                                            notFoundContent={fetching ? <Spin size="small"/> : <Empty/>}
-                                            filterOption={false}
-                                            onSearch={this.searchRental}
-                                            onChange={this.handleChange}
+                                            notFoundContent={<Empty/>}
+                                            filterOption={true}
                                         >
-                                            {data.map(d => <Option key={d.value}>{d.text}</Option>)}
+                                            {cascaderStartData.map(d => <Option key={d.value}>{d.label}</Option>)}
                                         </Select>
                                     </div>
                                     <div style={{paddingTop: '1em'}}>
                                         <Icon type="environment" style={{fontSize: '20px'}}/>
                                         <Cascader className={styles.inputCommon} options={filterOptions.options}
-                                                  onChange={onChange}
+                                                  onChange={this.onEndCascaderChange}
                                                   placeholder="目的地"/>
                                         <Select
                                             className={styles.searchLocation}
                                             showSearch
-                                            value={value}
                                             placeholder="选择目的地"
-                                            notFoundContent={fetching ? <Spin size="small"/> : <Empty/>}
-                                            filterOption={false}
-                                            onSearch={this.searchRental}
-                                            onChange={this.handleChange}
+                                            notFoundContent={<Empty/>}
+                                            filterOption={true}
                                         >
-                                            {data.map(d => <Option key={d.value}>{d.text}</Option>)}
+                                            {cascaderEndData.map(d => <Option key={d.value}>{d.label}</Option>)}
                                         </Select>
                                     </div>
                                 </div>
@@ -226,7 +180,7 @@ class SelfDriving extends React.Component {
                                     format="YYYY-MM-DD HH:mm:ss"
                                 />
                                 <Button className={styles.searchBtn} size="large" type="primary" icon="search"
-                                        loading={this.state.iconLoading} onClick={this.enterSearchLoading}>
+                                        loading={searchLoading} onClick={this.enterSearchLoading}>
                                     立刻用车
                                 </Button>
                             </div>
@@ -239,7 +193,7 @@ class SelfDriving extends React.Component {
                                 {
                                     filterOptions.optionsCar.map((item, key) => {
                                         return (
-                                            <Card.Grid hoverable={false} className={styles.carType}
+                                            <Card.Grid className={styles.carType}
                                                        onClick={() => this.cardClick(key)}>
                                                 <CNIcon style={{fontSize: '50px'}} type={item.type}/>
                                                 <CheckTag checked={item.selected}>{item.value}</CheckTag>
@@ -322,7 +276,7 @@ class SelfDriving extends React.Component {
                     <div id="right_cars" className={styles.contentRight}>
                         <Card className={styles.card}>
                             <Tabs className={styles.tabs}
-                                  tabBarExtraContent={<Switch checkedChildren="高" unCheckedChildren="低" size="normal"/>}
+                                  tabBarExtraContent={<Switch checkedChildren="高" unCheckedChildren="低" size="default"/>}
                                   defaultActiveKey="1" onChange={callback}>
                                 <TabPane tab="短租自驾" key="1">
                                     <List

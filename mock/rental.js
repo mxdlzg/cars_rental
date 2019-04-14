@@ -26,8 +26,8 @@ export default {
                 }],
             }],
             optionsCar: [
-                {key:'所有',value:'所有',type:'icon-car',selected:false},
-                {key:'SUV',value:'SUV',type:'icon-suv',selected:true},
+                {key:'所有',value:'所有',type:'icon-car',selected:true},
+                {key:'SUV',value:'SUV',type:'icon-suv',selected:false},
                 {key:'轿车',value:'轿车',type:'icon-jiaocheqiche',selected:false},
                 {key:'卡车',value:'卡车',type:'icon-icon3',selected:false},
             ],
@@ -53,5 +53,20 @@ export default {
             ]
         }
     },
+    'GET /api/rental/stores':{
+        status: 'ok',
+        data:[
+            {label: '海泉路1店', value: '海泉路1店'},
+            {label: '历下区总店', value: '历下区总店'},
+        ]
+    },
+    'GET /api/rental/cars': (req, res) => {
+        setTimeout(()=>{
+            res.send({
+                status: 'ok',
+                data:[]
+            })
+        },1000)
+    }
 
 }
