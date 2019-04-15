@@ -64,7 +64,11 @@ export default {
         setTimeout(()=>{
             res.send({
                 status: 'ok',
-                data:[]
+                data:{
+                    short:[1,2,3,6,7],
+                    week:[1,2,3,45],
+                    month:[1,2,3,4]
+                }
             })
         },1000)
     }

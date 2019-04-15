@@ -38,9 +38,6 @@ const paginationProps = {
     total: 50,
 };
 
-function callback(key) {
-    console.log(key);
-}
 
 function range(start, end) {
     const result = [];
@@ -149,12 +146,20 @@ class SelfDriving extends React.Component {
         message.success(value[0].format("MMM Do YY") + "--" + value[1].format("MMM Do YY"));
     }
 
+    tabChange=(key)=> {
+        this.props.dispatch({
+            type:'rental/changeTab',
+            payload:key
+        });
+    };
+
     optionsChange(value) {
         console.log(value);
     }
 
     render() {
-        const {cascaderStartData, cascaderEndData, filterOptions, searchLoading} = this.props;
+        const {cascaderStartData, cascaderEndData, filterOptions, searchLoading,
+            shortRent,weekRent,monthRent} = this.props;
 
         return (
             <div className={styles.main}>
@@ -290,7 +295,6 @@ class SelfDriving extends React.Component {
                         }
                     </Card>
                 </div>
-
                 <div>
                     <div id="left_map" className={styles.contentLeft}>
                         <Card className={styles.card}>
@@ -308,14 +312,13 @@ class SelfDriving extends React.Component {
                             <Tabs className={styles.tabs}
                                   tabBarExtraContent={<Switch checkedChildren="高" unCheckedChildren="低"
                                                               size="default"/>}
-                                  defaultActiveKey="1" onChange={callback}>
+                                  defaultActiveKey="1" onChange={this.tabChange}>
                                 <TabPane tab="短租自驾" key="1">
                                     <List
                                         size="large"
                                         rowKey="id"
                                         loading={false}
-                                        pagination={paginationProps}
-                                        dataSource={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                                        dataSource={shortRent}
                                         renderItem={item => (
                                             <List.Item
                                                 actions={[
@@ -336,10 +339,54 @@ class SelfDriving extends React.Component {
                                     />
                                 </TabPane>
                                 <TabPane tab="周租套餐" key="2">
-                                    Content of Tab Pane 2
+                                    <List
+                                        size="large"
+                                        rowKey="id"
+                                        loading={false}
+                                        dataSource={weekRent}
+                                        renderItem={item => (
+                                            <List.Item
+                                                actions={[
+                                                    <a href={"/order/RentalOrder"}>
+                                                        <Button type="primary" size={'large'}>租车</Button>
+                                                    </a>
+                                                ]}
+                                            >
+                                                <img alt="车型" src={cars1} style={{width: '15em', height: '10em'}}/>
+                                                <div className={styles.listDescription}/>
+                                                <List.Item.Meta
+                                                    title={<h2>大众朗逸</h2>}
+                                                    description={<h4>三厢|1.6自动|乘坐5人<br/>空间：空间较大，建议乘坐5人+3行李箱 </h4>}
+                                                />
+                                                <h1 className={styles.priceLabel}>¥ 300/天</h1>
+                                            </List.Item>
+                                        )}
+                                    />
                                 </TabPane>
                                 <TabPane tab="月租长租" key="3">
-                                    Content of Tab Pane 3
+                                    <List
+                                        size="large"
+                                        rowKey="id"
+                                        loading={false}
+                                        dataSource={monthRent}
+                                        renderItem={item => (
+                                            <List.Item
+                                                actions={[
+                                                    <a href={"/order/RentalOrder"}>
+                                                        <Button type="primary" size={'large'}>租车</Button>
+                                                    </a>
+                                                ]}
+                                            >
+                                                <img alt="车型" src={cars1} style={{width: '15em', height: '10em'}}/>
+                                                <div className={styles.listDescription}/>
+                                                <List.Item.Meta
+                                                    title={<h2>大众朗逸</h2>}
+                                                    description={<h4>三厢|1.6自动|乘坐5人<br/>空间：空间较大，建议乘坐5人+3行李箱 </h4>}
+                                                />
+                                                <h1 className={styles.priceLabel}>¥ 300/天</h1>
+                                            </List.Item>
+                                        )}
+                                    />
                                 </TabPane>
                             </Tabs>
                         </Card>

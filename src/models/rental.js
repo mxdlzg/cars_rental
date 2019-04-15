@@ -1,95 +1,112 @@
-import {queryRentalOptions,queryStores,queryCars} from '@/services/rental';
+import {queryRentalOptions, queryStores, queryCars} from '@/services/rental';
 
 export default {
-    namespace:'rental',
+    namespace: 'rental',
 
-    state:{
-        filterOptions:undefined,
-        filterOptionsLoading:true,
+    state: {
+        filterOptions: undefined,
+        filterOptionsLoading: true,
         cascaderStartData: [],
         cascaderEndData: [],
-        originLocation:undefined,
-        aimLocation:undefined,
-        dates:undefined,
+        originLocation: undefined,
+        aimLocation: undefined,
+        dates: undefined,
+        tabIndex: 1,
+        shortRent:[],weekRent:[],monthRent:[]
     },
-    effects:{
-        *fetchStores({payload},{call,put}){
-            const res = yield call(queryStores,payload.data);
+    effects: {
+        * fetchStores({payload}, {call, put}) {
+            const res = yield call(queryStores, payload.data);
             yield put({
-                type:'saveStores',
-                payload:{type:payload.type,data:res.data}
+                type: 'saveStores',
+                payload: {type: payload.type, data: res.data}
             })
         },
-        *searchRental(_,{call,put,select}){
-            const payload = yield select((state)=>({start:state.rental.originLocation,end:state.rental.aimLocation,dates:state.rental.dates}));
-            const res = yield call(queryCars,payload);
+        * searchRental(_, {call, put, select}) {
+            const payload = yield select((state) => ({
+                start: state.rental.originLocation,
+                end: state.rental.aimLocation,
+                dates: state.rental.dates,
+                tabIndex: state.rental.tabIndex
+            }));
+            const res = yield call(queryCars, payload);
             yield put({
-                type:'saveCars',
-                payload:res.data
+                type: 'saveCars',
+                payload: {tab:payload.tabIndex,data:res.data}
             })
         },
-        *fetchOptions(_,{call,put,select}){
+        * fetchOptions(_, {call, put, select}) {
             const res = yield call(queryRentalOptions);
             yield put({
-                type:'saveOptions',
-                payload:res.data,
+                type: 'saveOptions',
+                payload: res.data,
             })
         }
     },
-    reducers:{
-        saveStores(state,{payload}){
+    reducers: {
+        saveStores(state, {payload}) {
             if (payload.type === 'start') {
-                return{
+                return {
                     ...state,
-                    cascaderStartData:payload.data
+                    cascaderStartData: payload.data
                 }
-            }else {
-                return{
+            } else {
+                return {
                     ...state,
-                    cascaderEndData:payload.data
+                    cascaderEndData: payload.data
                 }
             }
         },
-        saveOptions(state,{payload}){
-            return{
+        saveOptions(state, {payload}) {
+            return {
                 ...state,
-                filterOptions:payload,
+                filterOptions: payload,
             }
         },
-        saveCars(state,{payload}){
-            return{...state};
+        saveCars(state, {payload}) {
+            return {
+                ...state,
+                shortRent: payload.data.short,
+                weekRent: payload.data.week,
+                monthRent: payload.data.month,
+            };
         },
-        changeOptions(state,{payload}){
-            switch (payload.type){
+        changeOptions(state, {payload}) {
+            switch (payload.type) {
                 case 'car':
-                    state.filterOptions.optionsCar.forEach((item,key)=>{
+                    state.filterOptions.optionsCar.forEach((item, key) => {
                         item.selected = payload.key === key;
                     });
                     break;
-                default:break;
+                default:
+                    break;
             }
         },
-        changeSearchParams(state,{payload}){
+        changeSearchParams(state, {payload}) {
             switch (payload.id) {
                 case 'selectStart':
-                    return{
+                    return {
                         ...state,
-                        originLocation : payload.value
+                        originLocation: payload.value
                     };
                 case "selectEnd":
-                    return{
+                    return {
                         ...state,
-                        aimLocation : payload.value
+                        aimLocation: payload.value
                     };
                 default:
-                    return{
+                    return {
                         ...state,
-                        dates : payload.value
+                        dates: payload.value
                     };
+            }
+        },
+        changeTab(state, {payload}) {
+            return {
+                ...state,
+                tabIndex: payload
             }
         }
     },
-    subscriptions:{
-
-    }
+    subscriptions: {}
 }
