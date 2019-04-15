@@ -89,10 +89,6 @@ export default {
             if (payload) {
                 if (payload.tab !== "") {
                     state.loadedPage[parseInt(payload.tab)-1] = payload.page;
-                }else {
-                    state.loadedPage.forEach(item=>{
-                        item = 0
-                    })
                 }
                 switch (payload.tab) {
                     case 1:
@@ -107,6 +103,7 @@ export default {
                             shortRent: payload.data.short,
                             weekRent: payload.data.week,
                             monthRent: payload.data.month,
+                            loadedPage:[0,0,0]
                         };
                 }
             }
