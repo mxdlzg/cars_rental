@@ -159,64 +159,6 @@ class SelfDriving extends React.Component {
         return (
             <div className={styles.main}>
                 <div>
-                    <Card id="search_bar" className={styles.card}>
-                        {filterOptions
-                            ? <div>
-                                <div style={{width: '35em', float: 'left'}}>
-                                    <div>
-                                        <Icon style={{fontSize: '20px'}} type="home"/>
-                                        <Cascader className={styles.inputCommon} options={filterOptions.options}
-                                                  onChange={this.onStartCascaderChange}
-                                                  placeholder="出发地"/>
-                                        <Select
-                                            id="selectStart"
-                                            className={styles.searchLocation}
-                                            showSearch
-                                            onSelect={this.onLocationChange.bind(this,'selectStart')}
-                                            placeholder="选择出发地"
-                                            notFoundContent={<Empty/>}
-                                            filterOption={true}
-                                        >
-                                            {cascaderStartData.map(d => <Option key={d.value}>{d.label}</Option>)}
-                                        </Select>
-                                    </div>
-                                    <div style={{paddingTop: '1em'}}>
-                                        <Icon type="environment" style={{fontSize: '20px'}}/>
-                                        <Cascader className={styles.inputCommon} options={filterOptions.options}
-                                                  onChange={this.onEndCascaderChange}
-                                                  placeholder="目的地"/>
-                                        <Select
-                                            id="selectEnd"
-                                            className={styles.searchLocation}
-                                            showSearch
-                                            onSelect={this.onLocationChange.bind(this,'selectEnd')}
-                                            placeholder="选择目的地"
-                                            notFoundContent={<Empty/>}
-                                            filterOption={true}
-                                        >
-                                            {cascaderEndData.map(d => <Option key={d.value}>{d.label}</Option>)}
-                                        </Select>
-                                    </div>
-                                </div>
-                                <RangePicker
-                                    style={{float: 'left'}}
-                                    disabledDate={disabledDate}
-                                    disabledTime={disabledRangeTime}
-                                    onOk={this.onDateChange}
-                                    showTime={{
-                                        hideDisabledOptions: true,
-                                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
-                                    }}
-                                    format="YYYY-MM-DD HH:mm:ss"
-                                />
-                                <Button className={styles.searchBtn} size="large" type="primary" icon="search"
-                                        loading={searchLoading} onClick={this.enterSearchLoading}>
-                                    立刻用车
-                                </Button>
-                            </div>
-                            : <Skeleton active paragraph={{rows: 2}}/>
-                        }
-                    </Card>
                     <Card id="search_detail" className={styles.cardDetail} title="车型信息">
                         {filterOptions
                             ? <div>
@@ -287,6 +229,64 @@ class SelfDriving extends React.Component {
                                 </div>
                             </div>
                             : <Skeleton active paragraph={{rows: 5}}/>
+                        }
+                    </Card>
+                    <Card id="search_bar" className={styles.card}>
+                        {filterOptions
+                            ? <div>
+                                <div style={{width: '35em', float: 'left'}}>
+                                    <div>
+                                        <Icon style={{fontSize: '20px'}} type="home"/>
+                                        <Cascader className={styles.inputCommon} options={filterOptions.options}
+                                                  onChange={this.onStartCascaderChange}
+                                                  placeholder="出发地"/>
+                                        <Select
+                                            id="selectStart"
+                                            className={styles.searchLocation}
+                                            showSearch
+                                            onSelect={this.onLocationChange.bind(this,'selectStart')}
+                                            placeholder="选择出发地"
+                                            notFoundContent={<Empty/>}
+                                            filterOption={true}
+                                        >
+                                            {cascaderStartData.map(d => <Option key={d.value}>{d.label}</Option>)}
+                                        </Select>
+                                    </div>
+                                    <div style={{paddingTop: '1em'}}>
+                                        <Icon type="environment" style={{fontSize: '20px'}}/>
+                                        <Cascader className={styles.inputCommon} options={filterOptions.options}
+                                                  onChange={this.onEndCascaderChange}
+                                                  placeholder="目的地"/>
+                                        <Select
+                                            id="selectEnd"
+                                            className={styles.searchLocation}
+                                            showSearch
+                                            onSelect={this.onLocationChange.bind(this,'selectEnd')}
+                                            placeholder="选择目的地"
+                                            notFoundContent={<Empty/>}
+                                            filterOption={true}
+                                        >
+                                            {cascaderEndData.map(d => <Option key={d.value}>{d.label}</Option>)}
+                                        </Select>
+                                    </div>
+                                </div>
+                                <RangePicker
+                                    style={{float: 'left'}}
+                                    disabledDate={disabledDate}
+                                    disabledTime={disabledRangeTime}
+                                    onOk={this.onDateChange}
+                                    showTime={{
+                                        hideDisabledOptions: true,
+                                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
+                                    }}
+                                    format="YYYY-MM-DD HH:mm:ss"
+                                />
+                                <Button className={styles.searchBtn} size="large" type="primary" icon="search"
+                                        loading={searchLoading} onClick={this.enterSearchLoading}>
+                                    立刻用车
+                                </Button>
+                            </div>
+                            : <Skeleton active paragraph={{rows: 2}}/>
                         }
                     </Card>
                 </div>
