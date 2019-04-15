@@ -61,15 +61,24 @@ export default {
         ]
     },
     'GET /api/rental/cars': (req, res) => {
+        const page = parseInt(req.query.page);
         setTimeout(()=>{
-            res.send({
-                status: 'ok',
-                data:{
-                    short:[1,2,3,6,7],
-                    week:[1,2,3,45],
-                    month:[1,2,3,4]
-                }
-            })
+            if (!req.query.more) {
+                res.send({
+                    status: 'ok',
+                    data:{
+                        short:[1,2,3,6,7],
+                        week:[1,2,3,45],
+                        month:[1,2,3,4]
+                    }
+                })
+            }else {
+                res.send({
+                    status: 'ok',
+                    data:[1,2,3,6,7],
+                    page:page>3?-1:page+1,
+                })
+            }
         },1000)
     }
 

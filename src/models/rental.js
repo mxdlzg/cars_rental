@@ -1,4 +1,5 @@
 import {queryRentalOptions, queryStores, queryCars} from '@/services/rental';
+import {message} from "antd";
 
 export default {
     namespace: 'rental',
@@ -12,7 +13,8 @@ export default {
         aimLocation: undefined,
         dates: undefined,
         tabIndex: 1,
-        shortRent:[],weekRent:[],monthRent:[]
+        shortRent: [], weekRent: [], monthRent: [],
+        loadedPage: [0, 0, 0]
     },
     effects: {
         * fetchStores({payload}, {call, put}) {
@@ -27,12 +29,32 @@ export default {
                 start: state.rental.originLocation,
                 end: state.rental.aimLocation,
                 dates: state.rental.dates,
-                tabIndex: state.rental.tabIndex
             }));
             const res = yield call(queryCars, payload);
             yield put({
                 type: 'saveCars',
-                payload: {tab:payload.tabIndex,data:res.data}
+                payload: {tab: "", data: res.data}
+            })
+        },
+        * searchRentalLoadMore(_, {call, put, select}) {
+            const pay = yield select((state) => ({
+                more:true,
+                start: state.rental.originLocation,
+                end: state.rental.aimLocation,
+                dates: state.rental.dates,
+                page: state.rental.loadedPage[state.rental.tabIndex-1],
+            }));
+            const localPay = yield select((state) => ({
+                tabIndex:state.rental.tabIndex
+            }));
+            if (pay.page === -1) {
+                message.success("已加载全部内容");
+                return;
+            }
+            const res = yield call(queryCars, pay);
+            yield put({
+                type: 'saveCars',
+                payload: {tab: localPay.tabIndex, data: res.data, page: res.page}
             })
         },
         * fetchOptions(_, {call, put, select}) {
@@ -64,12 +86,30 @@ export default {
             }
         },
         saveCars(state, {payload}) {
-            return {
-                ...state,
-                shortRent: payload.data.short,
-                weekRent: payload.data.week,
-                monthRent: payload.data.month,
-            };
+            if (payload) {
+                if (payload.tab !== "") {
+                    state.loadedPage[parseInt(payload.tab)-1] = payload.page;
+                }else {
+                    state.loadedPage.forEach(item=>{
+                        item = 0
+                    })
+                }
+                switch (payload.tab) {
+                    case 1:
+                        state.shortRent = state.shortRent.concat(payload.data);break;
+                    case 2:
+                        state.weekRent = state.weekRent.concat(payload.data);break;
+                    case 3:
+                        state.monthRent = state.monthRent.concat(payload.data);break;
+                    default:
+                        return {
+                            ...state,
+                            shortRent: payload.data.short,
+                            weekRent: payload.data.week,
+                            monthRent: payload.data.month,
+                        };
+                }
+            }
         },
         changeOptions(state, {payload}) {
             switch (payload.type) {

@@ -16,7 +16,7 @@ import {
     Icon,
     Button,
     Select,
-    // Spin,
+    Spin,
     Empty,
     DatePicker,
     Divider,
@@ -29,15 +29,6 @@ const TabPane = Tabs.TabPane;
 const Option = AutoComplete.Option;
 const {RangePicker} = DatePicker;
 const CNIcon = Icon.createFromIconfontCN({scriptUrl: '//at.alicdn.com/t/font_1117012_xghpdfopd5.js'});
-
-
-const paginationProps = {
-    showSizeChanger: true,
-    showQuickJumper: true,
-    pageSize: 10,
-    total: 50,
-};
-
 
 function range(start, end) {
     const result = [];
@@ -71,6 +62,7 @@ function disabledRangeTime(_, type) {
 @connect(({rental, loading}) => ({
     filterOptionsLoading: loading.effects['rental/fetchOptions'],
     searchLoading: loading.effects['rental/searchRental'],
+    loadMoreLoading: loading.effects['rental/searchRentalLoadMore'],
     ...rental,
 }))
 class SelfDriving extends React.Component {
@@ -112,14 +104,20 @@ class SelfDriving extends React.Component {
         });
     }
 
-    enterSearchLoading() {
+    checkSearchParams() {
         const {originLocation, aimLocation, dates} = this.props;
         if (originLocation && aimLocation && dates) {
+            return true;
+        } else {
+            message.error("请选择起止地点、起止日期");
+        }
+    }
+
+    enterSearchLoading() {
+        if (this.checkSearchParams()) {
             this.props.dispatch({
                 type: 'rental/searchRental',
             })
-        } else {
-            message.error("请选择起止地点、起止日期");
         }
     }
 
@@ -130,27 +128,35 @@ class SelfDriving extends React.Component {
         })
     }
 
-    onLocationChange (id,value) {
+    onLocationChange(id, value) {
         message.success(value);
         this.props.dispatch({
-            type:'rental/changeSearchParams',
-            payload:{id,value}
+            type: 'rental/changeSearchParams',
+            payload: {id, value}
         })
     };
 
     onDateChange(value) {
         this.props.dispatch({
-            type:'rental/changeSearchParams',
-            payload:{value:[value[0].unix(),value[1].unix()]}
+            type: 'rental/changeSearchParams',
+            payload: {value: [value[0].unix(), value[1].unix()]}
         });
         message.success(value[0].format("MMM Do YY") + "--" + value[1].format("MMM Do YY"));
     }
 
-    tabChange=(key)=> {
+    tabChange = (key) => {
         this.props.dispatch({
-            type:'rental/changeTab',
-            payload:key
+            type: 'rental/changeTab',
+            payload: parseInt(key)
         });
+    };
+
+    loadMore = () => {
+        if (this.checkSearchParams()) {
+            this.props.dispatch({
+                type: 'rental/searchRentalLoadMore',
+            })
+        }
     };
 
     optionsChange(value) {
@@ -158,9 +164,19 @@ class SelfDriving extends React.Component {
     }
 
     render() {
-        const {cascaderStartData, cascaderEndData, filterOptions, searchLoading,
-            shortRent,weekRent,monthRent} = this.props;
+        const {
+            cascaderStartData, cascaderEndData, filterOptions, searchLoading, loadMoreLoading,
+            shortRent, weekRent, monthRent,
+        } = this.props;
+        const loadMore = (
+                <div style={{textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',}}>
+                    {(!loadMoreLoading) ? (
 
+                        <Button onClick={this.loadMore}>加载更多</Button>
+                    ) : <Spin/>}
+                </div>
+            )
+        ;
         return (
             <div className={styles.main}>
                 <div>
@@ -249,7 +265,7 @@ class SelfDriving extends React.Component {
                                             id="selectStart"
                                             className={styles.searchLocation}
                                             showSearch
-                                            onSelect={this.onLocationChange.bind(this,'selectStart')}
+                                            onSelect={this.onLocationChange.bind(this, 'selectStart')}
                                             placeholder="选择出发地"
                                             notFoundContent={<Empty/>}
                                             filterOption={true}
@@ -266,7 +282,7 @@ class SelfDriving extends React.Component {
                                             id="selectEnd"
                                             className={styles.searchLocation}
                                             showSearch
-                                            onSelect={this.onLocationChange.bind(this,'selectEnd')}
+                                            onSelect={this.onLocationChange.bind(this, 'selectEnd')}
                                             placeholder="选择目的地"
                                             notFoundContent={<Empty/>}
                                             filterOption={true}
@@ -319,6 +335,7 @@ class SelfDriving extends React.Component {
                                         rowKey="id"
                                         loading={false}
                                         dataSource={shortRent}
+                                        loadMore={loadMore}
                                         renderItem={item => (
                                             <List.Item
                                                 actions={[
@@ -343,7 +360,7 @@ class SelfDriving extends React.Component {
                                         size="large"
                                         rowKey="id"
                                         loading={false}
-                                        dataSource={weekRent}
+                                        loadMore={loadMore} dataSource={weekRent}
                                         renderItem={item => (
                                             <List.Item
                                                 actions={[
@@ -368,7 +385,7 @@ class SelfDriving extends React.Component {
                                         size="large"
                                         rowKey="id"
                                         loading={false}
-                                        dataSource={monthRent}
+                                        loadMore={loadMore} dataSource={monthRent}
                                         renderItem={item => (
                                             <List.Item
                                                 actions={[
