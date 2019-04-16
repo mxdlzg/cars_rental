@@ -9,6 +9,7 @@ import {connect} from 'dva';
 import TagSelect from 'ant-design-pro/lib/TagSelect';
 import {
     message,
+    Affix,
     Tabs,
     Card,
     Cascader,
@@ -312,17 +313,20 @@ class SelfDriving extends React.Component {
                     </Card>
                 </div>
                 <div>
-                    <div id="left_map" className={styles.contentLeft}>
-                        <Card className={styles.card}>
-                            <h2>门店地图</h2>
-                            <div className={styles.map}>
-                                <Map amapkey={"74636f75530d04b9a7a6a63c74416a28"}/>
-                            </div>
-                            <br/>
-                            <br/>
-                            地址：浦东新区启航路1200号华美达酒店南面200米（P3停车场内）
-                        </Card>
-                    </div>
+                    <Affix>
+                        <div id="left_map" className={styles.contentLeft}>
+                            <Card className={styles.card}>
+                                <h2>门店地图</h2>
+                                <div className={styles.map}>
+                                    <Map amapkey={"74636f75530d04b9a7a6a63c74416a28"}/>
+                                </div>
+                                <br/>
+                                <br/>
+                                地址：浦东新区启航路1200号华美达酒店南面200米（P3停车场内）
+                            </Card>
+                        </div>
+                    </Affix>
+
                     <div id="right_cars" className={styles.contentRight}>
                         <Card className={styles.card}>
                             <Tabs className={styles.tabs}

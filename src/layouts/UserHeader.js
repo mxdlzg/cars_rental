@@ -121,7 +121,6 @@ class UserHeader extends Component {
         const width = this.getHeadWidth();
         const HeaderDom = visible ? (
             <Header
-                style={{ padding: 0, width, zIndex: 2 }}
                 className={fixedHeader ? styles.fixedHeader : ''}
             >
                 {isTop && !isMobile ? (
