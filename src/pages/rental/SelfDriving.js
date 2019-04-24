@@ -168,11 +168,13 @@ class SelfDriving extends React.Component {
         const {
             cascaderStartData, cascaderEndData, filterOptions, searchLoading, loadMoreLoading,
             shortRent, weekRent, monthRent,
+            loadedPage,
+            tabIndex
         } = this.props;
         const loadMore = (
                 <div style={{textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',}}>
                     {(!loadMoreLoading) ? (
-
+                        loadedPage[tabIndex-1]===-1?<div/>:
                         <Button onClick={this.loadMore}>加载更多</Button>
                     ) : <Spin/>}
                 </div>

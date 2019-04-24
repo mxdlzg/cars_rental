@@ -14,7 +14,7 @@ export default {
         dates: undefined,
         tabIndex: 1,
         shortRent: [], weekRent: [], monthRent: [],
-        loadedPage: [0, 0, 0]
+        loadedPage: [-1, -1, -1]
     },
     effects: {
         * fetchStores({payload}, {call, put}) {
@@ -28,26 +28,29 @@ export default {
             const payload = yield select((state) => ({
                 start: state.rental.originLocation,
                 end: state.rental.aimLocation,
-                type:state.rental.tabIndex,
+                type: state.rental.tabIndex,
                 ...state.rental.dates,
             }));
             const res = yield call(queryCars, payload);
+            const localPay = yield select((state) => ({
+                tabIndex: state.rental.tabIndex
+            }));
             yield put({
                 type: 'saveCars',
-                payload: {tab: "", data: res.data}
+                payload: {tab: localPay.tabIndex, ...res.data}
             })
         },
         * searchRentalLoadMore(_, {call, put, select}) {
             const pay = yield select((state) => ({
-                more:true,
+                more: true,
                 start: state.rental.originLocation,
                 end: state.rental.aimLocation,
-                dates: state.rental.dates,
-                type:state.rental.tabIndex,
-                page: state.rental.loadedPage[state.rental.tabIndex-1],
+                ...state.rental.dates,
+                type: state.rental.tabIndex,
+                page: state.rental.loadedPage[state.rental.tabIndex - 1],
             }));
             const localPay = yield select((state) => ({
-                tabIndex:state.rental.tabIndex
+                tabIndex: state.rental.tabIndex
             }));
             if (pay.page === -1) {
                 message.success("已加载全部内容");
@@ -56,7 +59,7 @@ export default {
             const res = yield call(queryCars, pay);
             yield put({
                 type: 'saveCars',
-                payload: {tab: localPay.tabIndex, data: res.data, page: res.page}
+                payload: {tab: localPay.tabIndex, ...res.data}
             })
         },
         * fetchOptions(_, {call, put, select}) {
@@ -89,23 +92,24 @@ export default {
         },
         saveCars(state, {payload}) {
             if (payload) {
-                if (payload.tab !== "") {
-                    state.loadedPage[parseInt(payload.tab)-1] = payload.page;
-                }
+                state.loadedPage[payload.tab-1] = payload.last ? -1 : payload.number;
                 switch (payload.tab) {
                     case 1:
-                        state.shortRent = state.shortRent.concat(payload.data);break;
+                        state.shortRent = state.shortRent.concat(payload.content);
+                        break;
                     case 2:
-                        state.weekRent = state.weekRent.concat(payload.data);break;
+                        state.weekRent = state.weekRent.concat(payload.content);
+                        break;
                     case 3:
-                        state.monthRent = state.monthRent.concat(payload.data);break;
+                        state.monthRent = state.monthRent.concat(payload.content);
+                        break;
                     default:
                         return {
                             ...state,
                             shortRent: payload.data.short,
                             weekRent: payload.data.week,
                             monthRent: payload.data.month,
-                            loadedPage:[0,0,0]
+                            loadedPage: [0, 0, 0]
                         };
                 }
             }

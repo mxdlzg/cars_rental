@@ -67,16 +67,150 @@ export default {
                 res.send({
                     status: 'ok',
                     data:{
-                        short:[1,2,3,6,7],
-                        week:[1,2,3,45],
-                        month:[1,2,3,4]
+                        // short:[1,2,3,6,7],
+                        // week:[1,2,3,45],
+                        // month:[1,2,3,4],
+                        content: [
+                            {
+                                id: 1,
+                                bookAble: true,
+                                buyDate: "2019-04-23T21:25:30.000+0800",
+                                carcaseId: null,
+                                defaultRentPrice: 0,
+                                engineId: null,
+                                insuranceId: null,
+                                manufactureDate: null,
+                                rentAble: false,
+                                typeId: null,
+                                description: "测试车辆1",
+                                brandName: null,
+                                fuelId: null,
+                                typeName: null,
+                                storeId: 1,
+                                capability: null,
+                                latestAvailableDate: "2019-04-23T21:35:58.000+0800",
+                                serviceTypeId: 1
+                            },
+                            {
+                                id: 2,
+                                bookAble: true,
+                                buyDate: "2019-04-23T21:25:30.000+0800",
+                                carcaseId: null,
+                                defaultRentPrice: 0,
+                                engineId: null,
+                                insuranceId: null,
+                                manufactureDate: null,
+                                rentAble: false,
+                                typeId: null,
+                                description: "测试车辆2",
+                                brandName: null,
+                                fuelId: null,
+                                typeName: null,
+                                storeId: 1,
+                                capability: null,
+                                latestAvailableDate: "2019-04-23T21:35:58.000+0800",
+                                serviceTypeId: 1
+                            },
+                            {
+                                id: 3,
+                                bookAble: true,
+                                buyDate: "2019-04-23T21:25:30.000+0800",
+                                carcaseId: null,
+                                defaultRentPrice: 0,
+                                engineId: null,
+                                insuranceId: null,
+                                manufactureDate: null,
+                                rentAble: false,
+                                typeId: null,
+                                description: "测试车辆3",
+                                brandName: null,
+                                fuelId: null,
+                                typeName: null,
+                                storeId: 1,
+                                capability: null,
+                                latestAvailableDate: "2019-04-23T21:35:58.000+0800",
+                                serviceTypeId: 1
+                            }
+                        ],
+                        pageable: {
+                            sort: {
+                                unsorted: true,
+                                sorted: false,
+                                empty: true
+                            },
+                            offset: 0,
+                            pageSize: 3,
+                            pageNumber: 0,
+                            unpaged: false,
+                            paged: true
+                        },
+                        totalElements: 4,
+                        last: false,
+                        totalPages: 2,
+                        number: 0,
+                        size: 3,
+                        first: true,
+                        sort: {
+                            unsorted: true,
+                            sorted: false,
+                            empty: true
+                        },
+                        numberOfElements: 3,
+                        empty: false
                     }
                 })
             }else {
                 res.send({
                     status: 'ok',
-                    data:[1,2,3,6,7],
-                    page:page>3?-1:page+1,
+                    data:{
+                        content: [
+                            {
+                                id: 8,
+                                bookAble: true,
+                                buyDate: null,
+                                carcaseId: null,
+                                defaultRentPrice: 0,
+                                engineId: null,
+                                insuranceId: null,
+                                manufactureDate: null,
+                                rentAble: false,
+                                typeId: null,
+                                description: "测试车辆8",
+                                brandName: null,
+                                fuelId: null,
+                                typeName: null,
+                                storeId: 1,
+                                capability: null,
+                                latestAvailableDate: "2019-04-20T19:57:14.000+0800",
+                                serviceTypeId: 2
+                            }
+                        ],
+                        pageable: {
+                            sort: {
+                                sorted: false,
+                                unsorted: true,
+                                empty: true
+                            },
+                            offset: 3,
+                            pageNumber: 1,
+                            pageSize: 3,
+                            unpaged: false,
+                            paged: true
+                        },
+                        totalElements: 4,
+                        last: true,
+                        totalPages: 2,
+                        number: 1,
+                        size: 3,
+                        sort: {
+                            sorted: false,
+                            unsorted: true,
+                            empty: true
+                        },
+                        numberOfElements: 1,
+                        first: false,
+                        empty: false
+                    },
                 })
             }
         },1000)
