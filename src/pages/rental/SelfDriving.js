@@ -7,6 +7,7 @@ import {Map} from 'react-amap';
 import cars1 from "@/assets/cars1.jpg"
 import {connect} from 'dva';
 import TagSelect from 'ant-design-pro/lib/TagSelect';
+import router from 'umi/router';
 import {
     message,
     Affix,
@@ -140,7 +141,7 @@ class SelfDriving extends React.Component {
     onDateChange(value) {
         this.props.dispatch({
             type: 'rental/changeSearchParams',
-            payload: {value: {startDate:value[0].unix(),endDate:value[1].unix()}}
+            payload: {value: {startDate: value[0].unix(), endDate: value[1].unix()}}
         });
         message.success(value[0].format("YYYY-MM-DD HH:mm:ss") + "--" + value[1].format("YYYY-MM-DD HH:mm:ss"));
     }
@@ -160,6 +161,17 @@ class SelfDriving extends React.Component {
         }
     };
 
+    onRent = (item,e) => {
+        e.preventDefault();
+        message.success(item.id);
+        router.push({
+            pathname:"/order/RentalOrder",
+            query:{
+                carId:item.id,
+            }
+        })
+    };
+
     optionsChange(value) {
         console.log(value);
     }
@@ -174,8 +186,8 @@ class SelfDriving extends React.Component {
         const loadMore = (
                 <div style={{textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',}}>
                     {(!loadMoreLoading) ? (
-                        loadedPage[tabIndex-1]===-1?<div/>:
-                        <Button onClick={this.loadMore}>加载更多</Button>
+                        loadedPage[tabIndex - 1] === -1 ? <div/> :
+                            <Button onClick={this.loadMore}>加载更多</Button>
                     ) : <Spin/>}
                 </div>
             )
@@ -345,9 +357,7 @@ class SelfDriving extends React.Component {
                                         renderItem={item => (
                                             <List.Item
                                                 actions={[
-                                                    <a href={"/order/RentalOrder"}>
-                                                        <Button type="primary" size={'large'}>租车</Button>
-                                                    </a>
+                                                    <Button type="primary" size={'large'} onClick={this.onRent.bind(this,item)}>租车</Button>
                                                 ]}
                                             >
                                                 <img alt="车型" src={cars1} style={{width: '15em', height: '10em'}}/>

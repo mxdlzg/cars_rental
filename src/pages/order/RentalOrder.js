@@ -5,6 +5,7 @@ import {
     Form, Select, Table, Checkbox
 } from 'antd';
 import cars1 from "@/assets/cars1.jpg"
+import {connect} from "dva/index";
 
 const Step = Steps.Step;
 const Option = Select.Option;
@@ -48,6 +49,9 @@ const checkId = (rule, value, callback) => {
 
 };
 
+@connect(({rental, loading}) => ({
+    dates:rental.dates,
+}))
 class RentalOrder extends React.Component {
     constructor(props) {
         super(props);
