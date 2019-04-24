@@ -118,7 +118,7 @@ class UserHeader extends Component {
         const { navTheme, layout, fixedHeader } = setting;
         const { visible } = this.state;
         const isTop = layout === 'topmenu';
-        const width = this.getHeadWidth();
+        //const width = this.getHeadWidth();
         const HeaderDom = visible ? (
             <Header
                 className={fixedHeader ? styles.fixedHeader : ''}

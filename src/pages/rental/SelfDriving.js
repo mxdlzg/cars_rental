@@ -140,9 +140,9 @@ class SelfDriving extends React.Component {
     onDateChange(value) {
         this.props.dispatch({
             type: 'rental/changeSearchParams',
-            payload: {value: [value[0].unix(), value[1].unix()]}
+            payload: {value: {startDate:value[0].unix(),endDate:value[1].unix()}}
         });
-        message.success(value[0].format("MMM Do YY") + "--" + value[1].format("MMM Do YY"));
+        message.success(value[0].format("YYYY-MM-DD HH:mm:ss") + "--" + value[1].format("YYYY-MM-DD HH:mm:ss"));
     }
 
     tabChange = (key) => {

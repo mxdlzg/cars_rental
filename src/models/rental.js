@@ -28,7 +28,8 @@ export default {
             const payload = yield select((state) => ({
                 start: state.rental.originLocation,
                 end: state.rental.aimLocation,
-                dates: state.rental.dates,
+                type:state.rental.tabIndex,
+                ...state.rental.dates,
             }));
             const res = yield call(queryCars, payload);
             yield put({
@@ -42,6 +43,7 @@ export default {
                 start: state.rental.originLocation,
                 end: state.rental.aimLocation,
                 dates: state.rental.dates,
+                type:state.rental.tabIndex,
                 page: state.rental.loadedPage[state.rental.tabIndex-1],
             }));
             const localPay = yield select((state) => ({
