@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './RentalOrder.css'
 import {
     Steps, Button, Card, Divider, Icon, Input,
-    Form, Select, Table, Checkbox
+    Form, Select, Table, Checkbox, Skeleton
 } from 'antd';
 import cars1 from "@/assets/cars1.jpg"
 import {connect} from "dva/index";
@@ -49,8 +49,9 @@ const checkId = (rule, value, callback) => {
 
 };
 
-@connect(({rental, loading}) => ({
-    dates:rental.dates,
+@connect(({order, rental, loading}) => ({
+    orderDetailLoading: loading.effects['order/initPageInfo'],
+    dates: rental.dates,
 }))
 class RentalOrder extends React.Component {
     constructor(props) {
@@ -61,10 +62,17 @@ class RentalOrder extends React.Component {
         };
     }
 
-    componentDidUpdate(prevProps){
+    componentDidMount() {
+        this.props.dispatch({
+            type: 'order/initPageInfo',
+            payload: {...this.props.location.query}
+        })
+    }
+
+    componentDidUpdate(prevProps) {
         window.scrollTo(0, 0);
     }
-    
+
     next() {
         const current = this.state.current + 1;
         this.setState({current});
@@ -82,6 +90,8 @@ class RentalOrder extends React.Component {
     render() {
         const {current, priceLoading} = this.state;
         const {getFieldDecorator} = this.props.form;
+        const {orderDetailLoading} = this.props;
+        const {carInfoRes, orderPriceDetailRes} = this.props;
         const prefixSelector = getFieldDecorator('prefix', {
             initialValue: '86',
         })(
@@ -137,42 +147,51 @@ class RentalOrder extends React.Component {
                 </Steps>
                 <div className="steps-content">
                     <Card title={"车辆基本信息"} className={styles.card}>
-                        <div className={styles.carDetailLeft}>
-                            <img alt={"车辆"} src={cars1} style={{width: '15em', height: '10em'}}/>
-                            <h2>大众朗逸</h2>
-                            <h4>三厢|1.6自动|乘坐5人<br/>空间：空间较大，建议乘坐5人+3行李箱 </h4>
-                        </div>
-                        <Divider style={{float: 'left', height: '230px', marginRight: '10px'}} type="vertical"/>
-                        <div className={styles.carDetailLeft}>
-                            <div>
-                                <Icon type="login" className={styles.carDetailIcon}/>
-                                <h3>取车时间</h3>
-                            </div>
-                            <div>
-                                <Icon type="clock-circle" className={styles.carDetailIconSml}/>
-                                <h4>2019-04-01 10:00</h4>
-                            </div>
-                            <div>
-                                <Icon type="environment" className={styles.carDetailIconSml}/>
-                                <h4>上海虹桥机场</h4>
-                            </div>
-                        </div>
-                        <Divider style={{float: 'left', height: '230px', marginRight: '10px'}} type="vertical"/>
-                        <div className={styles.carDetailLeft}>
-                            <div>
-                                <Icon type="login" className={styles.carDetailIcon}/>
-                                <h3>还车时间</h3>
-                            </div>
-                            <div>
-                                <Icon type="clock-circle" className={styles.carDetailIconSml}/>
-                                <h4>2019-04-01 10:00</h4>
-                            </div>
-                            <div>
-                                <Icon type="environment" className={styles.carDetailIconSml}/>
-                                <h4>上海虹桥机场</h4>
-                            </div>
-                        </div>
+                        {
+                            orderDetailLoading
+                            ? <Skeleton active paragraph={{rows: 5}}/>
+                            : <div>
+                                    <div className={styles.carDetailLeft}>
+                                        <img alt={"车辆"} src={cars1} style={{width: '15em', height: '10em'}}/>
+                                        <h2>大众朗逸</h2>
+                                        <h4>三厢|1.6自动|乘坐5人<br/>空间：空间较大，建议乘坐5人+3行李箱 </h4>
+                                    </div>
+                                    <Divider style={{float: 'left', height: '230px', marginRight: '10px'}}
+                                             type="vertical"/>
+                                    <div className={styles.carDetailLeft}>
+                                        <div>
+                                            <Icon type="login" className={styles.carDetailIcon}/>
+                                            <h3>取车时间</h3>
+                                        </div>
+                                        <div>
+                                            <Icon type="clock-circle" className={styles.carDetailIconSml}/>
+                                            <h4>2019-04-01 10:00</h4>
+                                        </div>
+                                        <div>
+                                            <Icon type="environment" className={styles.carDetailIconSml}/>
+                                            <h4>上海虹桥机场</h4>
+                                        </div>
+                                    </div>
+                                    <Divider style={{float: 'left', height: '230px', marginRight: '10px'}}
+                                             type="vertical"/>
+                                    <div className={styles.carDetailLeft}>
+                                        <div>
+                                            <Icon type="login" className={styles.carDetailIcon}/>
+                                            <h3>还车时间</h3>
+                                        </div>
+                                        <div>
+                                            <Icon type="clock-circle" className={styles.carDetailIconSml}/>
+                                            <h4>2019-04-01 10:00</h4>
+                                        </div>
+                                        <div>
+                                            <Icon type="environment" className={styles.carDetailIconSml}/>
+                                            <h4>上海虹桥机场</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                        }
                     </Card>
+
                     <Card title={"驾驶员信息"} className={styles.card}>
                         <Form {...formItemLayout1} onSubmit={this.onSubmit}>
                             <Form.Item key="info_name" label="姓名">
@@ -245,14 +264,27 @@ class RentalOrder extends React.Component {
                         <Checkbox className={styles.invoice}>无需发票</Checkbox>
                         <Checkbox className={styles.invoice}>普通增值税发票</Checkbox>
                         <div className={styles.payRegion}>
-                            <Button style={{fontSize:'17px',borderColor:'red', background: 'red', width: '15%', height: '100%', float: 'right'}                            }
+                            <Button style={{
+                                fontSize: '17px',
+                                borderColor: 'red',
+                                background: 'red',
+                                width: '15%',
+                                height: '100%',
+                                float: 'right'
+                            }}
                                     icon="money-collect"
                                     href="/pay/OrderPay"
                                     type="primary"><br/>提交订单</Button>
-                            <div style={{textAlign:'center', background:'#fbfbfb',width:'15%',height:'100%',float:'right'}}>
-                                <div style={{paddingTop:'2px',paddingBottom:'2px'}}>
+                            <div style={{
+                                textAlign: 'center',
+                                background: '#fbfbfb',
+                                width: '15%',
+                                height: '100%',
+                                float: 'right'
+                            }}>
+                                <div style={{paddingTop: '2px', paddingBottom: '2px'}}>
                                     总计费用
-                                    <p style={{fontSize:'30px',color:'#ff746f'}}>￥2333</p>
+                                    <p style={{fontSize: '30px', color: '#ff746f'}}>￥2333</p>
                                 </div>
                             </div>
                         </div>

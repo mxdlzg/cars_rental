@@ -163,11 +163,15 @@ class SelfDriving extends React.Component {
 
     onRent = (item,e) => {
         e.preventDefault();
+        const {dates,originLocation,aimLocation} = this.props;
         message.success(item.id);
         router.push({
             pathname:"/order/RentalOrder",
             query:{
                 carId:item.id,
+                ...dates,
+                start:originLocation,
+                end:aimLocation
             }
         })
     };
