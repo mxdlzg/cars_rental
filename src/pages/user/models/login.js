@@ -1,11 +1,12 @@
 import {fakeAccountLogin, getFakeCaptcha} from "@/services/api";
 import {reloadAuthorized} from "@/utils/Authorized";
 import {routerRedux} from "dva/router";
-import {getPageQuery} from "@/utils/utils";
+import {getPageQuery, getPageQueryParams, getPageQueryUrl} from "@/utils/utils";
 import {setAuthority} from "@/utils/authority";
 import {cacheUserToken} from "@/utils/userInfo";
 import {stringify} from "qs";
 import {message} from 'antd';
+import router from "umi/router"
 
 export default {
     namespace: 'login',
@@ -29,7 +30,7 @@ export default {
                 cacheUserToken(load);
                 const urlParams = new URL(window.location.href);
                 const params = getPageQuery();
-                let {redirect} = params;
+                let {redirect,query} = params;
                 if (redirect) {
                     const redirectUrlParams = new URL(redirect);
                     if (redirectUrlParams.origin === urlParams.origin) {
@@ -41,9 +42,18 @@ export default {
                         redirect = null;
                     }
                 }
+                if (query) {
+                    redirect = getPageQueryUrl(redirect);
+                }else {
+                    query = getPageQueryParams(redirect);
+                    redirect = getPageQueryUrl(redirect);
+                }
                 message.success(res.message);
-                yield put(routerRedux.push({
+                yield put(router.replace({
                     pathname: redirect || '/',
+                    search:stringify({
+                        ...query
+                    }),
                     // state: {token: res.token, username: payload.username}
                 }));
             }else {

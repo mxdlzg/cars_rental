@@ -9,8 +9,8 @@ export default {
                     value: '奉贤区',
                     label: '奉贤区',
                     children: [{
-                        value: '奉贤',
-                        label: '奉贤',
+                        value: '海湾镇',
+                        label: '海湾镇',
                     }],
                 }],
             }, {

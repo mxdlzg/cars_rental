@@ -275,12 +275,14 @@ class SelfDriving extends React.Component {
                                         <Icon style={{fontSize: '20px'}} type="home"/>
                                         <Cascader className={styles.inputCommon} options={filterOptions.options}
                                                   onChange={this.onStartCascaderChange}
+                                                  defaultValue={['山东', '济南', '历下区']}
                                                   placeholder="出发地"/>
                                         <Select
                                             id="selectStart"
                                             className={styles.searchLocation}
                                             showSearch
                                             onSelect={this.onLocationChange.bind(this, 'selectStart')}
+                                            defaultValue={"ID0010225历下区总店"}
                                             placeholder="选择出发地"
                                             notFoundContent={<Empty/>}
                                             filterOption={true}
@@ -292,11 +294,13 @@ class SelfDriving extends React.Component {
                                         <Icon type="environment" style={{fontSize: '20px'}}/>
                                         <Cascader className={styles.inputCommon} options={filterOptions.options}
                                                   onChange={this.onEndCascaderChange}
+                                                  defaultValue={['上海', '奉贤区', '海湾镇']}
                                                   placeholder="目的地"/>
                                         <Select
                                             id="selectEnd"
                                             className={styles.searchLocation}
                                             showSearch
+                                            defaultValue={"ID0010224海泉路1店"}
                                             onSelect={this.onLocationChange.bind(this, 'selectEnd')}
                                             placeholder="选择目的地"
                                             notFoundContent={<Empty/>}

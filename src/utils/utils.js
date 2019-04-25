@@ -131,6 +131,13 @@ export function getRoutes(path, routerData) {
     return renderRoutes;
 }
 
+export function getPageQueryUrl(url) {
+    return url.split('?')[0];
+}
+export function getPageQueryParams(url) {
+    return parse(url.split('?')[1]);
+}
+
 export function getPageQuery() {
     return parse(window.location.href.split('?')[1]);
 }

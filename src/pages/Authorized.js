@@ -38,6 +38,7 @@ function AuthComponent({children, location, routerData}) {
                             pathname: "/user/login",
                             search: stringify({
                                 redirect: window.location.href,
+                                query:location.query,
                             })
                         })}
                         {/*<Redirect*/}
