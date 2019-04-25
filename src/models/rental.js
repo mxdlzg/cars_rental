@@ -37,7 +37,7 @@ export default {
             }));
             yield put({
                 type: 'saveCars',
-                payload: {tab: localPay.tabIndex, ...res.data}
+                payload: {tab: localPay.tabIndex, ...res.data,clear:true}
             })
         },
         * searchRentalLoadMore(_, {call, put, select}) {
@@ -95,12 +95,21 @@ export default {
                 state.loadedPage[payload.tab-1] = payload.last ? -1 : payload.number;
                 switch (payload.tab) {
                     case 1:
+                        if (payload.clear) {
+                            state.shortRent = [];
+                        }
                         state.shortRent = state.shortRent.concat(payload.content);
                         break;
                     case 2:
+                        if (payload.clear) {
+                            state.weekRent = [];
+                        }
                         state.weekRent = state.weekRent.concat(payload.content);
                         break;
                     case 3:
+                        if (payload.clear) {
+                            state.monthRent = [];
+                        }
                         state.monthRent = state.monthRent.concat(payload.content);
                         break;
                     default:

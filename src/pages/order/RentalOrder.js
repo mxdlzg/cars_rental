@@ -61,6 +61,10 @@ class RentalOrder extends React.Component {
         };
     }
 
+    componentDidUpdate(prevProps){
+        window.scrollTo(0, 0);
+    }
+    
     next() {
         const current = this.state.current + 1;
         this.setState({current});
