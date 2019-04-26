@@ -1,6 +1,10 @@
 export default {
     'GET /api/car/*':{
-        id:1
+        id:1,
+        src:'http://localhost:8000/static/cars1.cd308486.jpg',
+        name:'大众朗逸',
+        description:'三厢|1.6自动|乘坐5人|空间：空间较大，建议乘坐5人+3行李箱',
+
     },
 
     'GET /api/order/queryPrice':(req,res)=>{
@@ -27,7 +31,11 @@ export default {
                             amount:'¥35'
                         }
                     ],
-                    amount:'¥3500'
+                    amount:'¥3500',
+                    fetchCarDate:"2019/4/26 00:00:00",
+                    fetchLocation:"浦东新区启航路1200号",
+                    returnCarDate:"2019/4/27 00:00:00",
+                    returnLocation:"奉贤区海泉路100号"
                 }
             })
         },1000)

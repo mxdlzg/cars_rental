@@ -183,9 +183,9 @@ class RentalOrder extends React.Component {
                                 ? <Skeleton active paragraph={{rows: 5}}/>
                                 : <div>
                                     <div className={styles.carDetailLeft}>
-                                        <img alt={"车辆"} src={cars1} style={{width: '15em', height: '10em'}}/>
-                                        <h2>大众朗逸{carInfoRes.id}</h2>
-                                        <h4>三厢|1.6自动|乘坐5人<br/>空间：空间较大，建议乘坐5人+3行李箱 </h4>
+                                        <img alt={"车辆"} src={carInfoRes.src} style={{width: '18em', height: '10em'}}/>
+                                        <h2>{carInfoRes.name}</h2>
+                                        <h4>{carInfoRes.description}</h4>
                                     </div>
                                     <Divider style={{float: 'left', height: '230px', marginRight: '10px'}}
                                              type="vertical"/>
@@ -196,11 +196,11 @@ class RentalOrder extends React.Component {
                                         </div>
                                         <div>
                                             <Icon type="clock-circle" className={styles.carDetailIconSml}/>
-                                            <h4>2019-04-01 10:00</h4>
+                                            <h4>{orderPriceDetailRes.data.fetchCarDate}</h4>
                                         </div>
                                         <div>
                                             <Icon type="environment" className={styles.carDetailIconSml}/>
-                                            <h4>上海虹桥机场</h4>
+                                            <h4>{orderPriceDetailRes.data.fetchLocation}</h4>
                                         </div>
                                     </div>
                                     <Divider style={{float: 'left', height: '230px', marginRight: '10px'}}
@@ -212,11 +212,11 @@ class RentalOrder extends React.Component {
                                         </div>
                                         <div>
                                             <Icon type="clock-circle" className={styles.carDetailIconSml}/>
-                                            <h4>2019-04-01 10:00</h4>
+                                            <h4>{orderPriceDetailRes.data.returnCarDate}</h4>
                                         </div>
                                         <div>
                                             <Icon type="environment" className={styles.carDetailIconSml}/>
-                                            <h4>上海虹桥机场</h4>
+                                            <h4>{orderPriceDetailRes.data.returnLocation}</h4>
                                         </div>
                                     </div>
                                 </div>
