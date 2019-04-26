@@ -39,5 +39,17 @@ export default {
                 }
             })
         },1000)
+    },
+    "POST /api/order/submitOrder":(req,res)=>{
+        setTimeout(()=>{
+            res.send({
+                status:"ok",
+                success:true,
+                data:{
+                    orderId:14255345646,
+                    createdDate:"2019-04-26 20:22:23"
+                }
+            })
+        },600);
     }
 }

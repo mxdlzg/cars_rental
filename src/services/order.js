@@ -8,3 +8,13 @@ export async function queryCarDetail(params) {
 export async function queryOrderPriceDetail(params) {
     return request(`/api/order/queryPrice?${stringify(params)}`);
 }
+
+export async function addOrder(params) {
+    return request(`/api/order/submitOrder`,{
+        method:"POST",
+        body:{
+            ...params,
+            method :"post"
+        }
+    })
+}

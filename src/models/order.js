@@ -1,5 +1,6 @@
-//import {message} from 'antd';
-import {queryCarDetail, queryOrderPriceDetail} from "@/services/order"
+import {message} from 'antd';
+import {addOrder, queryCarDetail, queryOrderPriceDetail} from "@/services/order"
+import router from "umi/router";
 
 export default {
     namespace: 'order',
@@ -14,6 +15,18 @@ export default {
                 payload: {carInfoRes,orderPriceDetailRes}
             })
         },
+
+        * submit({payload},{call,put}){
+            const res = yield call(addOrder,payload);
+            if (res.success) {
+                router.push({
+                    pathname:'/order/OrderResult',
+                    search:res.data
+                })
+            }else {
+                message.warn(res.msg);
+            }
+        }
     },
     reducers: {
         saveInitInfo(state,{payload}){
