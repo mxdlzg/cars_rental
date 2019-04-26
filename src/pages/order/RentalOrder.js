@@ -4,7 +4,6 @@ import {
     Steps, Button, Card, Divider, Icon, Input, message,
     Form, Select, Table, Checkbox, Skeleton, Spin
 } from 'antd';
-import cars1 from "@/assets/cars1.jpg"
 import {connect} from "dva/index";
 
 const Step = Steps.Step;
