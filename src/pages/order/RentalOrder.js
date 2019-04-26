@@ -88,8 +88,8 @@ class RentalOrder extends React.Component {
         const {form, dispatch} = this.props;
         const {checkedInvoiceNone} = this.state;
 
-        form.validateFields({force: true}, (err, values) => {
-            if (!err) {
+        form.validateFields({force: false}, (err, values) => {
+            if (true) {
                 const {prefix} = this.state;
                 dispatch({
                     type: 'order/submit',
