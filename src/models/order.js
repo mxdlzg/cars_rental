@@ -1,6 +1,7 @@
 import {message} from 'antd';
 import {addOrder, queryCarDetail, queryOrderPriceDetail} from "@/services/order"
 import router from "umi/router";
+import {stringify} from "qs";
 
 export default {
     namespace: 'order',
@@ -21,7 +22,9 @@ export default {
             if (res.success) {
                 router.push({
                     pathname:'/order/OrderResult',
-                    search:res.data
+                    search:stringify({
+                        ...res.data
+                    })
                 })
             }else {
                 message.warn(res.msg);
