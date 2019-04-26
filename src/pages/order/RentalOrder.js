@@ -1,8 +1,8 @@
 import React from 'react'
 import styles from './RentalOrder.css'
 import {
-    Steps, Button, Card, Divider, Icon, Input,
-    Form, Select, Table, Checkbox, Skeleton
+    Steps, Button, Card, Divider, Icon, Input, message,
+    Form, Select, Table, Checkbox, Skeleton, Spin
 } from 'antd';
 import cars1 from "@/assets/cars1.jpg"
 import {connect} from "dva/index";
@@ -52,25 +52,25 @@ const checkId = (rule, value, callback) => {
 @connect(({order, rental, loading}) => ({
     orderDetailLoading: loading.effects['order/initPageInfo'],
     dates: rental.dates,
+    ...order,
 }))
 class RentalOrder extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             current: 1,
-            priceLoading: false
+            priceLoading: false,
+            checkedInvoiceNone: false,
+            checkedInvoice: true,
         };
     }
 
     componentDidMount() {
+        window.scrollTo(0, 0);
         this.props.dispatch({
             type: 'order/initPageInfo',
             payload: {...this.props.location.query}
         })
-    }
-
-    componentDidUpdate(prevProps) {
-        window.scrollTo(0, 0);
     }
 
     next() {
@@ -83,12 +83,45 @@ class RentalOrder extends React.Component {
         this.setState({current});
     }
 
-    onSubmit() {
+    onSubmit = e => {
+        e.preventDefault();
+        const {form, dispatch} = this.props;
+        const {checkedInvoiceNone} = this.state;
 
+        form.validateFields({force: true}, (err, values) => {
+            if (!err) {
+                const {prefix} = this.state;
+                dispatch({
+                    type: 'order/submit',
+                    payload: {
+                        ...values,
+                        invoiceType: checkedInvoiceNone ? 1 : 2,
+                        prefix,
+                    },
+                });
+            } else {
+                message.error("请输入正确的驾驶人信息！")
+            }
+        });
+    };
+
+    onInvoiceChange(value) {
+        if (value === 1) {
+            this.setState({
+                checkedInvoiceNone: true,
+                checkedInvoice: false,   //无发票
+            })
+        } else {
+            this.setState({
+                checkedInvoiceNone: false,
+                checkedInvoice: true,   //无发票
+            })
+        }
     }
 
+
     render() {
-        const {current, priceLoading} = this.state;
+        const {current, priceLoading, checkedInvoiceNone, checkedInvoice} = this.state;
         const {getFieldDecorator} = this.props.form;
         const {orderDetailLoading} = this.props;
         const {carInfoRes, orderPriceDetailRes} = this.props;
@@ -100,20 +133,18 @@ class RentalOrder extends React.Component {
                 <Option value="87">+87</Option>
             </Select>
         );
-        let goodsData = [];
+        let goodsData = orderPriceDetailRes ? orderPriceDetailRes.data.detail : [];
         const goodsColumns = [
             {
                 title: '项目名称',
                 dataIndex: 'name',
                 key: 'name',
-                render: 11,
             },
             {
                 title: '单价',
                 dataIndex: 'price',
                 key: 'price',
                 align: 'right',
-                render: 33,
             },
             {
                 title: '数量（件）',
@@ -141,19 +172,19 @@ class RentalOrder extends React.Component {
             },
         ];
         return (
-            <div className={styles.main}>
+            <Form className={styles.main} {...formItemLayout1} onSubmit={this.onSubmit}>
                 <Steps className={styles.steps} current={current}>
                     {steps.map(item => <Step key={item.title} title={item.title}/>)}
                 </Steps>
                 <div className="steps-content">
                     <Card title={"车辆基本信息"} className={styles.card}>
                         {
-                            orderDetailLoading
-                            ? <Skeleton active paragraph={{rows: 5}}/>
-                            : <div>
+                            orderDetailLoading || orderDetailLoading === undefined || carInfoRes === undefined
+                                ? <Skeleton active paragraph={{rows: 5}}/>
+                                : <div>
                                     <div className={styles.carDetailLeft}>
                                         <img alt={"车辆"} src={cars1} style={{width: '15em', height: '10em'}}/>
-                                        <h2>大众朗逸</h2>
+                                        <h2>大众朗逸{carInfoRes.id}</h2>
                                         <h4>三厢|1.6自动|乘坐5人<br/>空间：空间较大，建议乘坐5人+3行李箱 </h4>
                                     </div>
                                     <Divider style={{float: 'left', height: '230px', marginRight: '10px'}}
@@ -191,65 +222,62 @@ class RentalOrder extends React.Component {
                                 </div>
                         }
                     </Card>
-
                     <Card title={"驾驶员信息"} className={styles.card}>
-                        <Form {...formItemLayout1} onSubmit={this.onSubmit}>
-                            <Form.Item key="info_name" label="姓名">
-                                {getFieldDecorator('info_name', {
-                                    rules: [{
-                                        required: true, message: '请输入姓名',
-                                    }],
-                                })(
-                                    <Input placeholder="Please input your name"/>
-                                )}
-                            </Form.Item>
-                            <Form.Item
-                                label="证件类型"
-                                hasFeedback
-                            >
-                                <Select defaultValue="1">
-                                    <Option value="1">身份证</Option>
-                                    <Option value="2">驾驶证</Option>
-                                    <Option value="3">港澳台通行证</Option>
-                                </Select>
-                            </Form.Item>
-                            <Form.Item
-                                label="证件号码"
-                                key='info_id'
-                            >
-                                {getFieldDecorator('info_id', {
-                                    rules: [
-                                        {required: true, message: '请输入证件号码'},
-                                        {validator: checkId, trigger: 'blur'}
-                                    ],
-                                    // initialValue:'000'
-                                })(
-                                    <Input placeHolder={"Please input id card number"}/>
-                                )}
-                            </Form.Item>
-                            <Form.Item
-                                label="E-mail"
-                            >
-                                {getFieldDecorator('email', {
-                                    rules: [{
-                                        type: 'email', message: 'The input is not valid E-mail!',
-                                    }, {
-                                        required: true, message: 'Please input your E-mail!',
-                                    }],
-                                })(
-                                    <Input/>
-                                )}
-                            </Form.Item>
-                            <Form.Item
-                                label="手机号码"
-                            >
-                                {getFieldDecorator('phone', {
-                                    rules: [{required: true, message: 'Please input your phone number!'}],
-                                })(
-                                    <Input addonBefore={prefixSelector} style={{width: '100%'}}/>
-                                )}
-                            </Form.Item>
-                        </Form>
+                        <Form.Item key="info_name" label="姓名">
+                            {getFieldDecorator('info_name', {
+                                rules: [{
+                                    required: true, message: '请输入姓名',
+                                }],
+                            })(
+                                <Input placeholder="Please input your name"/>
+                            )}
+                        </Form.Item>
+                        <Form.Item
+                            label="证件类型"
+                            hasFeedback
+                        >
+                            <Select defaultValue="1">
+                                <Option value="1">身份证</Option>
+                                <Option value="2">驾驶证</Option>
+                                <Option value="3">港澳台通行证</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label="证件号码"
+                            key='info_id'
+                        >
+                            {getFieldDecorator('info_id', {
+                                rules: [
+                                    {required: true, message: '请输入证件号码'},
+                                    {validator: checkId, trigger: 'blur'}
+                                ],
+                                // initialValue:'000'
+                            })(
+                                <Input placeHolder={"Please input id card number"}/>
+                            )}
+                        </Form.Item>
+                        <Form.Item
+                            label="E-mail"
+                        >
+                            {getFieldDecorator('email', {
+                                rules: [{
+                                    type: 'email', message: 'The input is not valid E-mail!',
+                                }, {
+                                    required: true, message: 'Please input your E-mail!',
+                                }],
+                            })(
+                                <Input/>
+                            )}
+                        </Form.Item>
+                        <Form.Item
+                            label="手机号码"
+                        >
+                            {getFieldDecorator('phone', {
+                                rules: [{required: true, message: 'Please input your phone number!'}],
+                            })(
+                                <Input addonBefore={prefixSelector} style={{width: '100%'}}/>
+                            )}
+                        </Form.Item>
                     </Card>
                     <Card title="账单明细-发票" className={styles.card}>
                         <Table
@@ -261,8 +289,10 @@ class RentalOrder extends React.Component {
                             rowKey="id"
                         />
                         <Divider orientation="left">发票</Divider>
-                        <Checkbox className={styles.invoice}>无需发票</Checkbox>
-                        <Checkbox className={styles.invoice}>普通增值税发票</Checkbox>
+                        <Checkbox checked={checkedInvoiceNone} className={styles.invoice}
+                                  onChange={this.onInvoiceChange.bind(this, 1)}>无需发票</Checkbox>
+                        <Checkbox checked={checkedInvoice} className={styles.invoice}
+                                  onChange={this.onInvoiceChange.bind(this, 2)}>普通增值税发票</Checkbox>
                         <div className={styles.payRegion}>
                             <Button style={{
                                 fontSize: '17px',
@@ -273,7 +303,8 @@ class RentalOrder extends React.Component {
                                 float: 'right'
                             }}
                                     icon="money-collect"
-                                    href="/pay/OrderPay"
+                                    htmlType="submit"
+                                ///onClick={this.onSubmitBtnClick}
                                     type="primary"><br/>提交订单</Button>
                             <div style={{
                                 textAlign: 'center',
@@ -284,15 +315,21 @@ class RentalOrder extends React.Component {
                             }}>
                                 <div style={{paddingTop: '2px', paddingBottom: '2px'}}>
                                     总计费用
-                                    <p style={{fontSize: '30px', color: '#ff746f'}}>￥2333</p>
+                                    <p style={{fontSize: '30px', color: '#ff746f'}}>
+                                        {
+                                            orderDetailLoading || orderDetailLoading === undefined
+                                                ? <Spin/>
+                                                : orderPriceDetailRes.data.amount
+                                        }
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </Card>
                 </div>
-            </div>
+            </Form>
         );
     }
 }
 
-export default Form.create({})(RentalOrder);
+export default Form.create({name: 'rental_order'})(RentalOrder);

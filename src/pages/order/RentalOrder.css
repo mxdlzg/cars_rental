@@ -4,6 +4,10 @@
     text-align: left;
 }
 
+.hiddenBtn{
+    visibility: hidden;
+}
+
 .steps {
     margin-top: 30px;
     padding-left: 20px;
