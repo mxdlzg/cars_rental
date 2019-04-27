@@ -48,19 +48,18 @@ class OrderPay extends React.Component{
         })
     }
 
-    render(){
-        const {id,description,createdDate,totalPrice,finished,payDate} = this.props;
-        if (finished) {
-            router.replace({
-                pathname:"/order/OrderResult",
-                search:stringify({
-                    current:2,
-                    operateDate:payDate,
-                    success:true,
-                    description:"这是一段有关于支付结果的详细描述！！！"
-                })
+    onFinish=()=>{
+        router.push({
+            pathname:"/order/OrderDetail",
+            search:stringify({
+                id:this.props.id
             })
-        }
+        })
+    };
+
+    render(){
+        const {id,description,createdDate,totalPrice} = this.props;
+
         return(
             <div className={styles.main}>
                 <Steps className={styles.steps} current={2}>
@@ -107,8 +106,8 @@ class OrderPay extends React.Component{
                         <img alt={"weChat"} src={weChat}/>
                         <br/>
                         <Button className={styles.finished} style={{fontSize:'17px', width: '15%', height: '100%', float: 'right'}                            }
+                                onClick={this.onFinish}
                                 icon="money-collect"
-                                href="/order/OrderResult"
                                 type="primary"><br/>已完成支付</Button>
                         <br/>
                     </Card>

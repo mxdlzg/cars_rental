@@ -46,8 +46,8 @@ export default {
                 status:"ok",
                 success:true,
                 data:{
-                    orderId:14255345646,
-                    createdDate:"2019-04-26 20:22:23"
+                    id:"2019040101000026102",
+                    createdDate:"2019-04-26 20:22:23",
                 }
             })
         },600);
@@ -55,11 +55,11 @@ export default {
     "GET /api/order/queryPayInfo":{
         success:true,
         data:{
-            id:'20190401010000261024502342752244',
+            id:"2019040101000026102",
             description: "账号1728227443-腾讯云",
             totalPrice:'￥2000',
             createdDate:"2019-04-26 20:26:39",
-            finished:true,
+            finished:false,
             payDate:"2019-04-26 20:22:23",
         }
     }
