@@ -51,5 +51,16 @@ export default {
                 }
             })
         },600);
+    },
+    "GET /api/order/queryPayInfo":{
+        success:true,
+        data:{
+            id:'20190401010000261024502342752244',
+            description: "账号1728227443-腾讯云",
+            totalPrice:'￥2000',
+            createdDate:"2019-04-26 20:26:39",
+            finished:true,
+            payDate:"2019-04-26 20:22:23",
+        }
     }
 }

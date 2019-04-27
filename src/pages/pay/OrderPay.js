@@ -2,6 +2,9 @@ import React from 'react'
 import styles from './OrderPay.css'
 import {Steps, Card, Collapse, Icon, Divider,Button} from "antd";
 import weChat from '@/assets/wechatpay.png';
+import {connect} from "dva/index";
+import router from "umi/router";
+import {stringify} from "qs";
 const ButtonGroup = Button.Group;
 const Step = Steps.Step;
 const Panel = Collapse.Panel;
@@ -26,30 +29,49 @@ const customPanelStyle = {
     overflow: 'hidden',
 };
 
-
+@connect(({order, loading}) => ({
+    orderPayLoading: loading.effects['order/queryOrderPayInfo'],
+    ...order,
+}))
 class OrderPay extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            num:'20190401010000261024502342752244',
             current: 2,
-            price:'￥2000'
         };
     }
 
+    componentDidMount(){
+        this.props.dispatch({
+            type:"order/queryOrderPayInfo",
+            payload: {...this.props.location.query}
+        })
+    }
+
     render(){
-        const {current,num,price} = this.state;
+        const {id,description,createdDate,totalPrice,finished,payDate} = this.props;
+        if (finished) {
+            router.replace({
+                pathname:"/order/OrderResult",
+                search:stringify({
+                    current:2,
+                    operateDate:payDate,
+                    success:true,
+                    description:"这是一段有关于支付结果的详细描述！！！"
+                })
+            })
+        }
         return(
             <div className={styles.main}>
-                <Steps className={styles.steps} current={current}>
+                <Steps className={styles.steps} current={2}>
                     {steps.map(item => <Step key={item.title} title={item.title}/>)}
                 </Steps>
                 <div className="steps-content">
                     <Card className={styles.card}>
                         <div>
                             <div className={styles.left}>
-                                <h2><b>订单编号：</b></h2><h3>{num}</h3>
-                                <h2><b>支付金额：</b></h2><h3>{price}</h3>
+                                <h2><b>订单编号：</b></h2><h3>{id}</h3>
+                                <h2><b>支付金额：</b></h2><h3>{totalPrice}</h3>
                             </div>
                             <Collapse
                                 className={styles.right}
@@ -60,16 +82,16 @@ class OrderPay extends React.Component{
                                 <Panel header="订单详情" key="1" style={customPanelStyle}>
                                     <p>
                                         商品名称：
-                                        账号1728227443-腾讯云
+                                        {description}
                                         <br/>
                                         支付订单：
-                                        E-190401190270062870
+                                        {id}
                                         <br/>
                                         应付金额：
-                                        ￥1.00
+                                        {totalPrice}
                                         <br/>
                                         购买时间：
-                                        2019年04月01日
+                                        {createdDate}
                                     </p>
                                 </Panel>
                             </Collapse>

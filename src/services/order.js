@@ -18,3 +18,7 @@ export async function addOrder(params) {
         }
     })
 }
+
+export async function queryPayInfo(params) {
+    return request(`/api/order/queryPayInfo?${stringify(params)}`);
+}

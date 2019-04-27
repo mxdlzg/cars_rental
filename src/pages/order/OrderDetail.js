@@ -14,7 +14,6 @@ import {
     Card,
     Popover,
     Badge,
-    Tooltip,
     Divider,
 } from 'antd';
 

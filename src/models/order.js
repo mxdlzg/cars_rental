@@ -1,5 +1,5 @@
 import {message} from 'antd';
-import {addOrder, queryCarDetail, queryOrderPriceDetail} from "@/services/order"
+import {addOrder, queryCarDetail, queryOrderPriceDetail, queryPayInfo} from "@/services/order"
 import router from "umi/router";
 import {stringify} from "qs";
 
@@ -29,6 +29,18 @@ export default {
             }else {
                 message.warn(res.msg);
             }
+        },
+
+        *queryOrderPayInfo({payload},{call,put}){
+            const res = yield call(queryPayInfo,payload);
+            if (res.success) {
+                yield put({
+                    type:"savePayInfo",
+                    payload:res.data,
+                })
+            }else {
+                message.warn(res.msg);
+            }
         }
     },
     reducers: {
@@ -38,6 +50,12 @@ export default {
                 ...payload,
             }
         },
+        savePayInfo(state,{payload}){
+            return{
+                ...state,
+                ...payload
+            }
+        }
     },
     subscriptions: {}
 }
