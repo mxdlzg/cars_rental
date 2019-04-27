@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react'
+import React,{PureComponent,Component, Fragment} from 'react'
 import styles from './OrderDetail.less'
 import classNames from 'classnames';
 import DescriptionList from '@/components/DescriptionList';
@@ -21,84 +21,70 @@ import {
 const {Step} = Steps;
 const {Description} = DescriptionList;
 const ButtonGroup = Button.Group;
-const menu = (
-    <Menu>
-        <Menu.Item key="1">选项一</Menu.Item>
-        <Menu.Item key="2">选项二</Menu.Item>
-        <Menu.Item key="3">选项三</Menu.Item>
-    </Menu>
-);
+
 const action = (
     <Fragment>
         <ButtonGroup>
             <Button>操作</Button>
             <Button>操作</Button>
-            <Dropdown overlay={menu} placement="bottomRight">
-                <Button>
-                    <Icon type="ellipsis"/>
-                </Button>
-            </Dropdown>
+            <Button>操作</Button>
         </ButtonGroup>
         <Button type="primary">主操作</Button>
     </Fragment>
 );
-const extra = (
-    <Row>
-        <Col xs={24} sm={12}>
-            <div className={styles.textSecondary}>状态</div>
-            <div className={styles.heading}>待审批</div>
-        </Col>
-        <Col xs={24} sm={12}>
-            <div className={styles.textSecondary}>订单金额</div>
-            <div className={styles.heading}>¥ 568.08</div>
-        </Col>
-    </Row>
-);
-const description = (
-    <DescriptionList className={styles.headerList} size="small" col="2">
-        <Description term="创建人">曲丽丽</Description>
-        <Description term="订购产品">XX 服务</Description>
-        <Description term="创建时间">2017-07-07</Description>
-        <Description term="关联单据">
-            <a href={"/"}>12421</a>
-        </Description>
-        <Description term="生效日期">2017-07-07 ~ 2017-08-08</Description>
-        <Description term="备注">请于两个工作日内确认</Description>
-    </DescriptionList>
-);
+
+function extra(param) {
+    return(
+        <Row>
+            <Col xs={24} sm={12}>
+                <div className={styles.textSecondary}>状态</div>
+                <div className={param.isPaid?styles.headingSuccess:styles.heading}>{param.payStatus}</div>
+            </Col>
+            <Col xs={24} sm={12}>
+                <div className={styles.textSecondary}>订单金额</div>
+                <div className={styles.heading}>{param.totalPrice}</div>
+            </Col>
+        </Row>
+    )
+}
+
+function description(params) {
+    return(
+        <DescriptionList className={styles.headerList} size="small" col="2">
+            <Description term="创建人">{params.belongUser}</Description>
+            <Description term="预订产品">{params.description}</Description>
+            <Description term="创建时间">{params.createdDate}</Description>
+            <Description term="关联单据">
+                <a href={"/"}></a>
+            </Description>
+            <Description term="租车日期">{params.startDate+" ~ "+params.endDate}</Description>
+            <Description term="备注">{params.marker}</Description>
+        </DescriptionList>
+    )
+}
+
+function desc(params) {
+    return(
+        <div className={styles.stepDescription}>
+            <Fragment>
+                {params.name}
+                <Icon type="dingding-o" style={{color: '#00A0E9', marginLeft: 8}}/>
+            </Fragment>
+            <div>{params.date}</div>
+        </div>
+    )
+}
 
 const tabList = [
     {
         key: 'detail',
-        tab: '详情',
+        tab: '概览',
     },
     {
         key: 'rule',
-        tab: '规则',
+        tab: '详情',
     },
 ];
-
-const desc1 = (
-    <div className={classNames(styles.textSecondary, styles.stepDescription)}>
-        <Fragment>
-            曲丽丽
-            <Icon type="dingding-o" style={{marginLeft: 8}}/>
-        </Fragment>
-        <div>2016-12-12 12:32</div>
-    </div>
-);
-
-const desc2 = (
-    <div className={styles.stepDescription}>
-        <Fragment>
-            周毛毛
-            <Icon type="dingding-o" style={{color: '#00A0E9', marginLeft: 8}}/>
-        </Fragment>
-        <div>
-            <a href={"/"}>催一下</a>
-        </div>
-    </div>
-);
 
 const popoverContent = (
     <div style={{width: 160}}>
@@ -121,86 +107,43 @@ const customDot = (dot, {status}) =>
         dot
     );
 
-// const operationTabList = [
-//     {
-//         key: 'tab1',
-//         tab: '操作日志一',
-//     },
-//     {
-//         key: 'tab2',
-//         tab: '操作日志二',
-//     },
-//     {
-//         key: 'tab3',
-//         tab: '操作日志三',
-//     },
-// ];
-//
-// const columns = [
-//     {
-//         title: '操作类型',
-//         dataIndex: 'type',
-//         key: 'type',
-//     },
-//     {
-//         title: '操作人',
-//         dataIndex: 'name',
-//         key: 'name',
-//     },
-//     {
-//         title: '执行结果',
-//         dataIndex: 'status',
-//         key: 'status',
-//         render: text =>
-//             text === 'agree' ? (
-//                 <Badge status="success" text="成功"/>
-//             ) : (
-//                 <Badge status="error" text="驳回"/>
-//             ),
-//     },
-//     {
-//         title: '操作时间',
-//         dataIndex: 'updatedAt',
-//         key: 'updatedAt',
-//     },
-//     {
-//         title: '备注',
-//         dataIndex: 'memo',
-//         key: 'memo',
-//     },
-// ];
 
-
-class OrderDetail extends Component {
+class OrderDetail extends PureComponent {
     state = {
         operationkey: 'tab1',
         stepDirection: 'horizontal',
+        //test data
+        current:2,
+        operateDate:"2016-12-12 12:32:00"
     };
+
 
 
     render() {
         const {stepDirection} = this.state;
+        const {current,operateDate} = this.state;
+        const {id} = this.props.location.query;
 
         return (
             <div>
                 <PageHeader
-                    title="单号：234231029431"
+                    title={"单号："+id}
                     logo={
                         <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png"/>
                     }
                     action={action}
-                    content={description}
-                    extraContent={extra}
+                    content={description({belongUser:"mxdlzg@163.com",description:"大众朗逸",createdDate:"2017-07-07 00:00:00",startDate:"2017-07-07 00:00:00",endDate:"2017-08-08 00:00:00",marker:"请于两个工作日内确认"})}
+                    extraContent={extra({isPaid:true,payStatus:"已支付",totalPrice:"￥ 500.10"})}
                     tabList={tabList}
                 >
                 </PageHeader>
                 <div className={styles.main}>
                     <Card title="流程进度" style={{marginBottom: 24}} bordered={false}>
-                        <Steps direction={stepDirection} progressDot={customDot} current={1}>
-                            <Step title="创建项目" description={desc1}/>
-                            <Step title="订单提交" description={desc2}/>
-                            <Step title="订单支付"/>
-                            <Step title="预订完成"/>
+                        <Steps direction={stepDirection} progressDot={customDot} current={current}>
+                            <Step title="创建订单" description={current===0?desc({name: "订单创建完毕", date: operateDate}):null}/>
+                            <Step title="订单提交" description={current===1?desc({name: "订单提交完毕", date: operateDate}):null}/>
+                            <Step title="订单支付" description={current===2?desc({name: "订单支付完毕", date: operateDate}):null}/>
+                            <Step title="预订完成" description={current===3?desc({name: "订单预订完成", date: operateDate}):null}/>
                         </Steps>
                     </Card>
                     <Card title="用户信息" style={{marginBottom: 24}} bordered={false}>
@@ -213,31 +156,29 @@ class OrderDetail extends Component {
                                 曲丽丽 18100000000 浙江省杭州市西湖区黄姑山路工专路交叉路口
                             </Description>
                         </DescriptionList>
-                        <Card type="inner" title="多层级信息组">
-                            <DescriptionList size="small" style={{marginBottom: 16}} title="组名称">
-                                <Description term="负责人">林东东</Description>
-                                <Description term="角色码">1234567</Description>
-                                <Description term="所属部门">XX公司 - YY部</Description>
-                                <Description term="过期时间">2017-08-08</Description>
+                        <Card type="inner" title="出发及到达地">
+                            <DescriptionList size="small" style={{marginBottom: 16}} title="地点">
+                                <Description term="门店">林东东</Description>
+                                <Description term="编号">1234567</Description>
+                                <Description term="地址">XX公司 - YY部</Description>
+                                <Description term="时间">2017-08-08</Description>
                                 <Description term="描述">
                                     这段描述很长很长很长很长很长很长很长很长很长很长很长很长很长很长...
                                 </Description>
                             </DescriptionList>
                             <Divider style={{margin: '16px 0'}}/>
-                            <DescriptionList size="small" style={{marginBottom: 16}} title="组名称" col="1">
-                                <Description term="学名">
-                                    Citrullus lanatus (Thunb.) Matsum. et
-                                    Nakai一年生蔓生藤本；茎、枝粗壮，具明显的棱。卷须较粗..
+                            <DescriptionList size="small" style={{marginBottom: 16}} title="地点">
+                                <Description term="门店">林东东</Description>
+                                <Description term="编号">1234567</Description>
+                                <Description term="地址">XX公司 - YY部</Description>
+                                <Description term="时间">2017-08-08</Description>
+                                <Description term="描述">
+                                    这段描述很长很长很长很长很长很长很长很长很长很长很长很长很长很长...
                                 </Description>
-                            </DescriptionList>
-                            <Divider style={{margin: '16px 0'}}/>
-                            <DescriptionList size="small" title="组名称">
-                                <Description term="负责人">付小小</Description>
-                                <Description term="角色码">1234568</Description>
                             </DescriptionList>
                         </Card>
                     </Card>
-                    <Card title="用户近半年来电记录" style={{marginBottom: 24}} bordered={false}>
+                    <Card title="备注" style={{marginBottom: 24}} bordered={false}>
                         <div className={styles.noData}>
                             <Icon type="frown-o"/>
                             暂无数据
