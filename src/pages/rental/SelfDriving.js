@@ -340,7 +340,7 @@ class SelfDriving extends React.Component {
                             <Card className={styles.card}>
                                 <h2>门店地图</h2>
                                 <div className={styles.map}>
-                                    <Map amapkey={"74636f75530d04b9a7a6a63c74416a28"}/>
+                                    <Map plugins={['ToolBar']} amapkey={"74636f75530d04b9a7a6a63c74416a28"}/>
                                 </div>
                                 <br/>
                                 <br/>

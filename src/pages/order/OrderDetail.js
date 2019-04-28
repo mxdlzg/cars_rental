@@ -1,21 +1,8 @@
-import React,{PureComponent,Component, Fragment} from 'react'
+import React, {Fragment, PureComponent} from 'react'
 import styles from './OrderDetail.less'
-import classNames from 'classnames';
 import DescriptionList from '@/components/DescriptionList';
 import PageHeader from '@/components/PageHeader';
-import {
-    Button,
-    Menu,
-    Dropdown,
-    Icon,
-    Row,
-    Col,
-    Steps,
-    Card,
-    Popover,
-    Badge,
-    Divider,
-} from 'antd';
+import {Badge, Button, Card, Col, Divider, Icon, Popover, Row, Steps, Tag,} from 'antd';
 
 
 const {Step} = Steps;
@@ -42,7 +29,7 @@ function extra(param) {
             </Col>
             <Col xs={24} sm={12}>
                 <div className={styles.textSecondary}>订单金额</div>
-                <div className={styles.heading}>{param.totalPrice}</div>
+                <div className={styles.headingPrice}>{param.totalPrice}</div>
             </Col>
         </Row>
     )
@@ -55,7 +42,7 @@ function description(params) {
             <Description term="预订产品">{params.description}</Description>
             <Description term="创建时间">{params.createdDate}</Description>
             <Description term="关联单据">
-                <a href={"/"}></a>
+                {/*<a href={"/"}></a>*/}
             </Description>
             <Description term="租车日期">{params.startDate+" ~ "+params.endDate}</Description>
             <Description term="备注">{params.marker}</Description>
@@ -114,14 +101,34 @@ class OrderDetail extends PureComponent {
         stepDirection: 'horizontal',
         //test data
         current:2,
-        operateDate:"2016-12-12 12:32:00"
+        operateDate:"2016-12-12 12:32:00",
+        userInfo:{
+            name:"付小小",
+            idCard:"332194428****034921",
+            phoneNum:"18112***678",
+            eMail:"mxdlzg@163.com",
+        },
+        startLocation:{
+            name:"海泉路总店",
+            id:212324555,
+            date:"2016-12-12 12:32:00",
+            location:"上海市奉贤区海泉路",
+            description:"这是一段关于海泉路门店的描述信息"
+        },
+        endLocation:{
+            name:"海泉路总店",
+            id:212324555,
+            date:"2016-12-12 12:32:00",
+            location:"上海市奉贤区海泉路",
+            description:"这是一段关于海泉路门店的描述信息"
+        }
     };
 
 
 
     render() {
         const {stepDirection} = this.state;
-        const {current,operateDate} = this.state;
+        const {current,operateDate,userInfo,startLocation,endLocation} = this.state;
         const {id} = this.props.location.query;
 
         return (
@@ -133,7 +140,7 @@ class OrderDetail extends PureComponent {
                     }
                     action={action}
                     content={description({belongUser:"mxdlzg@163.com",description:"大众朗逸",createdDate:"2017-07-07 00:00:00",startDate:"2017-07-07 00:00:00",endDate:"2017-08-08 00:00:00",marker:"请于两个工作日内确认"})}
-                    extraContent={extra({isPaid:true,payStatus:"已支付",totalPrice:"￥ 500.10"})}
+                    extraContent={extra({isPaid:true,payStatus:"已支付",totalPrice:"￥500.10"})}
                     tabList={tabList}
                 >
                 </PageHeader>
@@ -147,34 +154,28 @@ class OrderDetail extends PureComponent {
                         </Steps>
                     </Card>
                     <Card title="用户信息" style={{marginBottom: 24}} bordered={false}>
-                        <DescriptionList style={{marginBottom: 24}}>
-                            <Description term="用户姓名">付小小</Description>
-                            <Description term="会员卡号">32943898021309809423</Description>
-                            <Description term="身份证">332194428****034921</Description>
-                            <Description term="联系方式">18112***678</Description>
-                            <Description term="联系地址">
-                                曲丽丽 18100000000 浙江省杭州市西湖区黄姑山路工专路交叉路口
-                            </Description>
+                        <DescriptionList style={{marginBottom: 24}} title={<Tag color="#f50">驾驶人信息</Tag>}>
+                            <Description term="用户姓名">{userInfo.name}</Description>
+                            <Description term="身份证">{userInfo.idCard}</Description>
+                            <Description term="联系方式">{userInfo.phoneNum}</Description>
+                            <Description term="联系邮箱">{userInfo.eMail}</Description>
                         </DescriptionList>
                         <Card type="inner" title="出发及到达地">
-                            <DescriptionList size="small" style={{marginBottom: 16}} title="地点">
-                                <Description term="门店">林东东</Description>
-                                <Description term="编号">1234567</Description>
-                                <Description term="地址">XX公司 - YY部</Description>
-                                <Description term="时间">2017-08-08</Description>
-                                <Description term="描述">
-                                    这段描述很长很长很长很长很长很长很长很长很长很长很长很长很长很长...
-                                </Description>
+
+                            <DescriptionList size="" style={{marginBottom: 16}} title={<Tag color="blue">出发地点</Tag>}>
+                                <Description term="门店">{startLocation.name}</Description>
+                                <Description term="编号">{startLocation.id}</Description>
+                                <Description term="地址">{startLocation.location}</Description>
+                                <Description term="时间">{startLocation.date}</Description>
+                                <Description term="描述">{startLocation.description}</Description>
                             </DescriptionList>
                             <Divider style={{margin: '16px 0'}}/>
-                            <DescriptionList size="small" style={{marginBottom: 16}} title="地点">
-                                <Description term="门店">林东东</Description>
-                                <Description term="编号">1234567</Description>
-                                <Description term="地址">XX公司 - YY部</Description>
-                                <Description term="时间">2017-08-08</Description>
-                                <Description term="描述">
-                                    这段描述很长很长很长很长很长很长很长很长很长很长很长很长很长很长...
-                                </Description>
+                            <DescriptionList size="" style={{marginBottom: 16}} title={<Tag color="green">达到地点</Tag>}>
+                                <Description term="门店">{endLocation.name}</Description>
+                                <Description term="编号">{endLocation.id}</Description>
+                                <Description term="地址">{endLocation.location}</Description>
+                                <Description term="时间">{endLocation.date}</Description>
+                                <Description term="描述">{endLocation.description}</Description>
                             </DescriptionList>
                         </Card>
                     </Card>
