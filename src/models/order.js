@@ -1,11 +1,16 @@
 import {message} from 'antd';
-import {addOrder, queryCarDetail, queryOrderPriceDetail, queryPayInfo} from "@/services/order"
+import {addOrder, queryCarDetail, queryOrderList, queryOrderPriceDetail, queryPayInfo} from "@/services/order"
 import router from "umi/router";
 import {stringify} from "qs";
+import {getUserToken} from "@/utils/userInfo";
 
 export default {
     namespace: 'order',
-    state: {},
+    state: {
+        list: [],
+        page: 0,
+        last:true,
+    },
     effects: {
         * initPageInfo({payload}, {call, put}) {
             const carInfoRes = yield call(queryCarDetail, payload.carId);
@@ -23,12 +28,12 @@ export default {
                 router.push({
                     pathname: '/order/OrderResult',
                     search: stringify({
-                        current:1,
-                        operateDate:res.data.createdDate,
-                        type:"success",
-                        id:res.data.id,
-                        needPay:true,
-                        description:"提交结果页用于反馈一系列操作任务的处理结果，如果仅是简单操作，使用 Message 全局提示反馈即可。本文字区域可以展示简单的补充说明，如果有类似展示“单据”的需求，下面这个灰色区域可以呈现比较复杂的内容。",
+                        current: 1,
+                        operateDate: res.data.createdDate,
+                        type: "success",
+                        id: res.data.id,
+                        needPay: true,
+                        description: "提交结果页用于反馈一系列操作任务的处理结果，如果仅是简单操作，使用 Message 全局提示反馈即可。本文字区域可以展示简单的补充说明，如果有类似展示“单据”的需求，下面这个灰色区域可以呈现比较复杂的内容。",
                     })
                 })
             } else {
@@ -41,13 +46,13 @@ export default {
             if (res.success) {
                 if (res.data.finished) {
                     yield put(router.replace({
-                        pathname:"/order/OrderResult",
-                        search:stringify({
-                            current:2,
-                            operateDate:res.data.payDate,
-                            type:"success",
-                            id:res.data.id,
-                            description:"这是一段有关于支付结果的详细描述！！！",
+                        pathname: "/order/OrderResult",
+                        search: stringify({
+                            current: 2,
+                            operateDate: res.data.payDate,
+                            type: "success",
+                            id: res.data.id,
+                            description: "这是一段有关于支付结果的详细描述！！！",
                         })
                     }))
                 } else {
@@ -58,6 +63,22 @@ export default {
                 }
             } else {
                 message.warn(res.msg);
+            }
+        },
+        * queryOrderList({payload}, {call, put}) {
+            let token = getUserToken();
+            if (payload.page >= 0 || payload.isInit) {
+                const res = yield call(queryOrderList, {name: token.username, page: payload.page});
+                if (res.success) {
+                    yield put({
+                        type: "saveOrderList",
+                        payload: {res: res, isMore: payload.isMore}
+                    })
+                } else {
+                    message.error(res.msg);
+                }
+            } else {
+                message.success("已全部加载完毕!");
             }
         }
     },
@@ -72,6 +93,15 @@ export default {
             return {
                 ...state,
                 ...payload
+            }
+        },
+        saveOrderList(state, {payload}) {
+            state.page = payload.res.last ? -1 : payload.res.number;
+            state.last = payload.res.last;
+            if (payload.isMore) {
+                state.list = state.list.concat(payload.res.content);
+            }else {
+                state.list = payload.res.content;
             }
         }
     },
