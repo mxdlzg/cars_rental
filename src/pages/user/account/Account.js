@@ -31,15 +31,6 @@ class Account extends PureComponent {
         dispatch({
             type: 'user/fetchCurrent',
         });
-        dispatch({
-            type: 'list/fetch',
-            payload: {
-                count: 8,
-            },
-        });
-        dispatch({
-            type: 'project/fetchNotice',
-        });
     }
 
     onTabChange = key => {
@@ -99,30 +90,17 @@ class Account extends PureComponent {
         const operationTabList = [
             {
                 key: 'orders',
-                tab: (
-                    <span>
-            我的订单 <span style={{fontSize: 14}}>(8)</span>
-          </span>
-                ),
+                tab: (<span>我的订单 <span style={{fontSize: 14}}>(8)</span></span>),
             },
             {
                 key: 'assets',
-                tab: (
-                    <span>
-            我的资产 <span style={{fontSize: 14}}>(8)</span>
-          </span>
-                ),
+                tab: (<span>我的资产 <span style={{fontSize: 14}}>(8)</span></span>),
             },
             {
                 key: 'invoices',
-                tab: (
-                    <span>
-            发票管理 <span style={{fontSize: 14}}>(8)</span>
-          </span>
-                ),
+                tab: (<span>发票管理 <span style={{fontSize: 14}}>(8)</span></span>),
             },
         ];
-        console.log(currentUser);
         return (
             <GridContent>
                 <Row style={{marginLeft: '10em', marginRight: '10em', marginTop: '24px'}} gutter={24}>
@@ -141,74 +119,12 @@ class Account extends PureComponent {
                                             {currentUser.title}
                                         </p>
                                         <p>
-                                            <i className={styles.group}/>
-                                            {currentUser.group}
-                                        </p>
-                                        <p>
                                             <i className={styles.address}/>
                                             {currentUser.geographic.province.label}
                                             {currentUser.geographic.city.label}
                                         </p>
                                     </div>
-                                    <Divider dashed/>
-                                    <div className={styles.tags}>
-                                        <div className={styles.tagsTitle}>我的订单</div>
-                                        {currentUser.tags.concat(newTags).map(item => (
-                                            <Tag key={item.key}>{item.label}</Tag>
-                                        ))}
-                                        {inputVisible && (
-                                            <Input
-                                                ref={this.saveInputRef}
-                                                type="text"
-                                                size="small"
-                                                style={{width: 78}}
-                                                value={inputValue}
-                                                onChange={this.handleInputChange}
-                                                onBlur={this.handleInputConfirm}
-                                                onPressEnter={this.handleInputConfirm}
-                                            />
-                                        )}
-                                        {!inputVisible && (
-                                            <Tag
-                                                onClick={this.showInput}
-                                                style={{background: '#fff', borderStyle: 'dashed'}}
-                                            >
-                                                <Icon type="plus"/>
-                                            </Tag>
-                                        )}
-                                    </div>
-                                    <Divider style={{marginTop: 16}} dashed/>
-                                    <div className={styles.team}>
-                                        <div className={styles.teamTitle}>我的资产</div>
-                                        <Spin spinning={projectLoading}>
-                                            <Row gutter={36}>
-                                                {notice.map(item => (
-                                                    <Col key={item.id} lg={24} xl={12}>
-                                                        <Link to={item.href}>
-                                                            <Avatar size="small" src={item.logo}/>
-                                                            {item.member}
-                                                        </Link>
-                                                    </Col>
-                                                ))}
-                                            </Row>
-                                        </Spin>
-                                    </div>
-                                    <Divider style={{marginTop: 16}} dashed/>
-                                    <div className={styles.team}>
-                                        <div className={styles.teamTitle}>发票管理</div>
-                                        <Spin spinning={projectLoading}>
-                                            <Row gutter={36}>
-                                                {notice.map(item => (
-                                                    <Col key={item.id} lg={24} xl={12}>
-                                                        <Link to={item.href}>
-                                                            <Avatar size="small" src={item.logo}/>
-                                                            {item.member}
-                                                        </Link>
-                                                    </Col>
-                                                ))}
-                                            </Row>
-                                        </Spin>
-                                    </div>
+
                                 </div>
                             ) : (
                                 'loading...'
