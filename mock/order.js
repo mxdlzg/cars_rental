@@ -75,5 +75,18 @@ export default {
         ],
         last:false,
         number:1,
+    },
+    "GET /api/assets/queryCouponsList": {
+        success:true,
+        content: [
+            {id:"2019040101000026102",avatar: "https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png"},
+            {id:"2019040101000026102",avatar: "https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png"},
+            {id:"2019040101000026102",avatar: "https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png"},
+            {id:"2019040101000026102",avatar: "https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png"},
+            {id:"2019040101000026102",avatar: "https://gw.alipayobjects.com/zos/rmsportal/siCrBXXhmvTQGWPNLBow.png"},
+            {id:"2019040101000026102",avatar: "https://gw.alipayobjects.com/zos/rmsportal/kZzEzemZyKLKFsojXItE.png"},
+        ],
+        last:false,
+        number:1,
     }
 }
