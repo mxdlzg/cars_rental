@@ -2,6 +2,8 @@ import React, {PureComponent} from 'react';
 import {Button, List, Spin, Tag} from 'antd';
 import {connect} from 'dva';
 import styles from './Orders.less';
+import {stringify} from "qs";
+import router from "umi/router";
 
 @connect(({loading, order}) => ({
     orderListLoading: loading.effects["order/queryOrderList"],
@@ -18,9 +20,15 @@ class Account extends PureComponent {
     loadMore = () => {
         this.props.dispatch({
             type: "order/queryOrderList",
-            payload: {isInit: false, page: this.props.page,isMore:true},
+            payload: {isInit: false, page: this.props.page, isMore: true},
         })
     };
+
+    onOrder(item) {
+        router.push({
+            pathname: "/order/OrderDetail", search: stringify({id: item.id})
+        })
+    }
 
     render() {
         const {
@@ -54,7 +62,7 @@ class Account extends PureComponent {
                     renderItem={item => (
                         <List.Item
                             actions={[
-                                <Button type="primary">查看订单</Button>
+                                <Button type="primary" onClick={this.onOrder.bind(this, item)}>查看订单</Button>
                             ]}
                         >
                             <img alt="车型" src={item.avatar} style={{width: '10em', height: '7em', marginRight: "1em"}}/>
