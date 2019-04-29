@@ -81,6 +81,28 @@ export default {
                 {component: '404'},
             ]
         },
+        {
+            path: '/management',
+            name: 'management',
+            icon: 'management',
+            routes: [
+                {
+                    path: '/management/analysis',
+                    name: 'analysis',
+                    component: './management/Analysis',
+                },
+                {
+                    path: '/management/monitor',
+                    name: 'monitor',
+                    component: './management/Monitor',
+                },
+                {
+                    path: '/management/workplace',
+                    name: 'workplace',
+                    component: './management/Workplace',
+                },
+            ],
+        },
         //public
         {
             path: '/',
