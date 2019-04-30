@@ -28,7 +28,7 @@ const FooterView = () => (
             ]}
             copyright={
                 <Fragment>
-                    Copyright <Icon type="copyright" /> 2018 Cars Rental 智能租车平台
+                    Copyright <Icon type="copyright" /> 2019 Cars Rental 智能租车平台
                 </Fragment>
             }
         />
