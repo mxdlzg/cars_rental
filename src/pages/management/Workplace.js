@@ -90,7 +90,7 @@ class Workplace extends PureComponent {
             avatar={<Avatar src={item.user.avatar} />}
             title={
               <span>
-                <a className={styles.username}>{item.user.name}</a>
+                <a href={"/"} className={styles.username}>{item.user.name}</a>
                 &nbsp;
                 <span className={styles.event}>{events}</span>
               </span>

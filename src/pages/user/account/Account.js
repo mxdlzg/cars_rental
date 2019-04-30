@@ -1,8 +1,7 @@
 import React, {PureComponent} from 'react'
 import {connect} from 'dva';
-import Link from 'umi/link';
 import router from 'umi/router';
-import {Card, Row, Col, Icon, Avatar, Tag, Divider, Spin, Input} from 'antd';
+import {Card, Col, Row} from 'antd';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import styles from './Account.less'
 
@@ -78,13 +77,13 @@ class Account extends PureComponent {
     };
 
     render() {
-        const {newTags, inputVisible, inputValue} = this.state;
+        // const {newTags, inputVisible, inputValue} = this.state;
         const {
             listLoading,
             currentUser,
             currentUserLoading,
-            project: {notice},
-            projectLoading,
+            // project: {notice},
+            // projectLoading,
             children,
         } = this.props;
         const operationTabList = [

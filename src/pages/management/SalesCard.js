@@ -24,16 +24,16 @@ const SalesCard = memo(
           tabBarExtraContent={
             <div className={styles.salesExtraWrap}>
               <div className={styles.salesExtra}>
-                <a className={isActive('today')} onClick={() => selectDate('today')}>
+                <a href="/" className={isActive('today')} onClick={() => selectDate('today')}>
                   <FormattedMessage id="app.analysis.all-day" defaultMessage="All Day" />
                 </a>
-                <a className={isActive('week')} onClick={() => selectDate('week')}>
+                <a href="/" className={isActive('week')} onClick={() => selectDate('week')}>
                   <FormattedMessage id="app.analysis.all-week" defaultMessage="All Week" />
                 </a>
-                <a className={isActive('month')} onClick={() => selectDate('month')}>
+                <a href="/" className={isActive('month')} onClick={() => selectDate('month')}>
                   <FormattedMessage id="app.analysis.all-month" defaultMessage="All Month" />
                 </a>
-                <a className={isActive('year')} onClick={() => selectDate('year')}>
+                <a href="/" className={isActive('year')} onClick={() => selectDate('year')}>
                   <FormattedMessage id="app.analysis.all-year" defaultMessage="All Year" />
                 </a>
               </div>
