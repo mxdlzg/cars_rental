@@ -10,7 +10,7 @@ export default {
             antd: true,
             dva: {
                 immer: true,
-                dynamicImport:undefined
+                dynamicImport: undefined
             },
             dynamicImport: false,
             title: 'cars_rental',
@@ -44,11 +44,11 @@ export default {
                 {path: '/user', redirect: '/user/login'},
                 {path: '/user/login', name: 'login', component: './user/Login'},
                 {path: '/user/register', name: 'register', component: './user/Register'},
-                {path: '/user/register-result', name: 'register-result', component: './user/RegisterResult'},
+                {path: '/user/register-result', component: './user/RegisterResult'},
                 {
                     path: '/user/account', name: 'account', component: './user/account/Account',
-                    Routes:['src/pages/Authorized'],
-                    authority:['user'],
+                    Routes: ['src/pages/Authorized'],
+                    authority: ['user'],
                     routes: [
                         {path: '/user/account', redirect: '/user/account/orders'},
                         {path: '/user/account/orders', name: 'orders', component: './user/account/Orders'},
@@ -62,45 +62,76 @@ export default {
         {
             path: '/order',
             component: '../layouts/BasicLayout',
-            Routes:['src/pages/Authorized'],
-            authority: ['user'],
+
             routes: [
-                {path: '/order/OrderDetail', name: 'orderdetail', component: './order/OrderDetail'},
-                {path: '/order/OrderResult', name: 'orderresult', component: './order/OrderResult'},
-                {path: '/order/RentalOrder', name: 'rentalorder', component: './order/RentalOrder'},
+                {path: '/order', redirect: "/"},
+                {
+                    Routes: ['src/pages/Authorized'],
+                    path: '/order/OrderDetail',
+                    authority: ['user'],
+                    name: 'orderdetail',
+                    component: './order/OrderDetail'
+                },
+                {
+                    Routes: ['src/pages/Authorized'],
+                    path: '/order/OrderResult',
+                    authority: ['user'],
+                    name: 'orderresult',
+                    component: './order/OrderResult'
+                },
+                {
+                    Routes: ['src/pages/Authorized'],
+                    path: '/order/RentalOrder',
+                    authority: ['user'],
+                    name: 'rentalorder',
+                    component: './order/RentalOrder'
+                },
                 {component: '404'},
             ]
         },
         {
             path: '/pay',
-            Routes:['src/pages/Authorized'],
-            authority: ['user'],
             component: '../layouts/BasicLayout',
             routes: [
-                {path: '/pay/OrderPay', name: 'orderpay', component: './pay/OrderPay'},
+                {
+                    Routes: ['src/pages/Authorized'],
+                    path: '/pay/OrderPay',
+                    authority: ['user'],
+                    name: 'orderpay',
+                    component: './pay/OrderPay'
+                },
                 {component: '404'},
             ]
         },
         {
             path: '/management',
-            name: 'management',
-            icon: 'management',
+            component: '../layouts/BasicLayout',
+            // name: 'management',
+            // icon: 'management',
             routes: [
+                {path: '/management', redirect: "/management/Analysis"},
                 {
-                    path: '/management/analysis',
+                    Routes: ['src/pages/Authorized'],
+                    authority: ['admin'],
+                    path: '/management/Analysis',
                     name: 'analysis',
                     component: './management/Analysis',
                 },
                 {
-                    path: '/management/monitor',
+                    Routes: ['src/pages/Authorized'],
+                    authority: ['admin'],
+                    path: '/management/Monitor',
                     name: 'monitor',
                     component: './management/Monitor',
                 },
                 {
-                    path: '/management/workplace',
+                    Routes: ['src/pages/Authorized'],
+                    authority: ['admin'],
+                    path: '/management/Workplace',
                     name: 'workplace',
                     component: './management/Workplace',
                 },
+                {component: '404'},
             ],
         },
         //public
@@ -110,6 +141,7 @@ export default {
             routes: [
                 {path: '/', component: './index'/*, authority: ['admin', 'user']*/},
                 {path: '/rental/SelfDriving', name: "自驾租车", component: './rental/SelfDriving'},
+                {path: '/management', name: "超级控制台"},
                 {component: '404'},
             ]
         },
