@@ -9,6 +9,8 @@ export default {
         filterOptionsLoading: true,
         cascaderStartData: [],
         cascaderEndData: [],
+        cascaderSelectSData:[],
+        cascaderSelectEData:[],
         originLocation: undefined,
         aimLocation: undefined,
         dates: undefined,
@@ -21,7 +23,7 @@ export default {
             const res = yield call(queryStores, payload.data);
             yield put({
                 type: 'saveStores',
-                payload: {type: payload.type, data: res.data}
+                payload: {type: payload.type, data: res.data,sData:payload.data}
             })
         },
         * searchRental(_, {call, put, select}) {
@@ -37,7 +39,7 @@ export default {
             }));
             yield put({
                 type: 'saveCars',
-                payload: {tab: localPay.tabIndex, ...res.data,clear:true}
+                payload: {tab: localPay.tabIndex, ...res.data, clear: true}
             })
         },
         * searchRentalLoadMore(_, {call, put, select}) {
@@ -71,16 +73,24 @@ export default {
         }
     },
     reducers: {
+        updateState(state, {payload}) {
+            return {
+                state,
+                ...payload
+            }
+        },
         saveStores(state, {payload}) {
             if (payload.type === 'start') {
                 return {
                     ...state,
-                    cascaderStartData: payload.data
+                    cascaderStartData: payload.data,
+                    cascaderSelectSData:payload.sData,
                 }
             } else {
                 return {
                     ...state,
-                    cascaderEndData: payload.data
+                    cascaderEndData: payload.data,
+                    cascaderSelectEData:payload.sData,
                 }
             }
         },
@@ -90,9 +100,15 @@ export default {
                 filterOptions: payload,
             }
         },
+        saveDate(state,{payload}){
+            return{
+                ...state,
+                selectedDate:payload.value,
+            }
+        },
         saveCars(state, {payload}) {
             if (payload) {
-                state.loadedPage[payload.tab-1] = payload.last ? -1 : payload.number;
+                state.loadedPage[payload.tab - 1] = payload.last ? -1 : payload.number;
                 switch (payload.tab) {
                     case 1:
                         if (payload.clear) {

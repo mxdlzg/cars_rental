@@ -67,7 +67,7 @@ function disabledRangeTime(_, type) {
     loadMoreLoading: loading.effects['rental/searchRentalLoadMore'],
     ...rental,
 }))
-class SelfDriving extends React.Component {
+class SelfDriving extends React.PureComponent {
     constructor(props) {
         super(props);
         // this.searchRental = debounce(this.searchRental, 800);
@@ -138,13 +138,19 @@ class SelfDriving extends React.Component {
         })
     };
 
-    onDateChange(value) {
+    onDateOk = (value) => {
         this.props.dispatch({
             type: 'rental/changeSearchParams',
             payload: {value: {startDate: value[0].unix(), endDate: value[1].unix()}}
         });
         message.success(value[0].format("YYYY-MM-DD HH:mm:ss") + "--" + value[1].format("YYYY-MM-DD HH:mm:ss"));
-    }
+    };
+    onDateChange = (value) => {
+        this.props.dispatch({
+            type: 'rental/saveDate',
+            payload: {value: value}
+        });
+    };
 
     tabChange = (key) => {
         this.props.dispatch({
@@ -161,17 +167,17 @@ class SelfDriving extends React.Component {
         }
     };
 
-    onRent = (item,e) => {
+    onRent = (item, e) => {
         e.preventDefault();
-        const {dates,originLocation,aimLocation} = this.props;
+        const {dates, originLocation, aimLocation} = this.props;
         message.success(item.id);
         router.push({
-            pathname:"/order/RentalOrder",
-            query:{
-                carId:item.id,
+            pathname: "/order/RentalOrder",
+            query: {
+                carId: item.id,
                 ...dates,
-                start:originLocation,
-                end:aimLocation
+                start: originLocation,
+                end: aimLocation
             }
         })
     };
@@ -185,7 +191,12 @@ class SelfDriving extends React.Component {
             cascaderStartData, cascaderEndData, filterOptions, searchLoading, loadMoreLoading,
             shortRent, weekRent, monthRent,
             loadedPage,
-            tabIndex
+            tabIndex,
+            originLocation,
+            aimLocation,
+            cascaderSelectSData,
+            cascaderSelectEData,
+            selectedDate
         } = this.props;
         const loadMore = (
                 <div style={{textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',}}>
@@ -279,14 +290,14 @@ class SelfDriving extends React.Component {
                                         <Icon style={{fontSize: '20px'}} type="home"/>
                                         <Cascader className={styles.inputCommon} options={filterOptions.options}
                                                   onChange={this.onStartCascaderChange}
-                                                  defaultValue={['山东', '济南', '历下区']}
+                                                  value={cascaderSelectSData}
                                                   placeholder="出发地"/>
                                         <Select
                                             id="selectStart"
                                             className={styles.searchLocation}
                                             showSearch
                                             onSelect={this.onLocationChange.bind(this, 'selectStart')}
-                                            defaultValue={"ID0010225历下区总店"}
+                                            value={originLocation}
                                             placeholder="选择出发地"
                                             notFoundContent={<Empty/>}
                                             filterOption={true}
@@ -299,12 +310,13 @@ class SelfDriving extends React.Component {
                                         <Cascader className={styles.inputCommon} options={filterOptions.options}
                                                   onChange={this.onEndCascaderChange}
                                                   defaultValue={['上海', '奉贤区', '海湾镇']}
+                                                  value={cascaderSelectEData}
                                                   placeholder="目的地"/>
                                         <Select
                                             id="selectEnd"
                                             className={styles.searchLocation}
                                             showSearch
-                                            defaultValue={"ID0010224海泉路1店"}
+                                            value={aimLocation}
                                             onSelect={this.onLocationChange.bind(this, 'selectEnd')}
                                             placeholder="选择目的地"
                                             notFoundContent={<Empty/>}
@@ -318,7 +330,9 @@ class SelfDriving extends React.Component {
                                     style={{float: 'left'}}
                                     disabledDate={disabledDate}
                                     disabledTime={disabledRangeTime}
-                                    onOk={this.onDateChange}
+                                    onChange={this.onDateChange}
+                                    onOk={this.onDateOk}
+                                    value={selectedDate}
                                     showTime={{
                                         hideDisabledOptions: true,
                                         defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
@@ -365,7 +379,8 @@ class SelfDriving extends React.Component {
                                         renderItem={item => (
                                             <List.Item
                                                 actions={[
-                                                    <Button type="primary" size={'large'} onClick={this.onRent.bind(this,item)}>租车</Button>
+                                                    <Button type="primary" size={'large'}
+                                                            onClick={this.onRent.bind(this, item)}>租车</Button>
                                                 ]}
                                             >
                                                 <img alt="车型" src={cars1} style={{width: '15em', height: '10em'}}/>
