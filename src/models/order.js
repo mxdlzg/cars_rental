@@ -1,5 +1,12 @@
 import {message} from 'antd';
-import {addOrder, queryCarDetail, queryOrderList, queryOrderPriceDetail, queryPayInfo} from "@/services/order"
+import {
+    addOrder,
+    orderDetail,
+    queryCarDetail,
+    queryOrderList,
+    queryOrderPriceDetail,
+    queryPayInfo
+} from "@/services/order"
 import router from "umi/router";
 import {stringify} from "qs";
 import {getUserToken} from "@/utils/userInfo";
@@ -9,7 +16,7 @@ export default {
     state: {
         list: [],
         page: 0,
-        last:true,
+        last: true,
     },
     effects: {
         * initPageInfo({payload}, {call, put}) {
@@ -80,6 +87,17 @@ export default {
             } else {
                 message.success("已全部加载完毕!");
             }
+        },
+        * orderDetail({payload}, {call, put}) {
+            const res = yield call(orderDetail, payload);
+            if (res.success) {
+                yield put({
+                    type: "saveOrderDetail",
+                    payload: res.content,
+                })
+            } else {
+                message.error(res.msg);
+            }
         }
     },
     reducers: {
@@ -100,8 +118,14 @@ export default {
             state.last = payload.res.last;
             if (payload.isMore) {
                 state.list = state.list.concat(payload.res.content);
-            }else {
+            } else {
                 state.list = payload.res.content;
+            }
+        },
+        saveOrderDetail(state, {payload}) {
+            return {
+                ...state,
+                ...payload
             }
         }
     },

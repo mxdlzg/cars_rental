@@ -96,6 +96,7 @@ class RentalOrder extends React.Component {
                         ...values,
                         invoiceType: checkedInvoiceNone ? 1 : 2,
                         prefix,
+                        ...this.props.location.query,
                     },
                 });
             } else {
@@ -222,8 +223,8 @@ class RentalOrder extends React.Component {
                         }
                     </Card>
                     <Card title={"驾驶员信息"} className={styles.card}>
-                        <Form.Item key="info_name" label="姓名">
-                            {getFieldDecorator('info_name', {
+                        <Form.Item key="name" label="姓名">
+                            {getFieldDecorator('name', {
                                 rules: [{
                                     required: true, message: '请输入姓名',
                                 }],
@@ -243,9 +244,9 @@ class RentalOrder extends React.Component {
                         </Form.Item>
                         <Form.Item
                             label="证件号码"
-                            key='info_id'
+                            key='cardId'
                         >
-                            {getFieldDecorator('info_id', {
+                            {getFieldDecorator('cardId', {
                                 rules: [
                                     {required: true, message: '请输入证件号码'},
                                     {validator: checkId, trigger: 'blur'}

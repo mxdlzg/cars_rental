@@ -26,3 +26,7 @@ export async function queryPayInfo(params) {
 export async function queryOrderList(params) {
     return request(`/api/order/queryOrderList?${stringify(params)}`)
 }
+
+export async function orderDetail(params) {
+    return request(`/api/order/orderDetail?${stringify(params)}`)
+}

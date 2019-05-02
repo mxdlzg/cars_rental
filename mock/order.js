@@ -88,5 +88,36 @@ export default {
         ],
         last:false,
         number:1,
+    },
+    "GET /api/order/orderDetail":(req, res) =>{
+        setTimeout(()=>{
+            res.send({
+                success:true,
+                content:{
+                    current: 2,
+                    operateDate: "2016-12-12 12:32:00",
+                    userInfo: {
+                        name: "付小小",
+                        idCard: "332194428****034921",
+                        phoneNum: "18112***678",
+                        eMail: "mxdlzg@163.com",
+                    },
+                    startLocation: {
+                        name: "海泉路总店",
+                        id: 212324555,
+                        date: "2016-12-12 12:32:00",
+                        location: "上海市奉贤区海泉路",
+                        description: "这是一段关于海泉路门店的描述信息"
+                    },
+                    endLocation: {
+                        name: "海泉路总店",
+                        id: 212324555,
+                        date: "2016-12-12 12:32:00",
+                        location: "上海市奉贤区海泉路",
+                        description: "这是一段关于海泉路门店的描述信息"
+                    }
+                }
+            })
+        },1000);
     }
 }
