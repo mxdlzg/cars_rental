@@ -4,6 +4,13 @@ import path from 'path';
 
 export default {
     treeShaking: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080/',
+        changeOrigin: true,
+        // pathRewrite: { '^/api': '' },
+      },
+    },
     plugins: [
         // ref: https://umijs.org/plugin/umi-plugin-react.html
         ['umi-plugin-react', {
@@ -142,11 +149,11 @@ export default {
                 {path: '/', component: './index'/*, authority: ['admin', 'user']*/},
                 {path: '/rental/SelfDriving', name: "自驾租车", component: './rental/SelfDriving'},
                 {path: '/management', name: "超级控制台"},
+                {path: '/500', component: '500'},
                 {component: '404'},
             ]
         },
         {component: '404'},
 
     ]
-
 }

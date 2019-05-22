@@ -2,7 +2,7 @@ import {fakeAccountLogin, getFakeCaptcha} from "@/services/api";
 import {reloadAuthorized} from "@/utils/Authorized";
 import {routerRedux} from "dva/router";
 import {getPageQuery, getPageQueryParams, getPageQueryUrl} from "@/utils/utils";
-import {setAuthority} from "@/utils/authority";
+import {setAuthority, setAuthorization} from "@/utils/authority";
 import {cacheUserToken} from "@/utils/userInfo";
 import {stringify} from "qs";
 import {message} from 'antd';
@@ -21,10 +21,10 @@ export default {
                 type: "loginHandle",
                 payload: res
             });
-            let load = {username:payload.username,token:res.token};
-            yield put({
-                type:"user/fetchCurrent",
-            });
+            let load = {username:payload.username};
+            // yield put({
+            //     type:"user/fetchCurrent",
+            // });
             if (res.status === 'ok') {
                 reloadAuthorized();
                 cacheUserToken(load);
@@ -48,7 +48,7 @@ export default {
                     query = getPageQueryParams(redirect);
                     redirect = getPageQueryUrl(redirect);
                 }
-                message.success(res.message);
+                message.success(res.msg);
                 yield put(router.replace({
                     pathname: redirect || '/',
                     search:stringify({
@@ -57,7 +57,7 @@ export default {
                     // state: {token: res.token, username: payload.username}
                 }));
             }else {
-                message.error(res.message);
+                message.error(res.msg);
             }
         },
         * getCaptcha({payload}, {call}) {
@@ -69,7 +69,9 @@ export default {
                 type: 'changeLoginStatus',
                 payload: {
                     status: false,
-                    currentAuthority: 'guest',
+                    data:{
+                        currentAuthority: 'guest'
+                    }
                 },
             });
 
@@ -80,6 +82,7 @@ export default {
             });
             reloadAuthorized();
             cacheUserToken(undefined);
+            setAuthorization(undefined);
 
             // redirect
             if (window.location.pathname !== '/user/login') {
@@ -98,18 +101,18 @@ export default {
     reducers: {
         //login
         loginHandle(state, {payload}) {
-            setAuthority(payload.currentAuthority);
+            setAuthority(payload.data.currentAuthority);
             return {
                 ...state,
                 status: payload.status,
-                token: payload.token,
+                //token: payload.data.token,
                 type: payload.type,
-                username: payload.username
+                //username: payload.username
             }
         },
         //logout
         changeLoginStatus(state, {payload}) {
-            setAuthority(payload.currentAuthority);
+            setAuthority(payload.data.currentAuthority);
             return {
                 ...state,
                 status: payload.status,

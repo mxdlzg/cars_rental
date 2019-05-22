@@ -52,14 +52,17 @@ function actions(params) {
     return (
         <div>
             {needPay
-                ? <Button type="primary" onClick={() => {router.push({pathname:"/pay/OrderPay",search:stringify({id:id})})}}>
+                ? <Button type="primary" onClick={() => {
+                    router.push({pathname: "/pay/OrderPay", search: stringify({id: id})})
+                    }
+                }>
                     支付订单
                 </Button>
                 : null
             }
-            <Button type={needPay ? "" : "primary"} onClick={()=>{
+            <Button type={needPay ? "" : "primary"} onClick={() => {
                 router.push({
-                    pathname:"/order/OrderDetail",search:stringify({id:id})
+                    pathname: "/order/OrderDetail", search: stringify({id: id})
                 })
             }}>查看订单</Button>
         </div>

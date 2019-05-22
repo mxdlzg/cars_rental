@@ -9,7 +9,7 @@ export function getUserToken() {
     try {
         token = JSON.parse(localStorage.getItem("userToken"));
     } catch (e) {
-        token = {username: null, token: ''}
+        token = {username: null}
     }
-    return token?token:{username: null, token: ''};
+    return token?token:{username: null};
 }

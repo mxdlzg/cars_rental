@@ -1,8 +1,9 @@
 import fetch from 'dva/fetch';
-import { notification } from 'antd';
+import {notification} from 'antd';
 import router from 'umi/router';
 import hash from 'hash.js';
-import { isAntdPro } from './utils';
+import {isAntdPro} from './utils';
+import {getToken, setAuthorization} from "@/utils/authority";
 
 const codeMessage = {
     200: '服务器成功返回请求的数据。',
@@ -13,6 +14,7 @@ const codeMessage = {
     401: '用户没有权限（令牌、用户名、密码错误）。',
     403: '用户得到授权，但是访问是被禁止的。',
     404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
+    405: '请求方式无效，或请求参数错误。',
     406: '请求的格式不可得。',
     410: '请求的资源被永久删除，且不会再得到的。',
     422: '当创建一个对象时，发生一个验证错误。',
@@ -31,10 +33,10 @@ const checkStatus = response => {
         message: `请求错误 ${response.status}: ${response.url}`,
         description: errortext,
     });
-    const error = new Error(errortext);
-    error.name = response.status;
-    error.response = response;
-    throw error;
+    // const error = new Error(errortext);
+    // error.name = response.status;
+    // error.response = response;
+    // throw error;
 };
 
 const cachedSave = (response, hashcode) => {
@@ -61,9 +63,10 @@ const cachedSave = (response, hashcode) => {
  *
  * @param  {string} url       The URL we want to request
  * @param  {object} [option] The options we want to pass to "fetch"
+ * @param needCheckStatus is need check
  * @return {object}           An object containing either "data" or "err"
  */
-export default function request(url, option) {
+export default function request(url, option, needCheckStatus = true) {
     const options = {
         expirys: isAntdPro(),
         ...option,
@@ -82,11 +85,14 @@ export default function request(url, option) {
         credentials: 'include',
     };
 
-    const newOptions = { ...defaultOptions, ...options };
-    // const token = getToken();
-    // if (token) {
-    //     newOptions.headers.Authorization = `Bearer ${token}`;
-    // }
+    const newOptions = {...defaultOptions, ...options};
+    const token = getToken();
+    if (token) {
+        if (!newOptions.headers) {
+            newOptions.headers = {}
+        }
+        newOptions.headers.Authorization = token;//`Bearer ${token}`;
+    }
 
     if (
         newOptions.method === 'POST' ||
@@ -124,15 +130,21 @@ export default function request(url, option) {
             sessionStorage.removeItem(`${hashcode}:timestamp`);
         }
     }
-    return fetch(url, newOptions)
-        .then(checkStatus)
+    let res = fetch(url, newOptions);
+    if (needCheckStatus) {
+        res.then(checkStatus);
+    }
+    return res
         .then(response => cachedSave(response, hashcode))
         .then(response => {
             // DELETE and 204 do not return data by default
             // using .json will report an error.
-            if (newOptions.method === 'DELETE' || response.status === 204) {
-                return response.text();
+            if (response.headers.get("token")) {
+                setAuthorization(response.headers.get("token"));
             }
+            // if (newOptions.method === 'DELETE' || response.status === 204) {
+            //     return response.text();
+            // }
             return response.json();
         })
         .catch(e => {
@@ -146,16 +158,18 @@ export default function request(url, option) {
                 return;
             }
             // environment should not be used
-            if (status === 403) {
-                router.push('/exception/403');
-                return;
-            }
-            if (status <= 504 && status >= 500) {
-                router.push('/exception/500');
-                return;
-            }
-            if (status >= 404 && status < 422) {
-                router.push('/exception/404');
+            if (needCheckStatus) {
+                if (status === 403) {
+                    router.push('/exception/403');
+                    return;
+                }
+                if (status <= 504 && status >= 500) {
+                    router.push('/exception/500');
+                    return;
+                }
+                if (status >= 404 && status < 422) {
+                    router.push('/exception/404');
+                }
             }
         });
 }

@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react'
 import {connect} from 'dva';
 import router from 'umi/router';
-import {Card, Col, Row} from 'antd';
+import {Avatar, Card, Col, Row} from 'antd';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import styles from './Account.less'
 
@@ -108,7 +108,9 @@ class Account extends PureComponent {
                             {currentUser.name && Object.keys(currentUser).length ? (
                                 <div>
                                     <div className={styles.avatarHolder}>
-                                        <img alt={"头像"} src={currentUser.avatar}/>
+                                        <Avatar size={64} src={currentUser.avatar} />
+                                        <br/>
+                                        <br/>
                                         <div className={styles.name}>{currentUser.name}</div>
                                         <div>{currentUser.signature}</div>
                                     </div>
@@ -117,11 +119,11 @@ class Account extends PureComponent {
                                             <i className={styles.title}/>
                                             {currentUser.title}
                                         </p>
-                                        <p>
-                                            <i className={styles.address}/>
-                                            {currentUser.geographic.province.label}
-                                            {currentUser.geographic.city.label}
-                                        </p>
+                                        {/*<p>*/}
+                                            {/*<i className={styles.address}/>*/}
+                                            {/*{currentUser.geographic.province.label}*/}
+                                            {/*{currentUser.geographic.city.label}*/}
+                                        {/*</p>*/}
                                     </div>
 
                                 </div>

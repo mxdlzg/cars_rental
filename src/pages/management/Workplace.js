@@ -129,7 +129,7 @@ class Workplace extends PureComponent {
                             ，祝你开心每一天！
                         </div>
                         <div>
-                            {currentUser.title} |{currentUser.group}
+                            {/*{currentUser.title} |{currentUser.group}*/}
                         </div>
                     </div>
                 </div>
@@ -138,17 +138,17 @@ class Workplace extends PureComponent {
         const extraContent = (
             <div className={styles.extraContent}>
                 <div className={styles.statItem}>
-                    <p>项目数</p>
+                    <p>总订单数</p>
                     <p>56</p>
                 </div>
                 <div className={styles.statItem}>
-                    <p>团队内排名</p>
+                    <p>站内排名</p>
                     <p>
                         8<span> / 24</span>
                     </p>
                 </div>
                 <div className={styles.statItem}>
-                    <p>项目访问</p>
+                    <p>系统访问次数</p>
                     <p>2,223</p>
                 </div>
             </div>
@@ -166,9 +166,9 @@ class Workplace extends PureComponent {
                             <Card
                                 className={styles.projectList}
                                 style={{marginBottom: 24}}
-                                title="进行中的项目"
+                                title="推荐车辆"
                                 bordered={false}
-                                extra={<Link to="/">全部项目</Link>}
+                                extra={<Link to="/">查看全部</Link>}
                                 loading={projectLoading}
                                 bodyStyle={{padding: 0}}
                             >

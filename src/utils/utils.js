@@ -132,10 +132,16 @@ export function getRoutes(path, routerData) {
 }
 
 export function getPageQueryUrl(url) {
-    return url.split('?')[0];
+    if (url) {
+        return url.split('?')[0];
+    }
+    return "/";
 }
 export function getPageQueryParams(url) {
-    return parse(url.split('?')[1]);
+    if (url) {
+        return parse(url.split('?')[1]);
+    }
+    return {};
 }
 
 export function getPageQuery() {

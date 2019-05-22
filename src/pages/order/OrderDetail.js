@@ -4,6 +4,8 @@ import DescriptionList from '@/components/DescriptionList';
 import PageHeader from '@/components/PageHeader';
 import {Badge, Button, Card, Col, Divider, Icon, Popover, Row, Steps, Tabs, Tag,Skeleton} from 'antd';
 import {connect} from "dva/index";
+import router from "umi/router";
+import {stringify} from "qs";
 
 const TabPane = Tabs.TabPane;
 
@@ -11,16 +13,23 @@ const {Step} = Steps;
 const {Description} = DescriptionList;
 const ButtonGroup = Button.Group;
 
-const action = (
-    <Fragment>
-        <ButtonGroup>
-            <Button>操作</Button>
-            <Button>操作</Button>
-            <Button>操作</Button>
-        </ButtonGroup>
-        <Button type="primary">主操作</Button>
-    </Fragment>
-);
+function action(params) {
+    return(
+        <Fragment>
+            <ButtonGroup>
+                <Button>操作</Button>
+                <Button>操作</Button>
+                <Button>操作</Button>
+            </ButtonGroup>
+            <Button type="primary" onClick={()=>{
+                router.push({
+                    pathname:'/pay/OrderPay',
+                    search: stringify({id: params.id})
+                })
+            }}>支付订单</Button>
+        </Fragment>
+    )
+}
 
 function extra(param) {
     return (
@@ -159,7 +168,7 @@ class OrderDetail extends PureComponent {
                     logo={
                         <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png"/>
                     }
-                    action={action}
+                    action={action({id})}
                     content={description({
                         belongUser: "mxdlzg@163.com",
                         description: "大众朗逸",

@@ -121,6 +121,21 @@ export async function queryNotices(params = {}) {
     return request(`/api/notices?${stringify(params)}`);
 }
 
+//TODO:: 便于后端获取参数，此处请求编入URL
+export async function clearNotices(params) {
+    return request(`/api/clearNotices?${stringify(params)}`, {
+        method: 'DELETE',
+        body: params,
+    });
+}
+
+export async function changeNoticeRead(params) {
+    return request(`/api/changeNoticeRead?${stringify(params)}`, {
+        method: 'PUT',
+        body: params,
+    });
+}
+
 export async function getFakeCaptcha(mobile) {
     return request(`/api/captcha?mobile=${mobile}`);
 }

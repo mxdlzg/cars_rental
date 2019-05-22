@@ -17,6 +17,17 @@ export function getAuthority(str) {
 }
 
 export function setAuthority(authority) {
+    authority = authority.replace("ROLE_","").toLowerCase();
+    // if (authority === "ROLE_USER") authority = "user";
+    // if (authority === "ROLE_ADMIN") authority = "admin";
     const proAuthority = typeof authority === 'string' ? [authority] : authority;
     return localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority));
+}
+
+export function setAuthorization(Authorization) {
+    return localStorage.setItem("rt_token",Authorization);
+}
+
+export function getToken() {
+    return localStorage.getItem("rt_token");
 }

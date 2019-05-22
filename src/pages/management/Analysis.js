@@ -12,6 +12,14 @@ const TopSearch = React.lazy(() => import('./TopSearch'));
 const ProportionSales = React.lazy(() => import('./ProportionSales'));
 const OfflineData = React.lazy(() => import('./OfflineData'));
 
+const rankingListData = [];
+for (let i = 0; i < 7; i += 1) {
+    rankingListData.push({
+        title: "门店"+i,
+        total: 323234,
+    });
+}
+
 @connect(({chart, loading}) => ({
     chart,
     loading: loading.effects['chart/fetch'],
@@ -145,6 +153,7 @@ class Analysis extends Component {
                         <SalesCard
                             rangePickerValue={rangePickerValue}
                             salesData={salesData}
+                            rankingListData={rankingListData}
                             isActive={this.isActive}
                             handleRangePickerChange={this.handleRangePickerChange}
                             loading={loading}
