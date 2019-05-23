@@ -5,6 +5,10 @@ export async function queryRentalOptions() {
     return request('/api/rental/filter-conditions');
 }
 
+export async function queryDivision() {
+    return request('/server/static/division.json')
+}
+
 export async function queryStores(params) {
     return request(`/api/rental/stores?${stringify(params)}`);
 }

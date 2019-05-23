@@ -5,11 +5,16 @@ import path from 'path';
 export default {
     treeShaking: true,
     proxy: {
-      '/api': {
-        target: 'http://localhost:8080/',
-        changeOrigin: true,
-        // pathRewrite: { '^/api': '' },
-      },
+        '/server/static': {
+            target: 'http://localhost:8080/',
+            changeOrigin: true,
+            pathRewrite: { '^/server/static': '/' },
+        },
+        '/api': {
+            target: 'http://localhost:8080/',
+            changeOrigin: true,
+            // pathRewrite: { '^/api': '' },
+        },
     },
     plugins: [
         // ref: https://umijs.org/plugin/umi-plugin-react.html

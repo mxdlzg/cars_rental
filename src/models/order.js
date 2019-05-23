@@ -75,7 +75,7 @@ export default {
         * queryOrderList({payload}, {call, put}) {
             let token = getUserToken();
             if (payload.page >= 0 || payload.isInit) {
-                const res = yield call(queryOrderList, {name: token.username, page: payload.page});
+                const res = yield call(queryOrderList, {name: token.username, page: payload.isInit?0:payload.page+1});
                 if (res.success) {
                     yield put({
                         type: "saveOrderList",

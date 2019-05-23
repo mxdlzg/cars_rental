@@ -1,4 +1,4 @@
-import {queryRentalOptions, queryStores, queryCars} from '@/services/rental';
+import {queryRentalOptions, queryStores, queryCars, queryDivision} from '@/services/rental';
 import {message} from "antd";
 
 export default {
@@ -49,7 +49,7 @@ export default {
                 end: state.rental.aimLocation,
                 ...state.rental.dates,
                 type: state.rental.tabIndex,
-                page: state.rental.loadedPage[state.rental.tabIndex - 1],
+                page: state.rental.loadedPage[state.rental.tabIndex - 1]+1,
             }));
             const localPay = yield select((state) => ({
                 tabIndex: state.rental.tabIndex
@@ -66,6 +66,7 @@ export default {
         },
         * fetchOptions(_, {call, put, select}) {
             const res = yield call(queryRentalOptions);
+            res.data.options = yield call(queryDivision);
             yield put({
                 type: 'saveOptions',
                 payload: res.data,

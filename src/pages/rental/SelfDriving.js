@@ -302,14 +302,13 @@ class SelfDriving extends React.PureComponent {
                                             notFoundContent={<Empty/>}
                                             filterOption={true}
                                         >
-                                            {cascaderStartData.map(d => <Option key={d.value}>{d.label}</Option>)}
+                                            {cascaderStartData.map(d => <Option key={d.id}>{d.name}</Option>)}
                                         </Select>
                                     </div>
                                     <div style={{paddingTop: '1em'}}>
                                         <Icon type="environment" style={{fontSize: '20px'}}/>
                                         <Cascader className={styles.inputCommon} options={filterOptions.options}
                                                   onChange={this.onEndCascaderChange}
-                                                  defaultValue={['上海', '奉贤区', '海湾镇']}
                                                   value={cascaderSelectEData}
                                                   placeholder="目的地"/>
                                         <Select
@@ -322,7 +321,7 @@ class SelfDriving extends React.PureComponent {
                                             notFoundContent={<Empty/>}
                                             filterOption={true}
                                         >
-                                            {cascaderEndData.map(d => <Option key={d.value}>{d.label}</Option>)}
+                                            {cascaderEndData.map(d => <Option key={d.id}>{d.name}</Option>)}
                                         </Select>
                                     </div>
                                 </div>
@@ -386,10 +385,10 @@ class SelfDriving extends React.PureComponent {
                                                 <img alt="车型" src={cars1} style={{width: '15em', height: '10em'}}/>
                                                 <div className={styles.listDescription}/>
                                                 <List.Item.Meta
-                                                    title={<h2>大众朗逸</h2>}
-                                                    description={<h4>三厢|1.6自动|乘坐5人<br/>空间：空间较大，建议乘坐5人+3行李箱 </h4>}
+                                                    title={<h2>{item.typeName}</h2>}
+                                                    description={<h4>{item.description}</h4>}
                                                 />
-                                                <h1 className={styles.priceLabel}>¥ 300/天</h1>
+                                                <h1 className={styles.priceLabel}>¥ {item.defaultRentPrice}/天</h1>
                                             </List.Item>
                                         )}
                                     />

@@ -2,34 +2,36 @@ export default {
     'GET /api/rental/filter-conditions': {
         status: 'ok',
         data: {
-            options: [{
-                value: '上海',
-                label: '上海',
-                children: [{
-                    value: '奉贤区',
-                    label: '奉贤区',
+            options: [
+                {
+                    value: '上海',
+                    label: '上海',
                     children: [{
-                        value: '海湾镇',
-                        label: '海湾镇',
+                        value: '奉贤区',
+                        label: '奉贤区',
+                        children: [{
+                            value: '海湾镇',
+                            label: '海湾镇',
+                        }],
+                    }],
+                },
+                {
+                    value: '山东',
+                    label: '山东',
+                    children: [{
+                        value: '济南',
+                        label: '济南',
+                        children: [{
+                            value: '历下区',
+                            label: '历下区',
+                        }],
                     }],
                 }],
-            }, {
-                value: '山东',
-                label: '山东',
-                children: [{
-                    value: '济南',
-                    label: '济南',
-                    children: [{
-                        value: '历下区',
-                        label: '历下区',
-                    }],
-                }],
-            }],
             optionsCar: [
-                {key:'所有',value:'所有',type:'icon-car',selected:true},
-                {key:'SUV',value:'SUV',type:'icon-suv',selected:false},
-                {key:'轿车',value:'轿车',type:'icon-jiaocheqiche',selected:false},
-                {key:'卡车',value:'卡车',type:'icon-icon3',selected:false},
+                {key: '所有', value: '所有', type: 'icon-car', selected: true},
+                {key: 'SUV', value: 'SUV', type: 'icon-suv', selected: false},
+                {key: '轿车', value: '轿车', type: 'icon-jiaocheqiche', selected: false},
+                {key: '卡车', value: '卡车', type: 'icon-icon3', selected: false},
             ],
             optionsSeat: [
                 {label: '5座以下', value: '5座以下'},
@@ -53,20 +55,20 @@ export default {
             ]
         }
     },
-    'GET /api/rental/stores':{
+    'GET /api/rental/stores': {
         status: 'ok',
-        data:[
+        data: [
             {label: '海泉路1店', value: 'ID0010224海泉路1店'},
             {label: '历下区总店', value: 'ID0010225历下区总店'},
         ]
     },
     'GET /api/rental/cars': (req, res) => {
         const page = parseInt(req.query.page);
-        setTimeout(()=>{
+        setTimeout(() => {
             if (!req.query.more) {
                 res.send({
                     status: 'ok',
-                    data:{
+                    data: {
                         // short:[1,2,3,6,7],
                         // week:[1,2,3,45],
                         // month:[1,2,3,4],
@@ -159,10 +161,10 @@ export default {
                         empty: false
                     }
                 })
-            }else {
+            } else {
                 res.send({
                     status: 'ok',
-                    data:{
+                    data: {
                         content: [
                             {
                                 id: 8,
@@ -213,7 +215,7 @@ export default {
                     },
                 })
             }
-        },1000)
+        }, 1000)
     }
 
 }

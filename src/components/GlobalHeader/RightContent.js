@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {FormattedMessage, formatMessage} from 'umi-plugin-react/locale';
-import {Spin, Tag, Menu, Icon, Avatar, Tooltip, message, Button} from 'antd';
+import { Tag, Menu, Icon, Avatar, Tooltip, message, Button} from 'antd';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import NoticeIcon from '../NoticeIcon';
