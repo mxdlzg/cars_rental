@@ -18,7 +18,10 @@ function action(params) {
         <Fragment>
             <ButtonGroup>
                 {params.stateId === 1 || params.stateId === 2 ? <Button onClick={() => {
-
+                    params.dispatch({
+                        type: "order/cancelOrder",
+                        payload: {id: params.id},
+                    })
                 }}>取消订单
                 </Button> : null}
             </ButtonGroup>
@@ -43,12 +46,16 @@ function extra(param) {
     return (
         <Row>
             <Col xs={24} sm={12}>
-                <div className={styles.textSecondary}>状态</div>
-                <div className={param.isPaid ? styles.headingSuccess : styles.heading}>{param.payStatus}</div>
+                <div className={styles.textSecondary}>订单状态</div>
+                <div className={param.orderTypeId===2 ? styles.headingWarn : styles.headingSuccess}>{param.orderType}</div>
             </Col>
             <Col xs={24} sm={12}>
                 <div className={styles.textSecondary}>订单金额</div>
                 <div className={styles.headingPrice}>{param.totalPrice}</div>
+            </Col>
+            <Col xs={24} sm={12}>
+                <div className={styles.textSecondary}>进度状态</div>
+                <div className={param.isPaid ? styles.headingSuccess : styles.heading}>{param.payStatus}</div>
             </Col>
         </Row>
     )
@@ -181,18 +188,20 @@ class OrderDetail extends PureComponent {
                                     <img alt=""
                                          src="https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png"/>
                                 }
-                                action={action({"id": id, "stateId": order.currentStateId})}
+                                action={order.orderTypeId===2?<h2>订单已取消</h2>:action({"dispatch":this.props.dispatch,"id": id, "stateId": order.currentStateId})}
                                 content={description({
                                     belongUser: currentUser.name,
-                                    description: order.description,
+                                    description: order.typeName,
                                     createdDate: order.createdDate,
                                     startDate: order.startDate,
                                     endDate: order.endDate,
                                     marker: "请于两个工作日内确认"
                                 })}
                                 extraContent={extra({
-                                    isPaid: order.payDate !== null,
-                                    payStatus: order.payDate !== null ? "已支付" : "等待支付",
+                                    isPaid: order.paid,
+                                    payStatus: order.paid ? "已支付" : "等待支付",
+                                    orderType:order.orderTypeName,
+                                    orderTypeId:order.orderTypeId,
                                     totalPrice: "￥" + order.totalPrice
                                 })}
                                 tabList={tabList}

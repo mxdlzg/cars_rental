@@ -1,6 +1,6 @@
 import {message} from 'antd';
 import {
-    addOrder,
+    addOrder, cancelOrder,
     orderDetail,
     queryCarDetail,
     queryOrderList,
@@ -20,9 +20,11 @@ export default {
     },
     effects: {
         * initPageInfo({payload}, {call, put}) {
-            const carInfoRes = yield call(queryCarDetail, payload.carId);
+            const carInfo = yield call(queryCarDetail, payload.carId);
             const orderPriceDetailRes = yield call(queryOrderPriceDetail, payload);
 
+            let carInfoRes = carInfo.data;
+            // let orderPriceDetailRes = orderPriceDetail.data;
             yield put({
                 type: 'saveInitInfo',
                 payload: {carInfoRes, orderPriceDetailRes}
@@ -36,9 +38,9 @@ export default {
                     pathname: '/order/OrderResult',
                     search: stringify({
                         current: 1,
-                        operateDate: res.data.createdDate,
+                        operateDate: res.data.date,
                         type: "success",
-                        id: res.data.id,
+                        id: res.data.orderId,
                         needPay: true,
                         description: "提交结果页用于反馈一系列操作任务的处理结果，如果仅是简单操作，使用 Message 全局提示反馈即可。本文字区域可以展示简单的补充说明，如果有类似展示“单据”的需求，下面这个灰色区域可以呈现比较复杂的内容。",
                     })
@@ -94,6 +96,17 @@ export default {
                 yield put({
                     type: "saveOrderDetail",
                     payload: res.data,
+                })
+            } else {
+                message.error(res.msg);
+            }
+        },
+        * cancelOrder({payload},{call,put}){
+            const res = yield call(cancelOrder, payload);
+            if (res.success) {
+                yield put({
+                    type: "orderDetail",
+                    payload: payload,
                 })
             } else {
                 message.error(res.msg);

@@ -30,3 +30,13 @@ export async function queryOrderList(params) {
 export async function orderDetail(params) {
     return request(`/api/order/orderDetail?${stringify(params)}`)
 }
+
+export async function cancelOrder(params) {
+    return request(`/api/order/cancelOrder?${stringify(params)}`,{
+        method:"DELETE",
+        body:{
+            params,
+            method :"DELETE"
+        }
+    })
+}

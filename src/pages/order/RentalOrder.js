@@ -88,7 +88,7 @@ class RentalOrder extends React.Component {
         const {checkedInvoiceNone} = this.state;
 
         form.validateFields({force: false}, (err, values) => {
-            if (true) {
+            if (!err) {
                 const {prefix} = this.state;
                 dispatch({
                     type: 'order/submit',
@@ -183,8 +183,9 @@ class RentalOrder extends React.Component {
                                 ? <Skeleton active paragraph={{rows: 5}}/>
                                 : <div>
                                     <div className={styles.carDetailLeft}>
-                                        <img alt={"车辆"} src={carInfoRes.src} style={{width: '18em', height: '10em'}}/>
-                                        <h2>{carInfoRes.name}</h2>
+                                        <img alt={"车辆"} src={carInfoRes.imageSrc} style={{width: '18em', height: '10em'}}/>
+                                        <h2>{carInfoRes.typeName}</h2>
+                                        <h4>{carInfoRes.label}</h4><br/>
                                         <h4>{carInfoRes.description}</h4>
                                     </div>
                                     <Divider style={{float: 'left', height: '230px', marginRight: '10px'}}
