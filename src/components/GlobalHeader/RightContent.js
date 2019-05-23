@@ -169,21 +169,23 @@ export default class GlobalHeaderRight extends PureComponent {
                     />
                 </NoticeIcon>}
                 <SelectLang className={styles.action}/>
-                {currentUser.name ? (
+                {currentUser.name ?
+                    (
                     <HeaderDropdown overlay={menu}>
-            <span className={`${styles.action} ${styles.account}`}>
-              <Avatar
-                  size="small"
-                  className={styles.avatar}
-                  src={currentUser.avatar}
-                  alt="avatar"
-              />
-              <span className={styles.name}>{currentUser.name}</span>
-            </span>
+                        <span className={`${styles.action} ${styles.account}`}>
+                          <Avatar
+                              size="small"
+                              className={styles.avatar}
+                              src={currentUser.avatar}
+                              alt="avatar"
+                          />
+                          <span className={styles.name}>{currentUser.name}</span>
+                        </span>
                     </HeaderDropdown>
-                ) : ((currentUser.status !== "invalid")
-                    ? <Spin size="small" style={{marginLeft: 8, marginRight: 8}}/>
-                        :<Button shape="circle" type="primary" icon="user" href={"/user/login"} />
+                ) : (
+                    (currentUser.status !== "invalid")
+                        ? <Button shape="circle" type="primary" icon="user" href={"/user/login"}/>
+                        : <Button shape="circle" type="primary" icon="user" href={"/user/login"}/>
                 )}
             </div>
         );

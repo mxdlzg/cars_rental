@@ -93,7 +93,7 @@ export default {
             if (res.success) {
                 yield put({
                     type: "saveOrderDetail",
-                    payload: res.content,
+                    payload: res.data,
                 })
             } else {
                 message.error(res.msg);
@@ -114,12 +114,13 @@ export default {
             }
         },
         saveOrderList(state, {payload}) {
-            state.page = payload.res.last ? -1 : payload.res.number;
-            state.last = payload.res.last;
+            const {data} = payload.res;
+            state.page = data.last ? -1 : data.number;
+            state.last = data.last;
             if (payload.isMore) {
-                state.list = state.list.concat(payload.res.content);
+                state.list = state.list.concat(data.content);
             } else {
-                state.list = payload.res.content;
+                state.list = data.content;
             }
         },
         saveOrderDetail(state, {payload}) {

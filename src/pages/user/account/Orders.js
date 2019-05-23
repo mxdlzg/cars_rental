@@ -26,7 +26,7 @@ class Account extends PureComponent {
 
     onOrder(item) {
         router.push({
-            pathname: "/order/OrderDetail", search: stringify({id: item.id})
+            pathname: "/order/OrderDetail", search: stringify({id: item.orderId})
         })
     }
 
@@ -65,12 +65,12 @@ class Account extends PureComponent {
                                 <Button type="primary" onClick={this.onOrder.bind(this, item)}>查看订单</Button>
                             ]}
                         >
-                            <img alt="车型" src={item.avatar} style={{width: '10em', height: '7em', marginRight: "1em"}}/>
+                            <img alt="车型" src={item.imageSrc} style={{width: '10em', height: '7em', marginRight: "1em"}}/>
                             <List.Item.Meta
-                                title={<h3>大众朗逸&nbsp;<Tag color="cyan">自驾</Tag></h3>}
-                                description={<h5>三厢|1.6自动|乘坐5人<br/>空间：空间较大，建议乘坐5人+3行李箱 </h5>}
+                                title={<h3>{item.typeName}&nbsp;<Tag color="cyan">自驾</Tag><br/>{item.brandName}</h3>}
+                                description={<h5>{item.description}</h5>}
                             />
-                            <h1 className={styles.priceLabel}>总计:¥300</h1>
+                            <h1 className={styles.priceLabel}>总计:¥{item.totalPrice}</h1>
                         </List.Item>
                     )}
                 />

@@ -2,7 +2,7 @@ import React, {Fragment, PureComponent} from 'react'
 import styles from './OrderDetail.less'
 import DescriptionList from '@/components/DescriptionList';
 import PageHeader from '@/components/PageHeader';
-import {Badge, Button, Card, Col, Divider, Icon, Popover, Row, Steps, Tabs, Tag,Skeleton} from 'antd';
+import {Badge, Button, Card, Col, Divider, Icon, Popover, Row, Steps, Tabs, Tag, Skeleton, Empty} from 'antd';
 import {connect} from "dva/index";
 import router from "umi/router";
 import {stringify} from "qs";
@@ -14,19 +14,27 @@ const {Description} = DescriptionList;
 const ButtonGroup = Button.Group;
 
 function action(params) {
-    return(
+    return (
         <Fragment>
             <ButtonGroup>
-                <Button>操作</Button>
-                <Button>操作</Button>
-                <Button>操作</Button>
+                {params.stateId === 1 || params.stateId === 2 ? <Button onClick={() => {
+
+                }}>取消订单
+                </Button> : null}
             </ButtonGroup>
-            <Button type="primary" onClick={()=>{
+            {params.stateId === 2 ? <Button type="primary" onClick={() => {
+
+            }}>取车
+            </Button> : null}
+            {params.stateId === 1 ? <Button type="primary" onClick={() => {
                 router.push({
-                    pathname:'/pay/OrderPay',
+                    pathname: '/pay/OrderPay',
                     search: stringify({id: params.id})
                 })
-            }}>支付订单</Button>
+            }}>支付订单
+            </Button> : null}
+            {params.stateId === 3? <Button type="primary">已取车</Button> : null}
+            {params.stateId === 4? <Button type="primary">订单已完成</Button> : null}
         </Fragment>
     )
 }
@@ -105,9 +113,10 @@ const customDot = (dot, {status}) =>
         dot
     );
 
-@connect(({order, loading}) => ({
+@connect(({order, loading, user}) => ({
     orderLoading: loading.effects['order/orderDetail'],
     ...order,
+    ...user,
 }))
 class OrderDetail extends PureComponent {
     state = {
@@ -157,107 +166,140 @@ class OrderDetail extends PureComponent {
         const {stepDirection, tabKey} = this.state;
         //const {current, operateDate, userInfo, startLocation, endLocation} = this.state;
         const {id} = this.props.location.query;
-        const {orderLoading} = this.props;
-        const {current, operateDate, userInfo, startLocation, endLocation} = this.props;
+        const {orderLoading, currentUser} = this.props;
+        const {current, operateDate, userInfo, startLocation, endLocation, order} = this.props;
 
 
         return (
             <div>
-                <PageHeader
-                    title={"单号：" + id}
-                    logo={
-                        <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png"/>
-                    }
-                    action={action({id})}
-                    content={description({
-                        belongUser: "mxdlzg@163.com",
-                        description: "大众朗逸",
-                        createdDate: "2017-07-07 00:00:00",
-                        startDate: "2017-07-07 00:00:00",
-                        endDate: "2017-08-08 00:00:00",
-                        marker: "请于两个工作日内确认"
-                    })}
-                    extraContent={extra({isPaid: true, payStatus: "已支付", totalPrice: "￥500.10"})}
-                    tabList={tabList}
-                    onTabChange={this.onTabChange}
-                >
-                </PageHeader>
-                <Tabs activeKey={tabKey} renderTabBar={() => {
-                    return (<div/>)
-                }}>
-                    <TabPane tab="Tab 1" key="overview">
-                        {orderLoading || orderLoading === undefined
-                            ? <Skeleton active paragraph={{rows: 5}}/>
-                            :<div className={styles.main}>
-                                <Card title="流程进度" style={{marginBottom: 24}} bordered={false}>
-                                    <Steps direction={stepDirection} progressDot={customDot} current={current}>
-                                        <Step title="创建订单" description={current === 0 ? desc({
-                                            name: "订单创建完毕",
-                                            date: operateDate
-                                        }) : null}/>
-                                        <Step title="订单提交" description={current === 1 ? desc({
-                                            name: "订单提交完毕",
-                                            date: operateDate
-                                        }) : null}/>
-                                        <Step title="订单支付" description={current === 2 ? desc({
-                                            name: "订单支付完毕",
-                                            date: operateDate
-                                        }) : null}/>
-                                        <Step title="预订完成" description={current === 3 ? desc({
-                                            name: "订单预订完成",
-                                            date: operateDate
-                                        }) : null}/>
-                                    </Steps>
-                                </Card>
-                                <Card title="用户信息" style={{marginBottom: 24}} bordered={false}>
-                                    <DescriptionList style={{marginBottom: 24}}
-                                                     title={<Tag color="#f50">驾驶人信息</Tag>}>
-                                        <Description term="用户姓名">{userInfo.name}</Description>
-                                        <Description term="身份证">{userInfo.idCard}</Description>
-                                        <Description term="联系方式">{userInfo.phoneNum}</Description>
-                                        <Description term="联系邮箱">{userInfo.eMail}</Description>
-                                    </DescriptionList>
-                                    <Card type="inner" title="出发及到达地">
+                {
+                    (userInfo !== undefined && userInfo !== null) ?
+                        <div>
+                            <PageHeader
+                                title={"单号：" + id}
+                                logo={
+                                    <img alt=""
+                                         src="https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png"/>
+                                }
+                                action={action({"id": id, "stateId": order.currentStateId})}
+                                content={description({
+                                    belongUser: currentUser.name,
+                                    description: order.description,
+                                    createdDate: order.createdDate,
+                                    startDate: order.startDate,
+                                    endDate: order.endDate,
+                                    marker: "请于两个工作日内确认"
+                                })}
+                                extraContent={extra({
+                                    isPaid: order.payDate !== null,
+                                    payStatus: order.payDate !== null ? "已支付" : "等待支付",
+                                    totalPrice: "￥" + order.totalPrice
+                                })}
+                                tabList={tabList}
+                                onTabChange={this.onTabChange}
+                            >
+                            </PageHeader>
+                            <Tabs activeKey={tabKey} renderTabBar={() => {
+                                return (<div/>)
+                            }}>
+                                <TabPane tab="Tab 1" key="overview">
+                                    {orderLoading || orderLoading === undefined
+                                        ? <Skeleton active paragraph={{rows: 5}}/>
+                                        : <div className={styles.main}>
+                                            <Card title="流程进度" style={{marginBottom: 24}} bordered={false}>
+                                                <Steps direction={stepDirection} progressDot={customDot}
+                                                       current={current}>
+                                                    <Step title="创建订单" description={current === 0 ? desc({
+                                                        name: "订单创建完毕",
+                                                        date: operateDate
+                                                    }) : null}/>
+                                                    <Step title="订单提交" description={current === 1 ? desc({
+                                                        name: "订单提交完毕",
+                                                        date: operateDate
+                                                    }) : null}/>
+                                                    <Step title="订单支付" description={current === 2 ? desc({
+                                                        name: "订单支付完毕",
+                                                        date: operateDate
+                                                    }) : null}/>
+                                                    <Step title="预订完成" description={current === 3 ? desc({
+                                                        name: "订单预订完成",
+                                                        date: operateDate
+                                                    }) : null}/>
+                                                </Steps>
+                                            </Card>
+                                            <Card title="用户信息" style={{marginBottom: 24}} bordered={false}>
+                                                {
+                                                    userInfo.map(item => {
+                                                        return (
+                                                            <DescriptionList style={{marginBottom: 24}}
+                                                                             title={<Tag color="#f50">驾驶人信息</Tag>}>
+                                                                <div style={{float: 'left', marginLeft: '2em'}}>
+                                                                    <Description term="用户姓名">{item.name}</Description>
+                                                                    <Description term="身份证">{item.cardId}</Description>
+                                                                    <Description
+                                                                        term="联系方式">{item.phoneNum}</Description>
+                                                                    <Description term="联系邮箱">{item.email}</Description>
+                                                                </div>
+                                                            </DescriptionList>
+                                                        )
+                                                    })
+                                                }
+                                                <Card type="inner" title="出发及到达地">
 
-                                        <DescriptionList size="" style={{marginBottom: 16}}
-                                                         title={<Tag color="blue">出发地点</Tag>}>
-                                            <Description term="门店">{startLocation.name}</Description>
-                                            <Description term="编号">{startLocation.id}</Description>
-                                            <Description term="地址">{startLocation.location}</Description>
-                                            <Description term="时间">{startLocation.date}</Description>
-                                            <Description term="描述">{startLocation.description}</Description>
-                                        </DescriptionList>
-                                        <Divider style={{margin: '16px 0'}}/>
-                                        <DescriptionList size="" style={{marginBottom: 16}}
-                                                         title={<Tag color="green">达到地点</Tag>}>
-                                            <Description term="门店">{endLocation.name}</Description>
-                                            <Description term="编号">{endLocation.id}</Description>
-                                            <Description term="地址">{endLocation.location}</Description>
-                                            <Description term="时间">{endLocation.date}</Description>
-                                            <Description term="描述">{endLocation.description}</Description>
-                                        </DescriptionList>
-                                    </Card>
-                                </Card>
-                            </div>}
-                    </TabPane>
-                    <TabPane tab="Tab 2" key="detail">
-                        <div className={styles.main}>
-                            <Card title="优惠使用情况" style={{marginBottom: 24}} bordered={false}>
-                                <div className={styles.noData}>
-                                    <Icon type="frown-o"/>
-                                    暂无数据
-                                </div>
-                            </Card>
-                            <Card title="备注" style={{marginBottom: 24}} bordered={false}>
-                                <div className={styles.noData}>
-                                    <Icon type="frown-o"/>
-                                    暂无数据
-                                </div>
-                            </Card>
+                                                    <DescriptionList size="" style={{marginBottom: 16}}
+                                                                     title={<Tag color="blue">出发地点</Tag>}>
+                                                        <Description term="门店">{startLocation.name}</Description>
+                                                        <Description term="编号">{startLocation.id}</Description>
+                                                        <Description term="地址">{startLocation.location}</Description>
+                                                        <Description term="时间">{startLocation.date}</Description>
+                                                        <Description term="描述">{startLocation.description}</Description>
+                                                    </DescriptionList>
+                                                    <Divider style={{margin: '16px 0'}}/>
+                                                    <DescriptionList size="" style={{marginBottom: 16}}
+                                                                     title={<Tag color="green">达到地点</Tag>}>
+                                                        <Description term="门店">{endLocation.name}</Description>
+                                                        <Description term="编号">{endLocation.id}</Description>
+                                                        <Description term="地址">{endLocation.location}</Description>
+                                                        <Description term="时间">{endLocation.date}</Description>
+                                                        <Description term="描述">{endLocation.description}</Description>
+                                                    </DescriptionList>
+                                                </Card>
+                                            </Card>
+                                        </div>}
+                                </TabPane>
+                                <TabPane tab="Tab 2" key="detail">
+                                    <div className={styles.main}>
+                                        <Card title="优惠使用情况" style={{marginBottom: 24}} bordered={false}>
+                                            <div className={styles.noData}>
+                                                <Icon type="frown-o"/>
+                                                暂无数据
+                                            </div>
+                                        </Card>
+                                        <Card title="备注" style={{marginBottom: 24}} bordered={false}>
+                                            <div className={styles.noData}>
+                                                <Icon type="frown-o"/>
+                                                暂无数据
+                                            </div>
+                                        </Card>
+                                    </div>
+                                </TabPane>
+                            </Tabs>
                         </div>
-                    </TabPane>
-                </Tabs>
+                        :
+                        <Empty
+                            image="https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original"
+                            imageStyle={{
+                                height: 300,
+                            }}
+                            description={<span>查询的订单ID无效，无法查询到订单信息</span>}
+                        >
+                            <Button type="primary" onClick={() => {
+                                router.goBack()
+                            }}>返回</Button>
+                        </Empty>
+                }
             </div>
+
         )
     }
 }
