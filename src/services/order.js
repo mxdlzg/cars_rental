@@ -40,3 +40,30 @@ export async function cancelOrder(params) {
         }
     })
 }
+
+export async function payOrder(params) {
+    return request(`/api/pay/payment?${stringify(params)}`,{
+        method:"PUT",
+        body:{
+            params,
+        }
+    })
+}
+
+export async function takeCar(params) {
+    return request(`/api/order/takeCar?${stringify(params)}`,{
+        method:"PUT",
+        body:{
+            params,
+        }
+    })
+}
+
+export async function checkout(params) {
+    return request(`/api/pay/checkout?${stringify(params)}`,{
+        method:"PUT",
+        body:{
+            params,
+        }
+    })
+}

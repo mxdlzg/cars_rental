@@ -1,11 +1,11 @@
 import {message} from 'antd';
 import {
-    addOrder, cancelOrder,
-    orderDetail,
+    addOrder, cancelOrder, checkout,
+    orderDetail, payOrder,
     queryCarDetail,
     queryOrderList,
     queryOrderPriceDetail,
-    queryPayInfo
+    queryPayInfo, takeCar
 } from "@/services/order"
 import router from "umi/router";
 import {stringify} from "qs";
@@ -104,6 +104,44 @@ export default {
         * cancelOrder({payload},{call,put}){
             const res = yield call(cancelOrder, payload);
             if (res.success) {
+                yield put({
+                    type: "orderDetail",
+                    payload: payload,
+                })
+            } else {
+                message.error(res.msg);
+            }
+        },
+        * payOrder({payload},{call,put}){
+            const res = yield call(payOrder, payload);
+            if (res.success) {
+                message.success("支付成功！");
+                router.push({
+                    pathname:"/order/OrderDetail",
+                    search:stringify({
+                        id:payload.id
+                    })
+                })
+            } else {
+                message.error(res.msg);
+            }
+        },
+        * takeCar({payload},{call,put}){
+            const res = yield call(takeCar, payload);
+            if (res.success) {
+                message.success("取车成功，此订单成功取车！");
+                yield put({
+                    type: "orderDetail",
+                    payload: payload,
+                })
+            } else {
+                message.error(res.msg);
+            }
+        },
+        * checkout({payload},{call,put}){
+            const res = yield call(checkout, payload);
+            if (res.success) {
+                message.success("结算完毕！");
                 yield put({
                     type: "orderDetail",
                     payload: payload,

@@ -49,11 +49,9 @@ class OrderPay extends React.Component{
     }
 
     onFinish=()=>{
-        router.push({
-            pathname:"/order/OrderDetail",
-            search:stringify({
-                id:this.props.id
-            })
+        this.props.dispatch({
+            type:"order/payOrder",
+            payload: {...this.props.location.query}
         })
     };
 

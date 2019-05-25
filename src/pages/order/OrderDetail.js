@@ -26,7 +26,10 @@ function action(params) {
                 </Button> : null}
             </ButtonGroup>
             {params.stateId === 2 ? <Button type="primary" onClick={() => {
-
+                params.dispatch({
+                    type: "order/takeCar",
+                    payload: {id: params.id},
+                })
             }}>取车
             </Button> : null}
             {params.stateId === 1 ? <Button type="primary" onClick={() => {
@@ -36,7 +39,12 @@ function action(params) {
                 })
             }}>支付订单
             </Button> : null}
-            {params.stateId === 3? <Button type="primary">已取车</Button> : null}
+            {params.stateId === 3? <Button type="primary" onClick={() => {
+                params.dispatch({
+                    type: "order/checkout",
+                    payload: {id: params.id},
+                })
+            }}>还车结算</Button> : null}
             {params.stateId === 4? <Button type="primary">订单已完成</Button> : null}
         </Fragment>
     )
