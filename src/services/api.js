@@ -66,6 +66,10 @@ export async function fetchStoresSale() {
     return request('/api/analysis/storesSale');
 }
 
+export async function fetchStoreSale(params) {
+    return request(`/api/analysis/storesSale/${params}`)
+}
+
 export async function queryTags() {
     return request('/api/tags');
 }

@@ -66,8 +66,7 @@ class TimelineChart extends React.Component {
 
     const timeScale = {
       type: 'time',
-      tickInterval: 60 * 60 * 1000,
-      mask: 'HH:mm',
+      tickInterval: 60 * 60 * 1000 * 24,
       range: [0, 1],
     };
 

@@ -1,4 +1,4 @@
-import {fetchOverview, fetchSaleSta, fetchSaleType, fetchStoresSale} from '@/services/api';
+import {fetchOverview, fetchSaleSta, fetchSaleType, fetchStoreSale, fetchStoresSale} from '@/services/api';
 import moment from 'moment';
 
 export default {
@@ -24,12 +24,20 @@ export default {
             const saleStaRes = yield call(fetchSaleSta,{"type":"week","start":0,"end":0});
             const saleTypeRes = yield call(fetchSaleType);
             const storesSaleRes = yield call(fetchStoresSale);
+            let storeSale = [];
+            if (storesSaleRes.success && storesSaleRes.data.length>0) {
+                let id = storesSaleRes.data[0].label.match(/(\d+)/)[0];
+                storeSale = yield call(fetchStoreSale,id);
+            }
             yield put({
                 type: 'save',
                 payload: {
                     visitData:ovRes.data,
                     salesData:saleStaRes.data.list,
-                    rankingListData:saleStaRes.data.storeRankingList
+                    rankingListData:saleStaRes.data.storeRankingList,
+                    salesTypeData:saleTypeRes.data,
+                    offlineData : storesSaleRes.data,
+                    offlineChartData : storeSale.data,
                 },
             });
         },

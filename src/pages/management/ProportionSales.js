@@ -43,10 +43,12 @@ const ProportionSales = memo(
       </h4>
       <Pie
         hasLegend
-        subTitle={<FormattedMessage id="app.analysis.sales" defaultMessage="Sales" />}
-        total={() => <Yuan>{salesPieData.reduce((pre, now) => now.y + pre, 0)}</Yuan>}
+        subTitle={<FormattedMessage id="app.analysis.sales-count" defaultMessage="Sales" />}
+        total={() => <p>{salesPieData.reduce((pre, now) => now.y + pre, 0)}</p>}
+        // total={() => <Yuan>{salesPieData.reduce((pre, now) => now.y + pre, 0)}</Yuan>}
         data={salesPieData}
-        valueFormat={value => <Yuan>{value}</Yuan>}
+//        valueFormat={value => <Yuan>{value}</Yuan>}
+        valueFormat={value => '销售总量 '+value}
         height={270}
         lineWidth={4}
         style={{ padding: '8px 0' }}

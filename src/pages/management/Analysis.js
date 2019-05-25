@@ -137,7 +137,7 @@ class Analysis extends Component {
       </span>
         );
 
-        const activeKey = currentTabKey || (offlineData[0] && offlineData[0].name);
+        const activeKey = currentTabKey || (offlineData[0] && offlineData[0].label);
 
         return (
             <div className={styles.content}>
