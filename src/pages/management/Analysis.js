@@ -12,14 +12,6 @@ const TopSearch = React.lazy(() => import('./TopSearch'));
 const ProportionSales = React.lazy(() => import('./ProportionSales'));
 const OfflineData = React.lazy(() => import('./OfflineData'));
 
-const rankingListData = [];
-for (let i = 0; i < 7; i += 1) {
-    rankingListData.push({
-        title: "门店"+i,
-        total: 323234,
-    });
-}
-
 @connect(({chart, loading}) => ({
     chart,
     loading: loading.effects['chart/fetch'],
@@ -29,7 +21,7 @@ class Analysis extends Component {
         loading: true,
         salesType: 'all',
         currentTabKey: '',
-        rangePickerValue: getTimeDistance('year'),
+        rangePickerValue: getTimeDistance('week'),
     };
 
     componentDidMount() {
@@ -43,7 +35,7 @@ class Analysis extends Component {
             this.setState({
                 loading: false,
             });
-        }, 2000);
+        }, 500);
     }
 
     componentWillUnmount() {
@@ -74,18 +66,21 @@ class Analysis extends Component {
 
         dispatch({
             type: 'chart/fetchSalesData',
+            payload:rangePickerValue
         });
     };
 
-    selectDate = (type, e) => {
-        e.preventDefault();
+    selectDate = (type) => {
+        //e.preventDefault();
         const {dispatch} = this.props;
+        let dis = getTimeDistance(type);
         this.setState({
-            rangePickerValue: getTimeDistance(type),
+            rangePickerValue: dis,
         });
 
         dispatch({
             type: 'chart/fetchSalesData',
+            payload: dis,
         });
         return false;
     };
@@ -111,8 +106,9 @@ class Analysis extends Component {
         const loading = stateLoading || propsLoading;
         const {
             visitData,
-            visitData2,
             salesData,
+            rankingListData,
+            visitData2,
             searchData,
             offlineData,
             offlineChartData,
@@ -145,57 +141,62 @@ class Analysis extends Component {
 
         return (
             <div className={styles.content}>
-                <GridContent>
-                    <Suspense fallback={<PageLoading/>}>
-                        <IntroduceRow loading={loading} visitData={visitData}/>
-                    </Suspense>
-                    <Suspense fallback={null}>
-                        <SalesCard
-                            rangePickerValue={rangePickerValue}
-                            salesData={salesData}
-                            rankingListData={rankingListData}
-                            isActive={this.isActive}
-                            handleRangePickerChange={this.handleRangePickerChange}
-                            loading={loading}
-                            selectDate={this.selectDate}
-                        />
-                    </Suspense>
-                    <div className={styles.twoColLayout}>
-                        <Row gutter={24}>
-                            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-                                <Suspense fallback={null}>
-                                    <TopSearch
-                                        loading={loading}
-                                        visitData2={visitData2}
-                                        selectDate={this.selectDate}
-                                        searchData={searchData}
-                                        dropdownGroup={dropdownGroup}
-                                    />
-                                </Suspense>
-                            </Col>
-                            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-                                <Suspense fallback={null}>
-                                    <ProportionSales
-                                        dropdownGroup={dropdownGroup}
-                                        salesType={salesType}
-                                        loading={loading}
-                                        salesPieData={salesPieData}
-                                        handleChangeSalesType={this.handleChangeSalesType}
-                                    />
-                                </Suspense>
-                            </Col>
-                        </Row>
-                    </div>
-                    <Suspense fallback={null}>
-                        <OfflineData
-                            activeKey={activeKey}
-                            loading={loading}
-                            offlineData={offlineData}
-                            offlineChartData={offlineChartData}
-                            handleTabChange={this.handleTabChange}
-                        />
-                    </Suspense>
-                </GridContent>
+                {
+                    rankingListData?
+                        <GridContent>
+                            <Suspense fallback={<PageLoading/>}>
+                                <IntroduceRow loading={loading} visitData={visitData}/>
+                            </Suspense>
+                            <Suspense fallback={null}>
+                                <SalesCard
+                                    id="salesCard"
+                                    rangePickerValue={rangePickerValue}
+                                    salesData={salesData}
+                                    rankingListData={rankingListData}
+                                    isActive={this.isActive}
+                                    handleRangePickerChange={this.handleRangePickerChange}
+                                    loading={loading}
+                                    selectDate={this.selectDate}
+                                />
+                            </Suspense>
+                            <div className={styles.twoColLayout}>
+                                <Row gutter={24}>
+                                    <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+                                        <Suspense fallback={null}>
+                                            <TopSearch
+                                                loading={loading}
+                                                visitData2={visitData2}
+                                                selectDate={this.selectDate}
+                                                searchData={searchData}
+                                                dropdownGroup={dropdownGroup}
+                                            />
+                                        </Suspense>
+                                    </Col>
+                                    <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+                                        <Suspense fallback={null}>
+                                            <ProportionSales
+                                                dropdownGroup={dropdownGroup}
+                                                salesType={salesType}
+                                                loading={loading}
+                                                salesPieData={salesPieData}
+                                                handleChangeSalesType={this.handleChangeSalesType}
+                                            />
+                                        </Suspense>
+                                    </Col>
+                                </Row>
+                            </div>
+                            <Suspense fallback={null}>
+                                <OfflineData
+                                    activeKey={activeKey}
+                                    loading={loading}
+                                    offlineData={offlineData}
+                                    offlineChartData={offlineChartData}
+                                    handleTabChange={this.handleTabChange}
+                                />
+                            </Suspense>
+                        </GridContent>
+                    :<br/>
+                }
             </div>
         );
     }

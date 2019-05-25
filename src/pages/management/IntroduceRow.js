@@ -30,11 +30,11 @@ const IntroduceRow = memo(({ loading, visitData }) => (
           </Tooltip>
         }
         loading={loading}
-        total={() => <Yuan>126560</Yuan>}
+        total={() => <Yuan>{visitData.totalSale}</Yuan>}
         footer={
           <Field
             label={<FormattedMessage id="app.analysis.day-sales" defaultMessage="Daily Sales" />}
-            value={`￥${numeral(12423).format('0,0')}`}
+            value={`￥${numeral(visitData.todaySale).format('0,0')}`}
           />
         }
         contentHeight={46}
@@ -62,16 +62,16 @@ const IntroduceRow = memo(({ loading, visitData }) => (
             <Icon type="info-circle-o" />
           </Tooltip>
         }
-        total={numeral(8846).format('0,0')}
+        total={numeral(visitData.totalAccess).format('0,0')}
         footer={
           <Field
             label={<FormattedMessage id="app.analysis.day-visits" defaultMessage="Daily Visits" />}
-            value={numeral(1234).format('0,0')}
+            value={numeral(visitData.todayAccess).format('0,0')}
           />
         }
         contentHeight={46}
       >
-        <MiniArea color="#975FE4" data={visitData} />
+        <MiniArea color="#975FE4" data={visitData.accessDetailList} />
       </ChartCard>
     </Col>
     <Col {...topColResponsiveProps}>
@@ -86,7 +86,7 @@ const IntroduceRow = memo(({ loading, visitData }) => (
             <Icon type="info-circle-o" />
           </Tooltip>
         }
-        total={numeral(6560).format('0,0')}
+        total={numeral(visitData.totalPaidCount).format('0,0')}
         footer={
           <Field
             label={
@@ -95,12 +95,12 @@ const IntroduceRow = memo(({ loading, visitData }) => (
                 defaultMessage="Conversion Rate"
               />
             }
-            value="60%"
+            value={numeral(visitData.todayPaidCount/visitData.todayAccess).format('0.000%')}
           />
         }
         contentHeight={46}
       >
-        <MiniBar data={visitData} />
+        <MiniBar data={visitData.paidDetailList} />
       </ChartCard>
     </Col>
     <Col {...topColResponsiveProps}>

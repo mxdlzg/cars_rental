@@ -139,6 +139,13 @@ export default function request(url, option, needCheckStatus = true) {
         .then(response => {
             // DELETE and 204 do not return data by default
             // using .json will report an error.
+            if (response.status === 401) {
+                const errortext = codeMessage[response.status] || response.msg;
+                const error = new Error(errortext);
+                error.name = response.status;
+                error.response = response;
+                throw error;
+            }
             if (response.headers.get("token")) {
                 setAuthorization(response.headers.get("token"));
             }

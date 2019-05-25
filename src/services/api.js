@@ -50,8 +50,20 @@ export async function fakeSubmitForm(params) {
     });
 }
 
-export async function fakeChartData() {
-    return request('/api/fake_chart_data');
+export async function fetchOverview() {
+    return request('/api/analysis/overview');
+}
+
+export async function fetchSaleSta(params) {
+    return request(`/api/analysis/saleStatistic?${stringify(params)}`)
+}
+
+export async function fetchSaleType() {
+    return request('/api/analysis/saleType');
+}
+
+export async function fetchStoresSale() {
+    return request('/api/analysis/storesSale');
 }
 
 export async function queryTags() {

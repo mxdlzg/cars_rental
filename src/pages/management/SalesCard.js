@@ -18,16 +18,16 @@ const SalesCard = memo(
           tabBarExtraContent={
             <div className={styles.salesExtraWrap}>
               <div className={styles.salesExtra}>
-                <a href="/" className={isActive('today')} onClick={() => selectDate('today')}>
-                  <FormattedMessage id="app.analysis.all-day" defaultMessage="All Day" />
-                </a>
-                <a href="/" className={isActive('week')} onClick={() => selectDate('week')}>
+                {/*<a href="/" className={isActive('today')} onClick={() => selectDate('today')}>*/}
+                  {/*<FormattedMessage id="app.analysis.all-day" defaultMessage="All Day" />*/}
+                {/*</a>*/}
+                <a href="#salesCard" className={isActive('week')} onClick={() => selectDate('week')}>
                   <FormattedMessage id="app.analysis.all-week" defaultMessage="All Week" />
                 </a>
-                <a href="/" className={isActive('month')} onClick={() => selectDate('month')}>
+                <a href="#salesCard" className={isActive('month')} onClick={() => selectDate('month')}>
                   <FormattedMessage id="app.analysis.all-month" defaultMessage="All Month" />
                 </a>
-                <a href="/" className={isActive('year')} onClick={() => selectDate('year')}>
+                <a href="#salesCard" className={isActive('year')} onClick={() => selectDate('year')}>
                   <FormattedMessage id="app.analysis.all-year" defaultMessage="All Year" />
                 </a>
               </div>
@@ -70,17 +70,17 @@ const SalesCard = memo(
                   </h4>
                   <ul className={styles.rankingList}>
                     {rankingListData.map((item, i) => (
-                      <li key={item.title}>
+                      <li key={item.label}>
                         <span
                           className={`${styles.rankingItemNumber} ${i < 3 ? styles.active : ''}`}
                         >
                           {i + 1}
                         </span>
-                        <span className={styles.rankingItemTitle} title={item.title}>
-                          {item.title}
+                        <span className={styles.rankingItemTitle} title={item.label}>
+                          {item.label}
                         </span>
                         <span className={styles.rankingItemValue}>
-                          {numeral(item.total).format('0,0')}
+                          {numeral(item.value).format('0,0')}
                         </span>
                       </li>
                     ))}
