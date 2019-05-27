@@ -1,6 +1,6 @@
 import styles from './index.less';
 import React from 'react';
-import {Avatar, Button, Card, Carousel, Divider, Empty, Icon, List, Progress, Tag} from 'antd';
+import {Avatar, Button, Card, Carousel, Divider, Empty, Form, Icon, List, Modal, Progress, Tag, Spin} from 'antd';
 import Meta from "antd/es/card/Meta";
 import cars1 from "@/assets/cars1.jpg"
 import cars2 from "@/assets/cars2.jpg"
@@ -12,13 +12,21 @@ import Ellipsis from "@/components/Ellipsis/index";
 import moment from "moment";
 import AvatarList from "@/components/AvatarList/index";
 import * as numeral from "numeral";
+import Result from "@/components/Result/index";
+import DescriptionList from "@/components/DescriptionList/DescriptionList";
+import Description from "@/components/DescriptionList/Description";
+import PageHeader from "@/components/PageHeader/index";
 
+const FormItem = Form.Item;
 
 @connect(({index, loading}) => ({
     index,
     loading: loading.effects['index/fetch'],
+    carDetailLoading: loading.effects['index/fetchCarDetail'],
 }))
 class Index extends React.PureComponent {
+    state = {visible: false, done: false};
+
     componentDidMount() {
         this.props.dispatch({
             type: "index/fetch"
@@ -28,17 +36,75 @@ class Index extends React.PureComponent {
     fetchMore = (from) => {
         const {currentPage} = this.props.index;
         this.props.dispatch({
-            type:"index/appendFetch",
-            payload:{"from":from,"page":currentPage[from]+1}
+            type: "index/appendFetch",
+            payload: {"from": from, "page": currentPage[from] + 1}
         })
     };
 
-    loadMore = (loading,list, from) => {
+    showCarModal = (item) => {
+        if (item) {
+            this.props.dispatch({
+                type: "index/fetchCarDetail",
+                payload: item.href
+            });
+            this.setState({
+                visible: true,
+                current: item,
+                done: false
+            });
+        }
+    };
+
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+        });
+    };
+
+    getModalContent = () => {
+        const {current} = this.state;
+        const {carDetailLoading} = this.props;
+        const {currentCarDetail} = this.props.index;
+        return (
+            <div style={{textAlign: "center"}}>
+                {carDetailLoading || !currentCarDetail ?
+                    <Spin/>
+                    :<PageHeader
+                        className={styles.left}
+                        title={"车辆编号：" + currentCarDetail.id}
+                        logo={
+                            <img alt=""
+                                 src="https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png"/>
+                        }
+                        content={
+                            <DescriptionList className={styles.headerList} size="small" col="2">
+                                <Description term="车辆类型">{currentCarDetail.typeName}</Description>
+                                <Description term="标签">{<Tag color="blue">{currentCarDetail.label}</Tag>}</Description>
+                                <Description term="车辆品牌">{currentCarDetail.maker}</Description>
+                                <Description term="登记日期">{currentCarDetail.buyDate}</Description>
+                                <Description term="颜色">{currentCarDetail.color}</Description>
+                                <Description term="结构">{currentCarDetail.structure}</Description>
+                                <Description term="类型">{currentCarDetail.type}</Description>
+                                <Description term="描述">{currentCarDetail.description}</Description>
+                            </DescriptionList>
+                        }
+                        extraContent={
+                            <img alt="" className={styles.imgSc}
+                                 src={currentCarDetail.imageSrc}/>
+                        }
+                    >
+                    </PageHeader>
+                }
+            </div>
+        );
+    };
+
+    loadMore = (loading, list, from) => {
         const {currentPage} = this.props.index;
         return (
             currentPage[from] !== -1 ? (
                 <div style={{textAlign: 'center', marginTop: 16}}>
-                    <Button onClick={this.fetchMore.bind(this,from)} style={{paddingLeft: 48, paddingRight: 48}}>
+                    <Button onClick={this.fetchMore.bind(this, from)} style={{paddingLeft: 48, paddingRight: 48}}>
                         {loading ? (
                             <span>
                 <Icon type="loading"/> 加载中...
@@ -52,10 +118,11 @@ class Index extends React.PureComponent {
         )
     };
 
+
     render() {
+        const {visible, done, current = {}} = this.state;
         const {index, loading} = this.props;
         const {recommendation, strategy, comments} = index;
-
         const IconText = ({type, text}) => (
             <span>
                 <Icon type={type} style={{marginRight: 8}}/>
@@ -132,7 +199,7 @@ class Index extends React.PureComponent {
                     <p>为您精选热门车型，点击一键下单.</p>
                     <List
                         rowKey="id"
-                        loadMore={this.loadMore(loading,recommendation, 0)}
+                        loadMore={this.loadMore(loading, recommendation, 0)}
                         loading={loading}
                         grid={{gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1}}
                         dataSource={recommendation}
@@ -141,7 +208,7 @@ class Index extends React.PureComponent {
                                 <a
                                     onClick={e => {
                                         e.preventDefault();
-                                        this.showEditModal(item);
+                                        this.showCarModal(item);
                                     }}
                                 >
                                     查看
@@ -182,7 +249,7 @@ class Index extends React.PureComponent {
                     >
                         <List
                             rowKey="id"
-                            loadMore={this.loadMore(loading,strategy, 1)}
+                            loadMore={this.loadMore(loading, strategy, 1)}
                             loading={loading}
                             grid={{gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1}}
                             dataSource={strategy}
@@ -259,9 +326,21 @@ class Index extends React.PureComponent {
                         />
                     </Card>
                 </div>
+                <Modal
+                    title="车辆详情"
+                    width={840}
+                    bodyStyle={done ? {padding: '72px 0'} : {padding: '28px 0 0'}}
+                    destroyOnClose
+                    visible={visible}
+                    onOk={this.handleCancel}
+                    onCancel={this.handleCancel}
+                >
+                    {this.getModalContent()}
+                </Modal>
             </div>
         );
     }
+
 }
 
 export default Index;
