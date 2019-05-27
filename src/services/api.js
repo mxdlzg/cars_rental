@@ -86,6 +86,14 @@ export async function queryFakeList(params) {
     return request(`/api/fake_list?${stringify(params)}`);
 }
 
+export async function queryIndexList() {
+    return request(`/api/indexList`);
+}
+
+export async function queryIndexListMore(params) {
+    return request(`/api/indexList/more?${stringify(params)}`);
+}
+
 export async function removeFakeList(params) {
     const { count = 5, ...restParams } = params;
     return request(`/api/fake_list?count=${count}`, {

@@ -1,0 +1,112 @@
+@import '~antd/lib/style/themes/default.less';
+@import '~@/utils/utils.less';
+.normal {
+  background-color: #f2f3f5;
+  text-align: center;
+  height: 100%;
+}
+.listContent {
+  font-size: 0;
+  .listContentItem {
+    float:left;
+    display: inline-block;
+    color: @text-color-secondary;
+    font-size: @font-size-base;
+    vertical-align: middle;
+    > span {
+      line-height: 20px;
+    }
+    > p {
+      margin-top: 4px;
+      margin-bottom: 0;
+      line-height: 22px;
+    }
+  }
+}
+.card {
+  :global {
+    .ant-card-meta-title {
+      margin-bottom: 4px;
+      & > a {
+        display: inline-block;
+        max-width: 100%;
+        color: @heading-color;
+      }
+    }
+    .ant-card-meta-description {
+      height: 44px;
+      overflow: hidden;
+      line-height: 22px;
+    }
+  }
+}
+
+.cardItemContent {
+  display: flex;
+  height: 20px;
+  margin-top: 16px;
+  margin-bottom: -4px;
+  line-height: 20px;
+  & > span {
+    flex: 1;
+    color: @text-color-secondary;
+    font-size: 12px;
+  }
+  .avatarList {
+    flex: 0 1 auto;
+  }
+}
+a.listItemMetaTitle {
+  color: @heading-color;
+}
+
+.listItemExtra {
+  text-align: center;
+  align-content: center;
+  width: 272px;
+  height: 1px;
+}
+
+.antcarousel {
+  text-align: center;
+  height: 40em;
+  line-height: 160px;
+  background: #ececee;
+  overflow: hidden;
+  color: #fff;
+
+}
+
+.slimg {
+  width: 100%;
+}
+
+.slick-slide h3 {
+}
+
+.topQuick {
+  display: -webkit-flex; /* Safari */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4em 10em;
+}
+
+.mainContent {
+  background-color: white;
+  padding-top: 4em;
+  padding-bottom: 4em;
+  padding-left: 15em;
+  padding-right: 15em;
+  text-align: left;
+}
+
+.imgSc {
+  width: 250px;
+  height: 150px;
+}
+
+.icon {
+  width: 100%;
+}
