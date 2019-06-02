@@ -8,3 +8,6 @@ export async function query() {
 export async function queryCurrent(params) {
     return request(`/api/currentUser?${stringify(params)}`,null,false);
 }
+export async function queryCurrentMI() {
+    return request(`/api/currentUser/permissions`);
+}

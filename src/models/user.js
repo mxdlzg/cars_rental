@@ -1,5 +1,6 @@
-import {query as queryUsers, queryCurrent} from '@/services/user';
+import {query as queryUsers, queryCurrent, queryCurrentMI} from '@/services/user';
 import {getUserToken} from "@/utils/userInfo";
+import {message} from 'antd';
 
 export default {
     namespace: 'user',
@@ -8,6 +9,7 @@ export default {
         list: [],
         currentUser: {},
         currentToken: {},
+        currentUserMI:[]
     },
 
     effects: {
@@ -33,6 +35,17 @@ export default {
                 });
             }
         },
+        * fetchUserManagementInfo(_,{call,put}){
+            const res = yield call(queryCurrentMI);
+            if (res.success) {
+                yield put({
+                    type:"saveMI",
+                    payload:res.data,
+                })
+            }else {
+                message.warn(res.msg);
+            }
+        }
     },
 
     reducers: {
@@ -64,5 +77,11 @@ export default {
                 },
             };
         },
+        saveMI(state,{payload}){
+            return{
+                ...state,
+                currentUserMI:payload
+            }
+        }
     },
 };

@@ -62,7 +62,6 @@ class Index extends React.PureComponent {
     };
 
     getModalContent = () => {
-        const {current} = this.state;
         const {carDetailLoading} = this.props;
         const {currentCarDetail} = this.props.index;
         return (
