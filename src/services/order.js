@@ -67,3 +67,17 @@ export async function checkout(params) {
         }
     })
 }
+
+export async function comments(params) {
+    return request(`/api/order/comments`,{
+        method:"PUT",
+        body:{
+            ...params,
+            method:"put",
+        }
+    })
+}
+
+export async function fetchComments(params) {
+    return request(`/api/order/fetchComments?${stringify(params)}`);
+}

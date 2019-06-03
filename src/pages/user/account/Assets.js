@@ -4,6 +4,7 @@ import numeral from 'numeral';
 import {connect} from 'dva';
 import {formatWan} from '@/utils/utils';
 import styles from './Assets.less';
+import moment from "moment";
 
 @connect(({ assets,loading }) => ({
     listLoading:loading.effects['assets/fetch'],
@@ -39,18 +40,6 @@ class Assets extends PureComponent {
                 </Menu.Item>
             </Menu>
         );
-        const CardInfo = ({ activeUser, newUser }) => (
-            <div className={styles.cardInfo}>
-                <div>
-                    <p>开始日期</p>
-                    <p>{activeUser}</p>
-                </div>
-                <div>
-                    <p>失效日期</p>
-                    <p>{newUser}</p>
-                </div>
-            </div>
-        );
         const loadMore = (
                 <div style={{textAlign: 'center', marginBottom: 12, height: 32, lineHeight: '32px',}}>
                     {(!listLoading) ? (
@@ -69,13 +58,10 @@ class Assets extends PureComponent {
                 dataSource={list}
                 loadMore={loadMore}
                 renderItem={item => (
-                    <List.Item key={item.id}>
+                    <List.Item key={item.couponId}>
                         <Card
                             bodyStyle={{ paddingBottom: 20 }}
                             actions={[
-                                <Tooltip title="编辑">
-                                    <Icon type="edit" />
-                                </Tooltip>,
                                 <Tooltip title="分享">
                                     <Icon type="share-alt" />
                                 </Tooltip>,
@@ -84,12 +70,22 @@ class Assets extends PureComponent {
                                 </Dropdown>,
                             ]}
                         >
-                            <Card.Meta avatar={<Avatar size="small" src={item.avatar} />} title={item.title} />
-                            <div className={styles.cardItemContent}>
-                                <CardInfo
-                                    activeUser={formatWan(item.activeUser)}
-                                    newUser={numeral(item.newUser).format('0,0')}
-                                />
+                            <Card.Meta avatar={<Avatar size="small" src={"https://image01.oneplus.cn/user/201707/09/192/bc4092498dd6db5acbee464189ea8e4f.jpg"} />}
+                                       title={<div>{item.name}<p style={{float:"right",fontSize:'24px'}}>{"￥"+item.price}</p></div>}
+                            />
+
+                            <div>
+                                <div className={styles.cardInfo}>
+
+                                    <div>
+                                        <p>开始日期</p>
+                                        <p><h6>{moment(item.createDate).format('YYYY-MM-DD HH:mm:ss')}</h6></p>
+                                    </div>
+                                    <div>
+                                        <p>失效日期</p>
+                                        <p><h6>{moment(item.endDate).format('YYYY-MM-DD HH:mm:ss')}</h6></p>
+                                    </div>
+                                </div>
                             </div>
                         </Card>
                     </List.Item>

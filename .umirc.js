@@ -129,13 +129,13 @@ export default {
                     name: 'analysis',
                     component: './management/Analysis',
                 },
-                {
-                    Routes: ['src/pages/Authorized'],
-                    authority: ['admin'],
-                    path: '/management/Monitor',
-                    name: 'monitor',
-                    component: './management/Monitor',
-                },
+                // {
+                //     Routes: ['src/pages/Authorized'],
+                //     authority: ['admin'],
+                //     path: '/management/Monitor',
+                //     name: 'monitor',
+                //     component: './management/Monitor',
+                // },
                 {
                     Routes: ['src/pages/Authorized'],
                     authority: ['admin'],

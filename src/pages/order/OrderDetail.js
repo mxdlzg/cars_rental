@@ -2,13 +2,30 @@ import React, {Fragment, PureComponent} from 'react'
 import styles from './OrderDetail.less'
 import DescriptionList from '@/components/DescriptionList';
 import PageHeader from '@/components/PageHeader';
-import {Badge, Button, Card, Col, Divider, Icon, Popover, Row, Steps, Tabs, Tag, Skeleton, Empty} from 'antd';
+import {
+    Badge,
+    Button,
+    Card,
+    Col,
+    Divider,
+    Icon,
+    Popover,
+    Row,
+    Steps,
+    Tabs,
+    Tag,
+    Skeleton,
+    Empty,
+    Form,
+    Input,
+    Modal, Rate
+} from 'antd';
 import {connect} from "dva/index";
 import router from "umi/router";
 import {stringify} from "qs";
 
 const TabPane = Tabs.TabPane;
-
+const FormItem = Form.Item;
 const {Step} = Steps;
 const {Description} = DescriptionList;
 const ButtonGroup = Button.Group;
@@ -45,7 +62,12 @@ function action(params) {
                     payload: {id: params.id},
                 })
             }}>还车结算</Button> : null}
-            {params.stateId === 4? <Button type="primary">订单已完成</Button> : null}
+            {params.stateId === 4? <Button type="primary" onClick={() => {
+                params.dispatch({
+                    type: "order/showComments",
+                    payload: {id: params.id},
+                })
+            }}>填写评价</Button> : null}
         </Fragment>
     )
 }
@@ -130,9 +152,11 @@ const customDot = (dot, {status}) =>
 
 @connect(({order, loading, user}) => ({
     orderLoading: loading.effects['order/orderDetail'],
+    confirmLoading:loading.effects['order/comments'],
     ...order,
     ...user,
 }))
+@Form.create()
 class OrderDetail extends PureComponent {
     state = {
         operationkey: 'tab1',
@@ -176,13 +200,33 @@ class OrderDetail extends PureComponent {
         })
     };
 
+    handleOk = () => {
+        const {form} = this.props;
+        form.validateFields((err, fieldsValue) => {
+            if (err) return;
+            //form.resetFields();
+            this.props.dispatch({
+                type:"order/comments",
+                payload:fieldsValue
+            });
+        });
+    };
+
+    handleCancel = () => {
+        this.props.dispatch({
+            type:"order/comments",
+            payload:null
+        });
+    };
+
 
     render() {
         const {stepDirection, tabKey} = this.state;
         //const {current, operateDate, userInfo, startLocation, endLocation} = this.state;
         const {id} = this.props.location.query;
-        const {orderLoading, currentUser} = this.props;
+        const {orderLoading, currentUser,form} = this.props;
         const {current, operateDate, userInfo, startLocation, endLocation, order} = this.props;
+        const {comment,rate,commentShow,confirmLoading} = this.props;
 
 
         return (
@@ -315,6 +359,30 @@ class OrderDetail extends PureComponent {
                             }}>返回</Button>
                         </Empty>
                 }
+                <Modal title="评论详情"
+                       width={840}
+                       destroyOnClose
+                       visible={commentShow}
+                       confirmLoading={confirmLoading}
+                       onOk={this.handleOk}
+                       onCancel={this.handleCancel}>
+                    <FormItem key="orderId" labelCol={{span: 5}} wrapperCol={{span: 15}} label="订单编号">
+                        {form.getFieldDecorator('order', {
+                            initialValue:id,
+                        })(<Input disabled={true}/>)}
+                    </FormItem>
+                    <Form.Item key="rate" labelCol={{span: 5}} wrapperCol={{span: 15}} label="评级">
+                        {form.getFieldDecorator('rate', {
+                            initialValue: rate,
+                        })(<Rate />)}
+                    </Form.Item>
+                    <FormItem key="content" labelCol={{span: 5}} wrapperCol={{span: 15}} label="描述">
+                        {form.getFieldDecorator('content', {
+                            initialValue:comment,
+                            rules: [{required: true, message: '请输入至少2个字符！', min: 2}],
+                        })(<Input.TextArea rows={4} placeholder="请输入"/>)}
+                    </FormItem>
+                </Modal>
             </div>
 
         )

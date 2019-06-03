@@ -80,6 +80,15 @@ class SelfDriving extends React.PureComponent {
 
     state = {
         dataSource: [],
+        tmpData: [],
+        car: '所有',
+        seat: [],
+        price: [],
+        brand: [],
+        ordered: false,
+        sR: [],
+        wR: [],
+        mR: []
     };
 
     componentDidMount() {
@@ -119,15 +128,10 @@ class SelfDriving extends React.PureComponent {
         if (this.checkSearchParams()) {
             this.props.dispatch({
                 type: 'rental/searchRental',
+            }).then(()=>{
+                this.dataReloading();
             })
         }
-    }
-
-    cardClick(i) {
-        this.props.dispatch({
-            type: "rental/changeOptions",
-            payload: {type: 'car', key: i},
-        })
     }
 
     onLocationChange(id, value) {
@@ -163,6 +167,8 @@ class SelfDriving extends React.PureComponent {
         if (this.checkSearchParams()) {
             this.props.dispatch({
                 type: 'rental/searchRentalLoadMore',
+            }).then(()=>{
+                this.dataReloading();
             })
         }
     };
@@ -182,14 +188,126 @@ class SelfDriving extends React.PureComponent {
         })
     };
 
-    optionsChange(value) {
+    optionsChange(from, value) {
+        switch (from) {
+            case 'seat':
+                this.setState({
+                    seat: value
+                },()=>{
+                    this.dataReloading();
+                });
+                break;
+            case 'price':
+                this.setState({
+                    price: value
+                },()=>{
+                    this.dataReloading();
+                });
+                break;
+            case 'brand':
+                this.setState({
+                    brand: value
+                },()=>{
+                    this.dataReloading();
+                });
+                break;
+            default:
+                break;
+        }
         console.log(value);
     }
+
+    cardClick = (key, value) => {
+        this.props.dispatch({
+            type: "rental/changeOptions",
+            payload: {type: 'car', key: key},
+        });
+        this.setState({
+            car: value
+        },()=>{
+            this.dataReloading();
+        });
+        console.log(value);
+    };
+
+    priceChange = (checked, e) => {
+        this.setState({
+            ordered: checked
+        },()=>{
+            this.dataReloading();
+        });
+    };
+
+    dataReloading = () => {
+        const {car, seat, price, brand, ordered, sR, wR, mR} = this.state;
+        const {tabIndex, shortRent, weekRent, monthRent} = this.props;
+        let config = [car !== '所有', seat.length !== 0, price.length !== 0, brand.length !== 0, ordered];
+        let resbl = [true, true, true, true, true];
+        let tmp = [];
+        switch (tabIndex) {
+            case 1:
+                tmp = shortRent.concat();
+                break;
+            case 2:
+                tmp = weekRent.concat();
+                break;
+            case 3:
+                tmp = monthRent.concat();
+                break;
+        }
+        tmp = tmp.filter(item => {
+            if (config[0]) {
+                resbl[0] = item.type === car;
+            }
+            if (config[1]) {
+                resbl[1] = seat.includes(item.structure);
+            }
+            if (config[2]) {
+                let pr = item.defaultRentPrice;
+                let i = 0;
+                let rb = [false,false,false,false];
+                price.forEach(item=>{
+                    rb[i] = (pr>=item[0] && pr<=item[1]);
+                    i = i+1;
+                });
+                resbl[2] = rb[0]||rb[1]||rb[2]||rb[3];
+            }
+            if (config[3]) {
+                resbl[3] = brand.includes(item.maker);
+            }
+            return resbl[0]&&resbl[1]&&resbl[2]&&resbl[3];
+        });
+        if (!config[4]) {
+            tmp.sort((a,b)=>{
+                return a.defaultRentPrice-b.defaultRentPrice;
+            });
+        }else {
+            tmp.sort((a,b)=>{
+                return b.defaultRentPrice-a.defaultRentPrice;
+            });
+        }
+        switch (tabIndex) {
+            case 1:
+                this.setState({
+                    sR:tmp
+                });
+                break;
+            case 2:
+                this.setState({
+                    wR:tmp
+                });
+                break;
+            case 3:
+                this.setState({
+                    mR:tmp
+                });
+                break;
+        }
+    };
 
     render() {
         const {
             cascaderStartData, cascaderEndData, filterOptions, searchLoading, loadMoreLoading,
-            shortRent, weekRent, monthRent,
             loadedPage,
             tabIndex,
             originLocation,
@@ -198,6 +316,7 @@ class SelfDriving extends React.PureComponent {
             cascaderSelectEData,
             selectedDate
         } = this.props;
+        const {sR,wR,mR} = this.state;
         const loadMore = (
                 <div style={{textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',}}>
                     {(!loadMoreLoading) ? (
@@ -205,8 +324,7 @@ class SelfDriving extends React.PureComponent {
                             <Button onClick={this.loadMore}>加载更多</Button>
                     ) : <Spin/>}
                 </div>
-            )
-        ;
+            );
         return (
             <div className={styles.main}>
                 <div>
@@ -281,7 +399,7 @@ class SelfDriving extends React.PureComponent {
                                     filterOptions.optionsCar.map((item, key) => {
                                         return (
                                             <Card.Grid className={styles.carType}
-                                                       onClick={() => this.cardClick(key)}>
+                                                       onClick={this.cardClick.bind(this, key, item.value)}>
                                                 <CNIcon style={{fontSize: '50px'}} type={item.type}/>
                                                 <CheckTag checked={item.selected}>{item.value}</CheckTag>
                                             </Card.Grid>
@@ -296,7 +414,7 @@ class SelfDriving extends React.PureComponent {
                                             <Divider type="vertical"/>
                                         </strong>
                                     </div>
-                                    <TagSelect className={styles.tags} onChange={this.optionsChange}>
+                                    <TagSelect className={styles.tags} onChange={this.optionsChange.bind(this, 'seat')}>
                                         {
                                             filterOptions.optionsSeat.map((item, key) => {
                                                 return (
@@ -314,7 +432,8 @@ class SelfDriving extends React.PureComponent {
                                             <Divider type="vertical"/>
                                         </strong>
                                     </div>
-                                    <TagSelect className={styles.tags} onChange={this.optionsChange}>
+                                    <TagSelect className={styles.tags}
+                                               onChange={this.optionsChange.bind(this, 'price')}>
                                         {
                                             filterOptions.optionsPrice.map((item, key) => {
                                                 return (
@@ -332,7 +451,8 @@ class SelfDriving extends React.PureComponent {
                                             <Divider type="vertical"/>
                                         </strong>
                                     </div>
-                                    <TagSelect className={styles.tags} onChange={this.optionsChange}>
+                                    <TagSelect className={styles.tags}
+                                               onChange={this.optionsChange.bind(this, 'brand')}>
                                         {
                                             filterOptions.optionsBrand.map((item, key) => {
                                                 return (
@@ -365,7 +485,8 @@ class SelfDriving extends React.PureComponent {
                     <div id="right_cars" className={styles.contentRight}>
                         <Card className={styles.card}>
                             <Tabs className={styles.tabs}
-                                  tabBarExtraContent={<Switch checkedChildren="高" unCheckedChildren="低"
+                                  tabBarExtraContent={<Switch onChange={this.priceChange} checkedChildren="高"
+                                                              unCheckedChildren="低"
                                                               size="default"/>}
                                   defaultActiveKey="1" onChange={this.tabChange}>
                                 <TabPane tab="短租自驾" key="1">
@@ -373,7 +494,7 @@ class SelfDriving extends React.PureComponent {
                                         size="large"
                                         rowKey="id"
                                         loading={false}
-                                        dataSource={shortRent}
+                                        dataSource={sR}
                                         loadMore={loadMore}
                                         renderItem={item => (
                                             <List.Item
@@ -398,7 +519,7 @@ class SelfDriving extends React.PureComponent {
                                         size="large"
                                         rowKey="id"
                                         loading={false}
-                                        loadMore={loadMore} dataSource={weekRent}
+                                        loadMore={loadMore} dataSource={wR}
                                         renderItem={item => (
                                             <List.Item
                                                 actions={[
@@ -423,7 +544,7 @@ class SelfDriving extends React.PureComponent {
                                         size="large"
                                         rowKey="id"
                                         loading={false}
-                                        loadMore={loadMore} dataSource={monthRent}
+                                        loadMore={loadMore} dataSource={mR}
                                         renderItem={item => (
                                             <List.Item
                                                 actions={[

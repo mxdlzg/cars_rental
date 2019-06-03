@@ -9,6 +9,10 @@ export async function queryStoreCarList(params) {
     return request(`/api/assets/storeCarList?${stringify(params)}`)
 }
 
+export async function fetchRanking(params) {
+    return request(`/api/assets/storeRanking?${stringify(params)}`);
+}
+
 export async function addCar(params) {
     return request(`/api/assets/addCar`, {
         method: 'POST',

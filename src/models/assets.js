@@ -1,4 +1,4 @@
-import {addCar, queryCouponsList, queryStoreCarList, removeCars} from "@/services/assets";
+import {addCar, fetchRanking, queryCouponsList, queryStoreCarList, removeCars} from "@/services/assets";
 import {getUserToken} from "@/utils/userInfo";
 import {message} from "antd/lib/index";
 import {queryCurrentMI} from "@/services/user";
@@ -10,7 +10,8 @@ export default {
         list: [],
         page: 0,
         last: true,
-        pagination:{}
+        pagination:{},
+        ranking:[0,0,0]
     },
 
     effects: {
@@ -28,6 +29,17 @@ export default {
                 }
             } else {
                 message.success("已全部加载完毕!");
+            }
+        },
+        * fetchRanking({payload}, {call, put}){
+            const res = yield call(fetchRanking,payload);
+            if (res.success) {
+                yield put({
+                    type:"saveRanking",
+                    payload:res.data
+                })
+            }else {
+                message.warn(res.msg);
             }
         },
         * fetchStoreCarList({payload},{call,put}){
@@ -61,16 +73,20 @@ export default {
 
     reducers: {
         saveCouponsList(state, {payload}) {
-            state.page = payload.res.last ? -1 : payload.res.number;
-            state.last = payload.res.last;
+            const {data} = payload.res;
+            state.page = data.last ? -1 : data.number;
+            state.last = data.last;
             if (payload.isMore) {
-                state.list = state.list.concat(payload.res.content);
+                state.list = state.list.concat(data.content);
             } else {
-                state.list = payload.res.content;
+                state.list = data.content;
             }
         },
         saveCarList(state,{payload}){
             state.list = payload;
+        },
+        saveRanking(state,{payload}){
+            state.ranking = payload
         }
     },
 };

@@ -94,9 +94,7 @@ class UpdateForm extends PureComponent {
         super(props);
 
         this.state = {
-            formVals: {
-
-            },
+            formVals: {},
             currentStep: 0,
         };
 
@@ -107,7 +105,7 @@ class UpdateForm extends PureComponent {
     }
 
     handleNext = currentStep => {
-        const {form, handleUpdate,handleUpdateModalVisible} = this.props;
+        const {form, handleUpdate, handleUpdateModalVisible} = this.props;
         const {formVals: oldValue} = this.state;
         form.validateFields((err, fieldsValue) => {
             if (err) return;
@@ -121,7 +119,7 @@ class UpdateForm extends PureComponent {
                         this.forward();
                     } else {
                         handleUpdate(formVals);
-                        handleUpdateModalVisible(false,formVals);
+                        handleUpdateModalVisible(false, formVals);
                     }
                 }
             );
@@ -319,7 +317,7 @@ class Workplace extends PureComponent {
         selectedRows: [],
         formValues: {},
         stepFormValues: {},
-        visible:false
+        visible: false
     };
     static defaultProps = {
         handleUpdate: () => {
@@ -388,9 +386,10 @@ class Workplace extends PureComponent {
 
     componentDidMount() {
         const {dispatch} = this.props;
-        dispatch({
-            type: 'activities/fetchList',
-        });
+        // dispatch({
+        //     type: 'activities/fetchList',
+        // });
+
         dispatch({
             type: 'user/fetchUserManagementInfo'
         })
@@ -491,7 +490,6 @@ class Workplace extends PureComponent {
     }
 
     //OP method
-
     handleSearch = e => {
         e.preventDefault();
 
@@ -513,18 +511,17 @@ class Workplace extends PureComponent {
                 type: 'assets/fetchStoreCarList',
                 payload: values,
             });
+            dispatch({
+                type: 'assets/fetchRanking',
+                payload:{"storeId":values.store}
+            });
         });
     };
-
     handleFormReset = () => {
         const {form, dispatch} = this.props;
         form.resetFields();
         this.setState({
             formValues: {},
-        });
-        dispatch({
-            type: 'rule/fetch',
-            payload: {},
         });
     };
     handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -546,19 +543,19 @@ class Workplace extends PureComponent {
         if (sorter.field) {
             params.sorter = `${sorter.field}_${sorter.order}`;
         }
-
-        dispatch({
-            type: 'rule/fetch',
-            payload: params,
-        });
+        //
+        // dispatch({
+        //     type: 'rule/fetch',
+        //     payload: params,
+        // });
     };
-
     handleSelectRows = rows => {
         this.setState({
             selectedRows: rows,
         });
     };
 
+    //detail
     handleUpdateModalVisible = (flag, item) => {
         if (item) {
             this.props.dispatch({
@@ -571,18 +568,14 @@ class Workplace extends PureComponent {
                 done: false
             });
         }
-        // this.setState({
-        //     modalVisible: !!flag,
-        //     stepFormValues: record || {},
-        // });
     };
-
     handleCancel = () => {
         this.setState({
             modalVisible: false,
         });
     };
 
+    //create
     handleModalVisible = flag => {
         this.setState({
             updateModalVisible: !!flag,
@@ -590,23 +583,23 @@ class Workplace extends PureComponent {
     };
     handleCreate = (vals) => {
         this.props.dispatch({
-            type:"assets/createCar",
-            payload:vals
+            type: "assets/createCar",
+            payload: vals
         });
     };
 
     //remove
-    handleMenuClick=({key})=>{
+    handleMenuClick = ({key}) => {
         if (key === 'remove' || key === "online") {
             const {selectedRows} = this.state;
             if (selectedRows.length > 0) {
                 let pay = [];
-                selectedRows.map((item)=>{
+                selectedRows.map((item) => {
                     pay.push(item.id);
                 });
                 this.props.dispatch({
-                    type:"assets/removeCars",
-                    payload:{"ids":pay.toString(),"op":key}
+                    type: "assets/removeCars",
+                    payload: {"ids": pay.toString(), "op": key}
                 })
             }
             return;
@@ -626,13 +619,13 @@ class Workplace extends PureComponent {
         const {selectedRows, modalVisible, updateModalVisible, stepFormValues} = this.state;
 
         const {loading, assets} = this.props;
-        const {list, pagination} = assets;
+        const {list, pagination,ranking} = assets;
         let data = {list: list, pagination: pagination};
 
         const parentMethods = {
             handleAdd: this.handleAdd,
             handleModalVisible: this.handleUpdateModalVisible,
-            handleCancel:this.handleCancel
+            handleCancel: this.handleCancel
         };
         const updateMethods = {
             handleUpdateModalVisible: this.handleModalVisible,
@@ -659,17 +652,17 @@ class Workplace extends PureComponent {
             <div className={styles.extraContent}>
                 <div className={styles.statItem}>
                     <p>总订单数</p>
-                    <p>56</p>
+                    <p>{ranking[0]}</p>
                 </div>
                 <div className={styles.statItem}>
                     <p>站内排名</p>
                     <p>
-                        8<span> / 24</span>
+                        1<span> / {ranking[1]}</span>
                     </p>
                 </div>
                 <div className={styles.statItem}>
-                    <p>系统访问次数</p>
-                    <p>2,223</p>
+                    <p>成交订单数</p>
+                    <p>{ranking[2]}</p>
                 </div>
             </div>
         );

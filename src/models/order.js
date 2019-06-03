@@ -1,6 +1,6 @@
 import {message} from 'antd';
 import {
-    addOrder, cancelOrder, checkout,
+    addOrder, cancelOrder, checkout, comments, fetchComments,
     orderDetail, payOrder,
     queryCarDetail,
     queryOrderList,
@@ -17,6 +17,9 @@ export default {
         list: [],
         page: 0,
         last: true,
+        comment:"",
+        rate:0,
+        commentShow:false
     },
     effects: {
         * initPageInfo({payload}, {call, put}) {
@@ -149,6 +152,36 @@ export default {
             } else {
                 message.error(res.msg);
             }
+        },
+        * comments({payload},{call,put}){
+            if (payload === null) {
+                yield put({
+                    type:"saveComments",
+                    payload:null
+                });
+                return;
+            }
+            const res = yield call(comments, payload);
+            if (res.success) {
+                message.success("评价更新完毕！");
+                yield put({
+                    type:"saveComments",
+                    payload:null
+                });
+            } else {
+                message.error(res.msg);
+            }
+        },
+        * showComments({payload},{call,put}){
+            const res = yield call(fetchComments, payload);
+            if (res.success) {
+                yield put({
+                    type:"saveComments",
+                    payload:res.data
+                })
+            } else {
+                message.error(res.msg);
+            }
         }
     },
     reducers: {
@@ -178,6 +211,20 @@ export default {
             return {
                 ...state,
                 ...payload
+            }
+        },
+        saveComments(state,{payload}){
+            if (payload === null) {
+                return {
+                    ...state,
+                    commentShow:false
+                }
+            }
+            return {
+                ...state,
+                comment:payload.content,
+                rate:payload.rate,
+                commentShow:true
             }
         }
     },
