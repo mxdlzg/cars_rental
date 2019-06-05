@@ -6,6 +6,7 @@ import cars1 from "@/assets/cars1.jpg"
 import cars2 from "@/assets/cars2.jpg"
 import cars3 from "@/assets/cars3.jpg"
 import cars4 from "@/assets/cars4.jpg"
+import bc1 from "@/assets/bc1.jpg"
 import {connect} from "dva/index";
 import ArticleListContent from "@/components/ArticleListContent/index";
 import Ellipsis from "@/components/Ellipsis/index";
@@ -133,9 +134,10 @@ class Index extends React.PureComponent {
                 <Carousel className={styles.antcarousel} autoplay>
                     <img alt={""} className={styles.slimg}
                          src={"http://www.ccdol.com/d/file/sheji/biaozhi/2015-09-25/c9b935e9132c3c48253ee0af51d3b5b2.gif"}/>
-                    <div><h3>2</h3></div>
-                    <div><h3>3</h3></div>
-                    <div><h3>4</h3></div>
+                    <img alt={""} className={styles.slimg}
+                         src={"http://localhost:8080/bc2.jpg"}/>
+                    <img alt={""} className={styles.slimg}
+                         src={"http://localhost:8080/bc3.jpg"}/>
                 </Carousel>
                 <div className={styles.topQuick}>
                     <Card

@@ -4,7 +4,6 @@ import styles from "./SelfDriving.css"
 import moment from 'moment';
 import CheckTag from '@/components/CRental/CheckTag';
 import {Map} from 'react-amap';
-import cars1 from "@/assets/cars1.jpg"
 import {connect} from 'dva';
 import TagSelect from 'ant-design-pro/lib/TagSelect';
 import router from 'umi/router';
@@ -101,18 +100,22 @@ class SelfDriving extends React.PureComponent {
 
     onStartCascaderChange(value) {
         const {dispatch} = this.props;
-        dispatch({
-            type: 'rental/fetchStores',
-            payload: {data: value, type: 'start'}
-        });
+        if (value.length > 0) {
+            dispatch({
+                type: 'rental/fetchStores',
+                payload: {data: value, type: 'start'}
+            });
+        }
     }
 
     onEndCascaderChange(value) {
         const {dispatch} = this.props;
-        dispatch({
-            type: 'rental/fetchStores',
-            payload: {data: value, type: 'end'}
-        });
+        if (value.length > 0) {
+            dispatch({
+                type: 'rental/fetchStores',
+                payload: {data: value, type: 'end'}
+            });
+        }
     }
 
     checkSearchParams() {
@@ -348,7 +351,7 @@ class SelfDriving extends React.PureComponent {
                                             notFoundContent={<Empty/>}
                                             filterOption={true}
                                         >
-                                            {cascaderStartData.map(d => <Option key={d.id}>{d.name}</Option>)}
+                                            {cascaderStartData && cascaderStartData.map(d => <Option key={d.id}>{d.name}</Option>)}
                                         </Select>
                                     </div>
                                     <div style={{paddingTop: '1em'}}>
@@ -367,7 +370,7 @@ class SelfDriving extends React.PureComponent {
                                             notFoundContent={<Empty/>}
                                             filterOption={true}
                                         >
-                                            {cascaderEndData.map(d => <Option key={d.id}>{d.name}</Option>)}
+                                            {cascaderEndData && cascaderEndData.map(d => <Option key={d.id}>{d.name}</Option>)}
                                         </Select>
                                     </div>
                                 </div>
@@ -503,7 +506,7 @@ class SelfDriving extends React.PureComponent {
                                                             onClick={this.onRent.bind(this, item)}>租车</Button>
                                                 ]}
                                             >
-                                                <img alt="车型" src={cars1} style={{width: '15em', height: '10em'}}/>
+                                                <img alt="车型" src={item.imageSrc} style={{width: '15em', height: '10em'}}/>
                                                 <div className={styles.listDescription}/>
                                                 <List.Item.Meta
                                                     title={<h2>{item.typeName}</h2>}
@@ -528,7 +531,7 @@ class SelfDriving extends React.PureComponent {
                                                     </a>
                                                 ]}
                                             >
-                                                <img alt="车型" src={cars1} style={{width: '15em', height: '10em'}}/>
+                                                <img alt="车型" src={item.imageSrc} style={{width: '15em', height: '10em'}}/>
                                                 <div className={styles.listDescription}/>
                                                 <List.Item.Meta
                                                     title={<h2>大众朗逸</h2>}
@@ -553,7 +556,7 @@ class SelfDriving extends React.PureComponent {
                                                     </a>
                                                 ]}
                                             >
-                                                <img alt="车型" src={cars1} style={{width: '15em', height: '10em'}}/>
+                                                <img alt="车型" src={item.imageSrc} style={{width: '15em', height: '10em'}}/>
                                                 <div className={styles.listDescription}/>
                                                 <List.Item.Meta
                                                     title={<h2>大众朗逸</h2>}

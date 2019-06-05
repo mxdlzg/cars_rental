@@ -237,7 +237,7 @@ class RentalOrder extends React.Component {
                             label="证件类型"
                             hasFeedback
                         >
-                            <Select defaultValue="1">
+                            <Select disabled defaultValue="1">
                                 <Option value="1">身份证</Option>
                                 <Option value="2">驾驶证</Option>
                                 <Option value="3">港澳台通行证</Option>

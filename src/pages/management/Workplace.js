@@ -94,7 +94,17 @@ class UpdateForm extends PureComponent {
         super(props);
 
         this.state = {
-            formVals: {},
+            formVals: {
+                bookAble: 1,
+                manufactureDate: "2019-06-04 12:53:32",
+                defaultRentPrice: 280,
+                typeId: 1,
+                brandName: '品牌',
+                serviceTypeId: "1",
+                storeId: 1,
+                typeName: '车型名称',
+                description:"这里是车辆描述信息！！"
+            },
             currentStep: 0,
         };
 
@@ -112,7 +122,7 @@ class UpdateForm extends PureComponent {
             const formVals = {...oldValue, ...fieldsValue};
             this.setState(
                 {
-                    formVals,
+                    formVals:formVals,
                 },
                 () => {
                     if (currentStep < 2) {
@@ -140,7 +150,7 @@ class UpdateForm extends PureComponent {
         });
     };
 
-    renderContent = (currentStep, formVals) => {
+    renderContent = (currentStep, formVals,values) => {
         const {form} = this.props;
         const config = {
             rules: [{type: 'object', required: true, message: 'Please select time!'}],
@@ -149,6 +159,7 @@ class UpdateForm extends PureComponent {
             return [
                 <FormItem key="bookAble" {...this.formLayout} label="是否可用">
                     {form.getFieldDecorator('bookAble', {
+                        initialValue:formVals.bookAble,
                         rules: [{required: true, message: '请选择！'}],
                     })(
                         <RadioGroup>
@@ -162,6 +173,7 @@ class UpdateForm extends PureComponent {
                 </FormItem>,
                 <FormItem key="defaultRentPrice" {...this.formLayout} label="默认租车价格">
                     {form.getFieldDecorator('defaultRentPrice', {
+                        initialValue:formVals.defaultRentPrice,
                         rules: [{
                             required: true,
                             message: '请输入价格！',
@@ -170,16 +182,18 @@ class UpdateForm extends PureComponent {
                 </FormItem>,
                 <FormItem key="typeId" {...this.formLayout} label="类型编号">
                     {form.getFieldDecorator('typeId', {
+                        initialValue:formVals.typeId,
                         rules: [{required: true, message: '请输入类型编号！'}],
                     })(<Input placeholder="请输入"/>)}
                 </FormItem>,
                 <FormItem key="brandName" {...this.formLayout} label="车辆品牌">
                     {form.getFieldDecorator('brandName', {
+                        initialValue:formVals.brandName,
                         rules: [{required: true, message: '请输入车辆品牌！'}],
                     })(<Input placeholder="请输入"/>)}
                 </FormItem>,
                 <FormItem key="serviceTypeId" {...this.formLayout} label="服务类型编号">
-                    {form.getFieldDecorator('serviceTypeId', {})(
+                    {form.getFieldDecorator('serviceTypeId', {initialValue:formVals.serviceTypeId})(
                         <Select style={{width: '100%'}}>
                             <Option value="1">短租</Option>
                             <Option value="2">长租</Option>
@@ -206,10 +220,10 @@ class UpdateForm extends PureComponent {
         }
         return [
             <FormItem key="storeId" {...this.formLayout} label="归属门店">
-                {form.getFieldDecorator('storeId', {})(
+                {form.getFieldDecorator('storeId', {initialValue:formVals.storeId})(
                     <Select style={{width: '100%'}}>
                         {
-                            formVals.map(item => {
+                            values.map(item => {
                                 return (
                                     <Option value={item.value}>{item.label}</Option>
                                 )
@@ -220,11 +234,13 @@ class UpdateForm extends PureComponent {
             </FormItem>,
             <FormItem key="typeName" {...this.formLayout} label="类型名称">
                 {form.getFieldDecorator('typeName', {
+                    initialValue:formVals.typeName,
                     rules: [{required: true, message: '请输入类型名称！'}],
                 })(<Input placeholder="请输入"/>)}
             </FormItem>,
             <FormItem key="description" {...this.formLayout} label="车辆描述">
                 {form.getFieldDecorator('description', {
+                    initialValue:formVals.description,
                     rules: [{required: false, message: '请输入至少十个字符的规则描述！', min: 10}],
                 })(<TextArea rows={4} placeholder="请输入至少十个字符"/>)}
             </FormItem>,
@@ -289,7 +305,7 @@ class UpdateForm extends PureComponent {
                     <Step title="车辆信息"/>
                     <Step title="车辆额外信息"/>
                 </Steps>
-                {this.renderContent(currentStep, values)}
+                {this.renderContent(currentStep, formVals,values)}
             </Modal>
         );
     }

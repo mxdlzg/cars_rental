@@ -80,7 +80,7 @@ export default {
                 {
                     Routes: ['src/pages/Authorized'],
                     path: '/order/OrderDetail',
-                    authority: ['user'],
+                    authority: ['user','admin'],
                     name: 'orderdetail',
                     component: './order/OrderDetail'
                 },
